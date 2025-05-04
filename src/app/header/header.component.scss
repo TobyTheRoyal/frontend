@@ -1,0 +1,277 @@
+.navbar {
+  background: #1a1a1a;
+  padding: 10px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #2a2a2a;
+  transition: padding 0.3s ease;
+
+  &.scrolled {
+    padding: 5px 30px;
+  }
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-link {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #00c4b4;
+  }
+}
+
+.search-container {
+  flex-grow: 1;
+  margin: 0 40px;
+  position: relative;
+  max-width: 50%;
+  transition: all 0.3s ease;
+}
+
+
+.search-bar {
+  width: 100%;
+  padding: 12px 40px 12px 20px;
+  background: #2a2a2a;
+  border: none;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  height: 40px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+
+  &:focus {
+    box-shadow: 0 0 8px rgba(0, 196, 180, 0.3);
+    transition: box-shadow 0.3s ease;
+  }
+
+  &::placeholder {
+    color: #b3b3b3;
+    font-size: 14px;
+  }
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-50%) scale(1.1); }
+  100% { transform: translateY(-50%) scale(1); }
+}
+
+.user-options {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Gemeinsamer Stil für die User-Links */
+.user-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  
+  /* Standard Hintergrund, kann später je nach Link überschrieben werden */
+  background: linear-gradient(45deg, #00c4b4, #008f85);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Icons in den Links */
+.link-icon {
+  fill: currentColor;
+  transition: fill 0.3s ease;
+}
+
+/* Zusätzliche Anpassungen falls nötig */
+.watchlist {
+  /* Optionale spezifische Anpassungen für Watchlist */
+}
+
+.history {
+  /* Optionale spezifische Anpassungen für History */
+}
+
+/* Für Gäste: Sign In / Sign Up */
+.auth-link.guest-link {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid #00c4b4;
+  border-radius: 4px;
+  transition: background 0.3s ease, color 0.3s ease;
+  background: transparent;
+
+  &:hover {
+    background: #00c4b4;
+    color: #ffffff;
+  }
+}
+
+/* Für den Sign Up Button als gefüllte Variante */
+.auth-link.signup-link {
+  background: #00c4b4;
+  border: none;
+}
+
+/* Profil-Dropdown (wie vorher) */
+.profile-dropdown {
+  position: relative;
+}
+
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(10deg);
+  }
+}
+
+.user-icon {
+  transition: fill 0.3s ease;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #2a2a2a;
+  list-style: none;
+  padding: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 150px;
+  transform: translateY(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown-menu li {
+  margin: 0;
+}
+
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b3b3b3;
+  font-size: 14px;
+  padding: 10px 15px;
+  text-decoration: none;
+  transition: background 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background: #3a3a3a;
+    color: #00c4b4;
+  }
+}
+
+.menu-icon {
+  font-size: 16px;
+}
+
+
+.category-bar {
+  background: #1a1a1a;
+  padding: 15px 30px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.category-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: 30px;
+}
+
+.category-links a {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 2px;
+    background: #00c4b4;
+    transition: width 0.3s ease;
+  }
+  
+  &:hover {
+    color: #00c4b4;
+  }
+  
+  &:hover:after {
+    width: 100%;
+  }
+  
+  &.active {
+    color: #00c4b4;
+  }
+  
+  &.active:after {
+    width: 100%;
+  }
+}

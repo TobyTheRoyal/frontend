@@ -1,0 +1,42 @@
+<div class="home-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Find Your Next Favorite</h1>
+      <p>Stream the best movies and shows across all your services.</p>
+      <button class="hero-button" routerLink="/auth/register">Sign Up</button>
+    </div>
+  </section>
+
+  <section class="category-section" *ngFor="let category of categories">
+    <h2>{{ category.title }}</h2>
+    <div class="slider-container">
+      <button class="slider-arrow left-arrow" (click)="scrollLeft(category.id)">◄</button>
+      <div class="scroll-container" [id]="category.id">
+        <div class="content-list">
+          <div class="content-card" *ngFor="let item of category.items">
+            <div class="card-image" [style.backgroundImage]="'url(' + item.poster + ')'">
+              <div class="own-rating-tag" *ngIf="getRating(item.id) !== null">
+                <span class="star-icon">★</span>
+                {{ getRating(item.id) }}
+              </div>
+              <button class="add-btn" (click)="addToWatchlist(item.id)" [disabled]="isInWatchlist(item.id)">+ Watchlist</button>
+            </div>
+            <p class="card-title">{{ item.title }} ({{ item.releaseYear }})</p>
+            <div class="ratings-container">
+              <div class="imdb-rating" *ngIf="item.imdbRating">
+                <img src="/assets/images/imdb-logo.png" alt="IMDb" class="imdb-rating-icon" />
+                {{ item.imdbRating }}
+              </div>
+              <div class="rt-rating" *ngIf="item.rtRating">
+                <img src="/assets/images/rt-logo-cf.png" alt="Rotten Tomatoes" class="rt-rating-icon" />
+                {{ item.rtRating }}
+              </div>
+            </div>
+            <button class="remove-button" *ngIf="category.id === 'watchlist'" (click)="removeFromWatchlist(item.id)">Remove</button>
+          </div>
+        </div>
+      </div>
+      <button class="slider-arrow right-arrow" (click)="scrollRight(category.id)">►</button>
+    </div>
+  </section>
+</div>

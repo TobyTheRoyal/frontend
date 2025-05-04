@@ -1,0 +1,26 @@
+<div class="rating-container">
+    <h2>My Ratings</h2>
+    <div class="rating-list">
+      <div class="rating-item" *ngFor="let rating of ratings">
+        <img [src]="rating.poster" alt="{{ rating.title }}" class="poster" *ngIf="rating.poster" />
+        <div class="rating-details">
+          <p>{{ rating.title || 'TMDb ID: ' + rating.content.tmdbId }} ({{ rating.content.type }})</p>
+          <p>Score: {{ rating.score }}</p>
+          <p>Rated At: {{ rating.ratedAt | date }}</p>
+          <button class="rating-btn" (click)="openRatingModal(rating.content.id)">⭐ Update Rating</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal-overlay" *ngIf="selectedContentId" (click)="closeRatingModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Rate {{ selectedContentTitle }}</h3> <!-- Titel aus der Komponente -->
+        <div class="rating-form">
+          <input type="range" [(ngModel)]="ratingScore" min="0" max="10" step="0.1" class="slider" />
+          <span class="score-display">{{ ratingScore }}</span>
+          <button (click)="submitRating()">Submit</button>
+        </div>
+        <button class="close-btn" (click)="closeRatingModal()">Close</button>
+      </div>
+    </div>
+  </div>

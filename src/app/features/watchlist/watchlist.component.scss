@@ -1,0 +1,235 @@
+.watchlist-container {
+  padding: 40px 30px;
+  background: #1a1a1a;
+  min-height: 100vh;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #ffffff;
+}
+
+.content-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.content-card {
+  background: #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 180px;
+  transition: transform 0.3s ease;
+  position: relative;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.card-image {
+  height: 270px;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.add-btn {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #00c4b4;
+  color: white;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #00a899;
+  }
+
+  &[disabled] {
+    background: #666;
+    cursor: not-allowed;
+  }
+}
+
+.rating-btn {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 36px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  fill: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #00c4b4;
+  }
+}
+
+.own-rating-tag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px; /* Mehr Padding */
+  background: rgba(0, 196, 180, 0.5); /* Stärkerer Hintergrund */
+  border: 1px solid rgba(0, 196, 180, 0.8); /* Subtiler Rand */
+  border-radius: 5px;
+  font-size: 13px; /* Von 12px auf 13px */
+  font-weight: 700; /* Stärkere Fettschrift */
+  color: #ffffff; /* Weiß für Kontrast */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Schatten für Tiefe */
+  transition: background 0.2s ease, transform 0.2s ease; /* Hover mit Skalierung */
+  z-index: 1;
+
+  &:hover {
+    background: rgba(0, 196, 180, 0.7); /* Heller bei Hover */
+    transform: scale(1.05); /* Leichte Vergrößerung */
+  }
+}
+
+.rating-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(3px);
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.rating-input-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  pointer-events: auto;
+  color: #ffffff;
+}
+
+.rating-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.rating-input {
+  width: 90px;
+  padding: 9px;
+  border-radius: 5px;
+  border: 1px solid #00c4b4;
+  background: transparent;
+  color: #ffffff;
+  text-align: center;
+  font-size: 18px;
+}
+
+.submit-rating-btn {
+  background: #00c4b4;
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #00a899;
+  }
+}
+
+.card-title {
+  padding: 12px;
+  margin: 0;
+  font-size: 14px;
+  color: #b3b3b3;
+  text-align: center;
+}
+
+.ratings-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 14px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: center;
+}
+
+.imdb-rating, .rt-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.imdb-rating {
+  color: #f5c518;
+}
+
+.rt-rating {
+  color: #ff6f00;
+}
+
+.rating-icon {
+  display: block;
+  vertical-align: middle;
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.imdb-rating-icon {
+  width: 28px;
+  height: 13px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.rt-rating-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.star-icon {
+  font-size: 15px; /* Von 14px auf 15px */
+  color: #f5c518;
+  line-height: 1;
+}
