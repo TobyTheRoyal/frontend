@@ -15,10 +15,10 @@ import { Content } from '../interfaces/content.interface';
 })
 export class HomeComponent implements OnInit {
   categories = [
-    { id: 'trending', title: 'Trending Now', items: Array(10).fill(0) },
-    { id: 'top-rated', title: 'Top Rated', items: Array(10).fill(0) },
-    { id: 'new-releases', title: 'New Releases', items: Array(10).fill(0) },
-    { id: 'watchlist', title: 'My Watchlist', items: Array(10).fill(0) },
+    { id: 'trending', title: 'Trending Now', items: [] as Content[] },
+    { id: 'top-rated', title: 'Top Rated', items: [] as Content[] },
+    { id: 'new-releases', title: 'New Releases', items: [] as Content[] },
+    { id: 'watchlist', title: 'My Watchlist', items: [] as Content[] },
   ];
 
   isLoggedIn = false;
@@ -31,12 +31,15 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.authService.getToken()) {
-      this.isLoggedIn = true;
-      this.loadCategories();
-    } else {
-      this.router.navigate(['/auth/login']);
-    }
+    this.authService.isLoggedIn().subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+      if (loggedIn) {
+        this.loadCategories();
+      } else {
+        this.loadPublicCategories(); // Nur öffentliche Kategorien laden
+        this.router.navigate(['/auth/login']);
+      }
+    });
   }
 
   loadCategories() {
@@ -45,9 +48,7 @@ export class HomeComponent implements OnInit {
         console.log('Trending:', data);
         this.categories[0].items = data;
       },
-      error: (err) => {
-        console.error('Failed to load trending', err);
-      },
+      error: (err) => console.error('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
       next: (data) => {
@@ -68,7 +69,28 @@ export class HomeComponent implements OnInit {
         console.log('Watchlist:', data);
         this.categories[3].items = data;
       },
-      error: (err) => console.error('Failed to load watchlist', err),
+      error: (err) => {
+        console.error('Failed to load watchlist', err);
+        if (err.status === 401) {
+          this.authService.logout();
+          this.router.navigate(['/auth/login']);
+        }
+      },
+    });
+  }
+
+  loadPublicCategories() {
+    this.contentService.getTrending().subscribe({
+      next: (data) => (this.categories[0].items = data),
+      error: (err) => console.error('Failed to load trending', err),
+    });
+    this.contentService.getTopRated().subscribe({
+      next: (data) => (this.categories[1].items = data),
+      error: (err) => console.error('Failed to load top rated', err),
+    });
+    this.contentService.getNewReleases().subscribe({
+      next: (data) => (this.categories[2].items = data),
+      error: (err) => console.error('Failed to load new releases', err),
     });
   }
 
@@ -81,6 +103,10 @@ export class HomeComponent implements OnInit {
   }
 
   addToWatchlist(contentId: string): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
     if (!this.isInWatchlist(contentId)) {
       this.watchlistService.addToWatchlist(contentId).subscribe(() => {
         this.loadCategories();
@@ -89,6 +115,10 @@ export class HomeComponent implements OnInit {
   }
 
   removeFromWatchlist(contentId: string): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
     this.watchlistService.removeFromWatchlist(contentId).subscribe(() => {
       this.loadCategories();
     });

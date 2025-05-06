@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,6 @@ export class AuthService {
   private apiUrl = 'http://localhost:3000/auth';
   private tokenKey = 'auth_token';
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
-  private loggedInStatus = new BehaviorSubject<boolean>(this.hasToken());
 
   constructor(private http: HttpClient) {}
 
@@ -26,16 +26,20 @@ export class AuthService {
           console.warn('No token received:', response);
         }
       }),
+      catchError(this.handleError('register'))
     );
   }
 
   login(credentials: { email: string; password: string }): Observable<{ access_token: string }> {
     return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        localStorage.setItem(this.tokenKey, response.access_token);
-        this.isLoggedInSubject.next(true);
-        console.log('Login successful, token saved:', response.access_token);
+        if (response.access_token) {
+          localStorage.setItem(this.tokenKey, response.access_token);
+          this.isLoggedInSubject.next(true);
+          console.log('Login successful, token saved:', response.access_token);
+        }
       }),
+      catchError(this.handleError('login'))
     );
   }
 
@@ -55,11 +59,14 @@ export class AuthService {
     return this.isLoggedInSubject.asObservable();
   }
 
-  getLoggedInStatus(): Observable<boolean> {
-    return this.loggedInStatus.asObservable();
+  hasToken(): boolean {
+    return !!this.getToken();
   }
 
-  private hasToken(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+  private handleError(operation = 'operation') {
+    return (error: any): Observable<never> => {
+      console.error(`${operation} failed: ${error.message}`);
+      return throwError(() => new Error(`${operation} failed: ${error.message}`));
+    };
   }
 }

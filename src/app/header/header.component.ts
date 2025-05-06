@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private loginSubscription: Subscription;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.loginSubscription = this.authService.getLoggedInStatus().subscribe((status: boolean) => {
+    this.loginSubscription = this.authService.isLoggedIn().subscribe((status: boolean) => {
       this.isLoggedIn = status;
     });
     window.addEventListener('scroll', () => {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Content } from '../../interfaces/content.interface';
 import { AuthService } from './auth.service';
 
@@ -10,45 +10,64 @@ import { AuthService } from './auth.service';
 })
 export class WatchlistService {
   private apiUrl = 'http://localhost:3000/watchlist';
-  private cachedWatchlist: Content[] = [];
+  private watchlist: Content[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-  }
-
   getWatchlist(): Observable<Content[]> {
     const token = this.authService.getToken();
-    if (!token) throw new Error('No user logged in');
-    return this.http.get<Content[]>(`${this.apiUrl}/user`, { headers: this.getHeaders() }).pipe(
-      map((contents) => {
-        this.cachedWatchlist = contents;
-        return contents;
-      }),
+    if (!token) {
+      console.log('No token, skipping watchlist request');
+      return of([]);
+    }
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<Content[]>(`${this.apiUrl}/user`, { headers }).pipe(
+      tap((data) => (this.watchlist = data)),
+      catchError(this.handleError<Content[]>('getWatchlist', []))
     );
   }
 
-  addToWatchlist(tmdbId: string): Observable<any> {
+  addToWatchlist(contentId: string): Observable<any> {
     const token = this.authService.getToken();
-    if (!token) throw new Error('No user logged in');
-    return this.http.post(`${this.apiUrl}/add`, { tmdbId }, { headers: this.getHeaders() });
+    if (!token) {
+      return of(null);
+    }
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http
+      .post(`${this.apiUrl}/add`, { tmdbId: contentId }, { headers })
+      .pipe(catchError(this.handleError<any>('addToWatchlist')));
   }
 
-  removeFromWatchlist(tmdbId: string): Observable<any> {
+  removeFromWatchlist(contentId: string): Observable<any> {
     const token = this.authService.getToken();
-    if (!token) throw new Error('No user logged in');
-    return this.http.delete(`${this.apiUrl}/user/${tmdbId}`, { headers: this.getHeaders() });
+    if (!token) {
+      return of(null);
+    }
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http
+      .delete(`${this.apiUrl}/user/${contentId}`, { headers })
+      .pipe(catchError(this.handleError<any>('removeFromWatchlist')));
   }
 
-  getRating(tmdbId: string): number | null {
-    return 8.0; // Mock: Ersetze durch echte Bewertung
+  getRating(contentId: string): number | null {
+    const item = this.watchlist.find((content) => content.tmdbId === contentId);
+    return item && item.rating !== undefined ? item.rating : item?.imdbRating || null;
   }
 
-  isInWatchlist(tmdbId: string): boolean {
-    return this.cachedWatchlist.some((content) => content.tmdbId === tmdbId);
+  isInWatchlist(contentId: string): boolean {
+    return this.watchlist.some((content) => content.tmdbId === contentId);
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
   }
 }

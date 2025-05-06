@@ -7,4 +7,5 @@ export interface Content {
     type: 'movie' | 'series';
     imdbRating?: number;
     rtRating?: number;
+    rating?: number;
   }
