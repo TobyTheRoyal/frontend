@@ -1,5 +1,5 @@
 export interface Content {
-    id: string;
+    id: number;
     tmdbId: string;
     title: string;
     releaseYear: number;

@@ -14,12 +14,12 @@
       <div class="scroll-container" [id]="category.id">
         <div class="content-list">
           <div class="content-card" *ngFor="let item of category.items">
-            <div class="card-image" [style.backgroundImage]="'url(' + item.poster + ')'">
-              <div class="own-rating-tag" *ngIf="getRating(item.id) !== null">
+            <div class="card-image" [style.backgroundImage]="'url(' + (item.poster || 'https://placehold.co/200x300') + ')'">
+              <div class="own-rating-tag" *ngIf="getRating(item.tmdbId) !== null">
                 <span class="star-icon">★</span>
-                {{ getRating(item.id) }}
+                {{ getRating(item.tmdbId) }}
               </div>
-              <button class="add-btn" (click)="addToWatchlist(item.id)" [disabled]="isInWatchlist(item.id)">+ Watchlist</button>
+              <button class="add-btn" (click)="addToWatchlist(item.tmdbId)" [disabled]="isInWatchlist(item.tmdbId)">+ Watchlist</button>
             </div>
             <p class="card-title">{{ item.title }} ({{ item.releaseYear }})</p>
             <div class="ratings-container">
@@ -32,7 +32,7 @@
                 {{ item.rtRating }}
               </div>
             </div>
-            <button class="remove-button" *ngIf="category.id === 'watchlist'" (click)="removeFromWatchlist(item.id)">Remove</button>
+            <button class="remove-button" *ngIf="category.id === 'watchlist'" (click)="removeFromWatchlist(item.tmdbId)">Remove</button>
           </div>
         </div>
       </div>

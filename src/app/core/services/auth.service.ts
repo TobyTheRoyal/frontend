@@ -14,19 +14,28 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  register(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, credentials).pipe(
-      tap(() => console.log('Registration successful'))
+  register(credentials: { username: string; email: string; password: string }): Observable<{ access_token: string }> {
+    return this.http.post<{ access_token: string }>(`${this.apiUrl}/register`, credentials).pipe(
+      tap((response) => {
+        console.log('Registration successful, response:', response);
+        if (response.access_token) {
+          localStorage.setItem(this.tokenKey, response.access_token);
+          this.isLoggedInSubject.next(true);
+          console.log('Stored token:', response.access_token);
+        } else {
+          console.warn('No token received:', response);
+        }
+      }),
     );
   }
 
-  login(credentials: { email: string; password: string }): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => {
-        localStorage.setItem(this.tokenKey, response.token);
+  login(credentials: { email: string; password: string }): Observable<{ access_token: string }> {
+    return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response) => {
+        localStorage.setItem(this.tokenKey, response.access_token);
         this.isLoggedInSubject.next(true);
-        console.log('Login successful, token saved:', response.token);
-      })
+        console.log('Login successful, token saved:', response.access_token);
+      }),
     );
   }
 

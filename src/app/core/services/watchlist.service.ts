@@ -6,7 +6,7 @@ import { Content } from '../../interfaces/content.interface';
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WatchlistService {
   private apiUrl = 'http://localhost:3000/watchlist';
@@ -17,39 +17,38 @@ export class WatchlistService {
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
   }
 
   getWatchlist(): Observable<Content[]> {
     const token = this.authService.getToken();
     if (!token) throw new Error('No user logged in');
-    return this.http.get<{ content: Content }[]>(`${this.apiUrl}/user`, { headers: this.getHeaders() }).pipe(
-      map(data => data.map(item => item.content)),
-      map(contents => {
+    return this.http.get<Content[]>(`${this.apiUrl}/user`, { headers: this.getHeaders() }).pipe(
+      map((contents) => {
         this.cachedWatchlist = contents;
         return contents;
-      })
+      }),
     );
   }
 
-  addToWatchlist(contentId: string): Observable<any> {
+  addToWatchlist(tmdbId: string): Observable<any> {
     const token = this.authService.getToken();
     if (!token) throw new Error('No user logged in');
-    return this.http.post(`${this.apiUrl}/user`, { contentId }, { headers: this.getHeaders() });
+    return this.http.post(`${this.apiUrl}/add`, { tmdbId }, { headers: this.getHeaders() });
   }
 
-  removeFromWatchlist(contentId: string): Observable<any> {
+  removeFromWatchlist(tmdbId: string): Observable<any> {
     const token = this.authService.getToken();
     if (!token) throw new Error('No user logged in');
-    return this.http.delete(`${this.apiUrl}/user/${contentId}`, { headers: this.getHeaders() });
+    return this.http.delete(`${this.apiUrl}/user/${tmdbId}`, { headers: this.getHeaders() });
   }
 
-  getRating(contentId: string): number | null {
+  getRating(tmdbId: string): number | null {
     return 8.0; // Mock: Ersetze durch echte Bewertung
   }
 
-  isInWatchlist(contentId: string): boolean {
-    return this.cachedWatchlist.some(content => content.id === contentId);
+  isInWatchlist(tmdbId: string): boolean {
+    return this.cachedWatchlist.some((content) => content.tmdbId === tmdbId);
   }
 }

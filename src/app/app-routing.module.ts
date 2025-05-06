@@ -20,7 +20,10 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    scrollPositionRestoration: 'enabled', // ← scrollt beim Route-Change nach oben
+    anchorScrolling: 'enabled',          // ← optional, falls du #anker benutzt
+  }),],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
