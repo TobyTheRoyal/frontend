@@ -55,6 +55,28 @@ export class WatchlistService {
       .pipe(catchError(this.handleError<any>('removeFromWatchlist')));
   }
 
+  setRating(contentId: string, rating: number): Observable<any> {
+    const token = this.authService.getToken();
+    if (!token) {
+      console.log('No token, skipping rating request');
+      return of(null);
+    }
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http
+      .post(`${this.apiUrl}/rate`, { tmdbId: contentId, rating }, { headers })
+      .pipe(
+        tap(() => {
+          const item = this.watchlist.find((content) => content.tmdbId === contentId);
+          if (item) {
+            item.rating = rating;
+          }
+        }),
+        catchError(this.handleError<any>('setRating'))
+      );
+  }
+
   getRating(contentId: string): number | null {
     const item = this.watchlist.find((content) => content.tmdbId === contentId);
     return item && item.rating !== undefined ? item.rating : item?.imdbRating || null;

@@ -5,11 +5,13 @@ import { ContentService } from '../core/services/content.service';
 import { WatchlistService } from '../core/services/watchlist.service';
 import { AuthService } from '../core/services/auth.service';
 import { Content } from '../interfaces/content.interface';
+import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule], // FormsModule für ngModel
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -21,23 +23,26 @@ export class HomeComponent implements OnInit {
     { id: 'watchlist', title: 'My Watchlist', items: [] as Content[] },
   ];
 
-  isLoggedIn = false;
+  isLoggedIn$: Observable<boolean>;
+  selectedContentId: string | null = null;
+  ratingScore: string = '';
+  isRatingSubmitted: boolean = false;
 
   constructor(
     private contentService: ContentService,
     private watchlistService: WatchlistService,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    public router: Router
+  ) {
+    this.isLoggedIn$ = this.authService.isLoggedIn();
+  }
 
   ngOnInit(): void {
-    this.authService.isLoggedIn().subscribe((loggedIn) => {
-      this.isLoggedIn = loggedIn;
+    this.isLoggedIn$.subscribe((loggedIn) => {
       if (loggedIn) {
         this.loadCategories();
       } else {
-        this.loadPublicCategories(); // Nur öffentliche Kategorien laden
-        this.router.navigate(['/auth/login']);
+        this.loadPublicCategories();
       }
     });
   }
@@ -45,28 +50,24 @@ export class HomeComponent implements OnInit {
   loadCategories() {
     this.contentService.getTrending().subscribe({
       next: (data) => {
-        console.log('Trending:', data);
         this.categories[0].items = data;
       },
       error: (err) => console.error('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
       next: (data) => {
-        console.log('Top Rated:', data);
         this.categories[1].items = data;
       },
       error: (err) => console.error('Failed to load top rated', err),
     });
     this.contentService.getNewReleases().subscribe({
       next: (data) => {
-        console.log('New Releases:', data);
         this.categories[2].items = data;
       },
       error: (err) => console.error('Failed to load new releases', err),
     });
     this.watchlistService.getWatchlist().subscribe({
       next: (data) => {
-        console.log('Watchlist:', data);
         this.categories[3].items = data;
       },
       error: (err) => {
@@ -102,39 +103,63 @@ export class HomeComponent implements OnInit {
     return this.watchlistService.isInWatchlist(contentId);
   }
 
-  addToWatchlist(contentId: string): void {
-    if (!this.isLoggedIn) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
-    if (!this.isInWatchlist(contentId)) {
-      this.watchlistService.addToWatchlist(contentId).subscribe(() => {
-        this.loadCategories();
-      });
-    }
-  }
-
-  removeFromWatchlist(contentId: string): void {
-    if (!this.isLoggedIn) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
-    this.watchlistService.removeFromWatchlist(contentId).subscribe(() => {
-      this.loadCategories();
+  toggleWatchlist(contentId: string): void {
+    this.isLoggedIn$.subscribe((loggedIn) => {
+      if (!loggedIn) {
+        this.router.navigate(['/auth/login']);
+        return;
+      }
+      if (this.isInWatchlist(contentId)) {
+        this.watchlistService.removeFromWatchlist(contentId).subscribe({
+          next: () => this.loadCategories(),
+          error: (err) => console.error('Failed to remove from watchlist', err),
+        });
+      } else {
+        this.watchlistService.addToWatchlist(contentId).subscribe({
+          next: () => this.loadCategories(),
+          error: (err) => console.error('Failed to add to watchlist', err),
+        });
+      }
     });
   }
 
-  scrollLeft(categoryId: string) {
-    const container = document.getElementById(categoryId);
-    if (container) {
-      container.scrollBy({ left: -300, behavior: 'smooth' });
-    }
+  startRating(contentId: string): void {
+    this.isLoggedIn$.subscribe((loggedIn) => {
+      if (!loggedIn) {
+        this.router.navigate(['/auth/login']);
+        return;
+      }
+      this.selectedContentId = contentId;
+      this.ratingScore = '';
+      this.isRatingSubmitted = false;
+    });
   }
 
-  scrollRight(categoryId: string) {
-    const container = document.getElementById(categoryId);
-    if (container) {
-      container.scrollBy({ left: 300, behavior: 'smooth' });
+  stopRating(): void {
+    this.selectedContentId = null;
+    this.ratingScore = '';
+    this.isRatingSubmitted = false;
+  }
+
+  submitRating(contentId: string): void {
+    const rating = parseFloat(this.ratingScore);
+    if (isNaN(rating) || rating < 0 || rating > 10) {
+      console.error('Invalid rating: must be between 0.0 and 10.0');
+      return;
     }
+    this.isLoggedIn$.subscribe((loggedIn) => {
+      if (!loggedIn) {
+        this.router.navigate(['/auth/login']);
+        return;
+      }
+      this.watchlistService.setRating(contentId, rating).subscribe({
+        next: () => {
+          this.isRatingSubmitted = true;
+          this.loadCategories();
+          setTimeout(() => this.stopRating(), 500); // Schließt Input nach 500ms
+        },
+        error: (err) => console.error('Failed to set rating', err),
+      });
+    });
   }
 }
