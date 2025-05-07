@@ -1,3 +1,4 @@
+// src/app/home/home.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -11,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule], // FormsModule für ngModel
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -49,27 +50,19 @@ export class HomeComponent implements OnInit {
 
   loadCategories() {
     this.contentService.getTrending().subscribe({
-      next: (data) => {
-        this.categories[0].items = data;
-      },
+      next: (data) => (this.categories[0].items = data),
       error: (err) => console.error('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
-      next: (data) => {
-        this.categories[1].items = data;
-      },
+      next: (data) => (this.categories[1].items = data),
       error: (err) => console.error('Failed to load top rated', err),
     });
     this.contentService.getNewReleases().subscribe({
-      next: (data) => {
-        this.categories[2].items = data;
-      },
+      next: (data) => (this.categories[2].items = data),
       error: (err) => console.error('Failed to load new releases', err),
     });
     this.watchlistService.getWatchlist().subscribe({
-      next: (data) => {
-        this.categories[3].items = data;
-      },
+      next: (data) => (this.categories[3].items = data),
       error: (err) => {
         console.error('Failed to load watchlist', err);
         if (err.status === 401) {
@@ -156,10 +149,25 @@ export class HomeComponent implements OnInit {
         next: () => {
           this.isRatingSubmitted = true;
           this.loadCategories();
-          setTimeout(() => this.stopRating(), 500); // Schließt Input nach 500ms
+          setTimeout(() => this.stopRating(), 500);
         },
         error: (err) => console.error('Failed to set rating', err),
       });
     });
+  }
+
+  /** Scrollt den Content-Container horizontal */
+  scrollLeft(categoryId: string): void {
+    const container = document.getElementById(categoryId);
+    if (container) {
+      container.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  }
+
+  scrollRight(categoryId: string): void {
+    const container = document.getElementById(categoryId);
+    if (container) {
+      container.scrollBy({ left: 300, behavior: 'smooth' });
+    }
   }
 }
