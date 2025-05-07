@@ -1,207 +1,220 @@
 /* src/app/features/watchlist/watchlist.component.scss */
+
 .watchlist-container {
   background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   background-size: 200% 200%;
   padding: 60px 40px;
   animation: gradientShift 15s ease infinite;
+  min-height: 100vh;
 }
 
 @keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
 }
 
 .content-list {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-  justify-content: flex-start; /* linksbündig */
+  justify-content: flex-start;
 }
 
 .content-card {
+  width: 200px;
+  aspect-ratio: 5 / 9;
   background: #2a2a2a;
   border-radius: 12px;
   overflow: hidden;
-  width: 200px;
-  height: 360px;
-  display: flex;
-  flex-direction: column;
   position: relative;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
 
   &:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 24px rgba(0,0,0,0.6);
   }
-}
 
-.card-image {
-  position: relative;
-  height: 270px;
-  background-size: cover;
-  background-position: center;
-}
+  .card-image {
+    width: 100%;
+    aspect-ratio: 20 / 27;
+    background-size: cover;
+    background-position: center;
+    position: relative;
 
-/* Remove-Button oben links */
-.add-btn {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  width: 32px;
-  height: 32px;
-  padding: 8px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease, transform 0.2s ease;
-  cursor: pointer;
+    /* Remove and Rate Buttons */
+    .add-btn,
+    .rating-btn {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      padding: 8px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
 
-  &:hover {
-    background: #00c4b4;
-    transform: scale(1.1);
+      &:hover {
+        background: #00c4b4;
+        transform: scale(1.1);
+      }
+    }
+    .add-btn { top: 12px; left: 12px; }
+    .rating-btn { top: 56px; left: 12px; }
+
+    /* Blur overlay covers full poster */
+    .rating-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      z-index: 1;
+    }
+
+    /* Input container covers full poster */
+    .rating-input-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .rating-card {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: inherit;
+
+      .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.25rem;
+        cursor: pointer;
+      }
+
+      h3 {
+        color: #fff;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+        padding: 0 8px;
+      }
+
+      .rating-input-field {
+        width: 80px;
+        padding: 8px;
+        font-size: 1rem;
+        border: 2px solid #00c4b4;
+        border-radius: 6px;
+        background: transparent;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 1rem;
+        transition: border-color 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: #fff;
+        }
+      }
+
+      .submit-rating-btn {
+        background: #00c4b4;
+        color: #fff;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+
+        &:hover {
+          background: #00a899;
+          transform: translateY(-2px);
+        }
+      }
+    }
+
+    /* Own Rating Badge */
+    .own-rating-tag {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      background: rgba(0,196,180,0.8);
+      backdrop-filter: blur(4px);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 3;
+    }
+  }
+
+  .card-title {
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #eee;
+    text-align: center;
+    line-height: 1.2;
+    height: 2.4em;
+    margin: 0;
+  }
+
+  .ratings-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+
+    .imdb-rating,
+    .rt-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .imdb-rating { color: #f5c518; }
+    .rt-rating  { color: #ff6f00; }
+
+    .rating-icon,
+    .imdb-rating-icon,
+    .rt-rating-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
   }
 }
 
-/* Rating-Button direkt unter dem Remove-Button */
-.rating-btn {
-  position: absolute;
-  top: 56px; /* 12 + 32 +12 */
-  left: 12px;
-  width: 32px;
-  height: 32px;
-  padding: 8px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease, transform 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    background: #00c4b4;
-    transform: scale(1.1);
-  }
-}
-
-.own-rating-tag {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: rgba(0,196,180,0.5);
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  z-index: 2;
-}
-
-.rating-overlay {
-  position: absolute;
-  inset: 0 0 48px 0;
-  background: rgba(0,0,0,0.8);
-  border-radius: inherit;
-  z-index: 1;
-}
-
-.rating-input-container {
-  position: absolute;
-  inset: 0 0 48px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-}
-
-.rating-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.rating-input {
-  width: 80px;
-  padding: 6px;
-  border: 1px solid #00c4b4;
-  border-radius: 4px;
-  background: transparent;
-  color: #fff;
-  text-align: center;
-}
-
-.submit-rating-btn {
-  background: #00c4b4;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  
-  &:hover {
-    background: #00a899;
-  }
-}
-
-.card-title {
-  padding: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #eee;
-  text-align: center;
-  flex-shrink: 0;
-  margin: 0;
-  line-height: 1.2;
-  height: 2.4em;
-}
-
-.ratings-container {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 0;
-  flex-grow: 1;
-}
-
-.imdb-rating,
-.rt-rating {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.imdb-rating { color: #f5c518; }
-.rt-rating  { color: #ff6f00; }
-
-.rating-icon,
-.imdb-rating-icon,
-.rt-rating-icon {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
-}
-
+/* Responsive */
 @media (max-width: 768px) {
-  .content-list {
-    gap: 16px;
-    justify-content: flex-start;
-  }
   .content-card {
     width: 160px;
-    height: 320px;
+    aspect-ratio: 5 / 9;
   }
 }

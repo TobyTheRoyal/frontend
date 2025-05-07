@@ -1,4 +1,5 @@
 /* src/app/home/home.component.scss */
+
 .home-container {
   background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   background-size: 200% 200%;
@@ -11,9 +12,8 @@
 }
 
 @keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
 }
 
 /* Hero Section */
@@ -104,7 +104,6 @@
 /* Scrollable List */
 .scroll-container {
   overflow-x: auto;
-  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   padding: 10px 0;
   scroll-behavior: smooth;
@@ -131,7 +130,8 @@
   border-radius: 12px;
   flex: 0 0 auto;
   width: 200px;
-  height: 360px;
+  aspect-ratio: 5 / 9;     /* 200 × 360 */
+  height: auto;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -144,8 +144,9 @@
   }
 
   .card-image {
-    flex: 0 0 auto;
-    height: 270px;
+    width: 100%;
+    aspect-ratio: 20 / 27;  /* 200 × 270 */
+    height: auto;
     background-size: cover;
     background-position: center;
     border-top-left-radius: 12px;
@@ -153,39 +154,10 @@
     position: relative;
     overflow: hidden;
 
-    /* Add-Button oben links */
-    .add-btn {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      width: 32px;
-      height: 32px;
-      padding: 8px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s ease, transform 0.2s ease;
-      cursor: pointer;
-
-      &:hover {
-        background: #00c4b4;
-        transform: scale(1.1);
-      }
-      &[disabled] {
-        background: rgba(100,100,100,0.6);
-        cursor: not-allowed;
-      }
-    }
-
-    /* Rating-Button direkt unter dem Add-Button */
+    /* Add & Rate Buttons */
+    .add-btn,
     .rating-btn {
       position: absolute;
-      top: 56px; /* 12 + 32 +12 */
-      left: 12px;
       width: 32px;
       height: 32px;
       padding: 8px;
@@ -196,14 +168,103 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s ease, transform 0.2s ease;
       cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: #00c4b4;
         transform: scale(1.1);
       }
     }
+    .add-btn { top: 12px; left: 12px; }
+    .rating-btn { top: 56px; left: 12px; }
+
+    /* ONLY blur the poster area */
+    .rating-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      border-radius: inherit;
+      z-index: 1;
+    }
+    /* Centered input container covers whole poster */
+    .rating-input-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .rating-card {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: inherit;
+
+      .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.25rem;
+        cursor: pointer;
+      }
+
+      h3 {
+        color: #fff;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+        padding: 0 8px;
+      }
+
+      .rating-input-field {
+        width: 80px;
+        padding: 8px;
+        font-size: 1rem;
+        border: 2px solid #00c4b4;
+        border-radius: 6px;
+        background: transparent;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 1rem;
+        transition: border-color 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: #fff;
+        }
+      }
+
+      .submit-rating-btn {
+        background: #00c4b4;
+        color: #fff;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+
+        &:hover {
+          background: #00a899;
+          transform: translateY(-2px);
+        }
+      }
+    }
+    
 
     .own-rating-tag {
       position: absolute;
@@ -212,109 +273,48 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 4px 8px;
-      background: rgba(0,196,180,0.5);
-      border-radius: 6px;
-      font-size: 12px;
+      padding: 6px 10px;
+      background: rgba(0,196,180,0.8);
+      backdrop-filter: blur(4px);
+      border-radius: 8px;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #fff;
-      z-index: 2;
-    }
-
-    .rating-overlay {
-      position: absolute;
-      inset: 0 0 48px 0;
-      background: rgba(0,0,0,0.8);
-      border-radius: inherit;
-      z-index: 1;
-    }
-
-    .rating-input-container {
-      position: absolute;
-      inset: 0 0 48px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2;
-    }
-
-    .rating-input-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .rating-input {
-      width: 90px;
-      padding: 9px;
-      border-radius: 5px;
-      border: 1px solid #00c4b4;
-      background: transparent;
-      color: #ffffff;
-      text-align: center;
-      font-size: 18px;
-    }
-
-    .submit-rating-btn {
-      background: #00c4b4;
-      color: #ffffff;
-      border: none;
-      padding: 9px 18px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-
-      &:hover {
-        background: #00a899;
-      }
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      z-index: 3;
     }
   }
 
   .card-title {
-    margin: 12px;
+    padding: 12px;
     font-size: 1rem;
     font-weight: 600;
     color: #eee;
     text-align: center;
-    flex-shrink: 0;
     line-height: 1.2;
     height: 2.4em;
+    margin: 0;
   }
 
   .ratings-container {
-    margin: 0 12px 12px;
     display: flex;
     gap: 12px;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
+    padding: 8px 0;
 
-    .rating-pill {
+    .imdb-rating,
+    .rt-rating {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 4px 8px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(4px);
-      border-radius: 20px;
-      font-size: 12px;
+      font-size: 0.85rem;
       font-weight: 600;
-      transition: background 0.2s ease;
-
-      &:hover {
-        background: rgba(255,255,255,0.2);
-      }
     }
+    .imdb-rating { color: #f5c518; }
+    .rt-rating  { color: #ff6f00; }
 
-    .imdb-rating {
-      @extend .rating-pill;
-      color: #f5c518;
-    }
-    .rt-rating {
-      @extend .rating-pill;
-      color: #ff6f00;
-    }
-
+    .rating-icon,
     .imdb-rating-icon,
     .rt-rating-icon {
       width: 16px;
@@ -338,7 +338,6 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 5;
 }
 .left-arrow  { left: 10px; }
 .right-arrow { right: 10px; }
@@ -347,6 +346,6 @@
 @media (max-width: 768px) {
   .hero-content h1    { font-size: 2.5rem; }
   .hero-content p     { font-size: 1rem; }
-  .content-card       { width: 160px; height: 300px; }
-  .slider-arrow       { display: none; }
+  .content-card { width: 160px; aspect-ratio: 5 / 9; }
+  .slider-arrow { display: none; }
 }
