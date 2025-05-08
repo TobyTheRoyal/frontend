@@ -1,3 +1,4 @@
+<!-- src/app/features/watchlist/watchlist.component.html -->
 <div class="watchlist-container">
   <h2>My Watchlist</h2>
   <div class="content-list">
@@ -6,8 +7,6 @@
       *ngFor="let item of allContents"
       (mouseleave)="stopRating()"
     >
-
-      <!-- Poster + Remove/ate Buttons -->
       <div
         class="card-image"
         [style.backgroundImage]="'url(' + (item.poster || 'https://placehold.co/200x300') + ')'"
@@ -28,7 +27,7 @@
           </svg>
         </button>
 
-        <!-- Overlay + Texteingabe-Rating -->
+        <!-- Rating Overlay + Input -->
         <div
           class="rating-overlay"
           *ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted"
@@ -39,50 +38,41 @@
         >
           <div class="rating-card">
             <button class="close-btn" (click)="stopRating()">✕</button>
-            <h3>Rate „{{ item.title }}“</h3>
+            <h3>Rate “{{ item.title }}”</h3>
             <input
               type="text"
               [(ngModel)]="ratingScore"
               placeholder="0.0 – 10.0"
               class="rating-input-field"
-              (keydown.enter)="submitRating()"
+              (keydown.enter)="submitRating(item.tmdbId)"
             />
-            <button class="submit-rating-btn" (click)="submitRating()">Submit</button>
+            <button
+              class="submit-rating-btn"
+              (click)="submitRating(item.tmdbId)"
+            >
+              Submit
+            </button>
           </div>
         </div>
 
-        <!-- Nachrating: Badge -->
-        <div
-  class="own-rating-tag"
-  *ngIf="getRating(item.tmdbId) !== null"
->
-  <span class="star-icon">★</span>
-  {{ getRating(item.tmdbId) | number:'1.1-1' }}
-</div>
-
+        <!-- Own Rating Badge -->
+        <div class="own-rating-tag" *ngIf="getRating(item.tmdbId) !== null">
+          <span class="star-icon">★</span>
+          {{ getRating(item.tmdbId) | number:'1.1-1' }}
+        </div>
       </div>
 
-      <!-- Titel -->
       <p class="card-title">{{ item.title }} ({{ item.releaseYear }})</p>
 
-      <!-- Externe Ratings -->
       <div class="ratings-container">
         <div class="imdb-rating">
-          <img
-            src="/assets/images/imdb-logo.png"
-            alt="IMDb"
-            class="rating-icon imdb-rating-icon"
-          />
+          <img src="/assets/images/imdb-logo.png" alt="IMDb" class="rating-icon imdb-rating-icon" />
           {{ item.imdbRating != null
              ? (item.imdbRating | number:'1.1-1')
              : 'N/A' }}
         </div>
         <div class="rt-rating">
-          <img
-            src="/assets/images/rt-logo-cf.png"
-            alt="Rotten Tomatoes"
-            class="rating-icon rt-rating-icon"
-          />
+          <img src="/assets/images/rt-logo-cf.png" alt="Rotten Tomatoes" class="rating-icon rt-rating-icon" />
           <ng-container *ngIf="item.rtRating != null; else rtNA">
             {{ item.rtRating | number:'1.0-0' }}%
           </ng-container>
