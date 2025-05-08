@@ -2,12 +2,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 import { ContentService } from '../core/services/content.service';
 import { WatchlistService } from '../core/services/watchlist.service';
+import { RatingsService } from '../core/services/ratings.service';
 import { AuthService } from '../core/services/auth.service';
 import { Content } from '../interfaces/content.interface';
-import { Observable } from 'rxjs';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -18,28 +20,35 @@ import { FormsModule } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   categories = [
-    { id: 'trending', title: 'Trending Now', items: [] as Content[] },
-    { id: 'top-rated', title: 'Top Rated', items: [] as Content[] },
+    { id: 'trending',   title: 'Trending Now',  items: [] as Content[] },
+    { id: 'top-rated',  title: 'Top Rated',     items: [] as Content[] },
     { id: 'new-releases', title: 'New Releases', items: [] as Content[] },
-    { id: 'watchlist', title: 'My Watchlist', items: [] as Content[] },
+    { id: 'watchlist',  title: 'My Watchlist',  items: [] as Content[] },
   ];
 
   isLoggedIn$: Observable<boolean>;
   selectedContentId: string | null = null;
-  ratingScore: string = '';
-  isRatingSubmitted: boolean = false;
+  ratingScore = '';
+  isRatingSubmitted = false;
 
   constructor(
     private contentService: ContentService,
     private watchlistService: WatchlistService,
+    private ratingsService: RatingsService,
     private authService: AuthService,
-    public router: Router
+    private router: Router
   ) {
     this.isLoggedIn$ = this.authService.isLoggedIn();
   }
 
   ngOnInit(): void {
-    this.isLoggedIn$.subscribe((loggedIn) => {
+    // zuerst alle User-Ratings laden
+    this.ratingsService.fetchUserRatings().subscribe({
+      error: err => console.error('Failed to fetch user ratings', err)
+    });
+
+    // dann Kategorien laden
+    this.isLoggedIn$.subscribe(loggedIn => {
       if (loggedIn) {
         this.loadCategories();
       } else {
@@ -48,48 +57,61 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadCategories() {
+  private loadCategories(): void {
     this.contentService.getTrending().subscribe({
-      next: (data) => (this.categories[0].items = data),
-      error: (err) => console.error('Failed to load trending', err),
+      next: data => this.categories[0].items = data,
+      error: err => console.error('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
-      next: (data) => (this.categories[1].items = data),
-      error: (err) => console.error('Failed to load top rated', err),
+      next: data => this.categories[1].items = data,
+      error: err => console.error('Failed to load top rated', err),
     });
     this.contentService.getNewReleases().subscribe({
-      next: (data) => (this.categories[2].items = data),
-      error: (err) => console.error('Failed to load new releases', err),
+      next: data => this.categories[2].items = data,
+      error: err => console.error('Failed to load new releases', err),
     });
     this.watchlistService.getWatchlist().subscribe({
-      next: (data) => (this.categories[3].items = data),
-      error: (err) => {
+      next: data => this.categories[3].items = data,
+      error: err => {
         console.error('Failed to load watchlist', err);
         if (err.status === 401) {
           this.authService.logout();
           this.router.navigate(['/auth/login']);
         }
-      },
+      }
     });
   }
 
-  loadPublicCategories() {
+  private loadPublicCategories(): void {
     this.contentService.getTrending().subscribe({
-      next: (data) => (this.categories[0].items = data),
-      error: (err) => console.error('Failed to load trending', err),
+      next: data => this.categories[0].items = data,
+      error: err => console.error('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
-      next: (data) => (this.categories[1].items = data),
-      error: (err) => console.error('Failed to load top rated', err),
+      next: data => this.categories[1].items = data,
+      error: err => console.error('Failed to load top rated', err),
     });
     this.contentService.getNewReleases().subscribe({
-      next: (data) => (this.categories[2].items = data),
-      error: (err) => console.error('Failed to load new releases', err),
+      next: data => this.categories[2].items = data,
+      error: err => console.error('Failed to load new releases', err),
     });
   }
 
-  getRating(contentId: string): number | null {
-    return this.watchlistService.getRating(contentId);
+   // in src/app/home/home.component.ts
+
+/** externes Rating (IMDb/RT) */
+getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
+  if (source === 'imdb') {
+    return item.imdbRating ?? null;
+  } else {
+    return item.rtRating  ?? null;
+  }
+}
+
+
+  /** eigenes Rating aus RatingsService (float 1.1-1) */
+  getRating(tmdbId: string): number | null {
+    return this.ratingsService.getRating(tmdbId);
   }
 
   isInWatchlist(contentId: string): boolean {
@@ -97,27 +119,24 @@ export class HomeComponent implements OnInit {
   }
 
   toggleWatchlist(contentId: string): void {
-    this.isLoggedIn$.subscribe((loggedIn) => {
+    this.isLoggedIn$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
       }
-      if (this.isInWatchlist(contentId)) {
-        this.watchlistService.removeFromWatchlist(contentId).subscribe({
-          next: () => this.loadCategories(),
-          error: (err) => console.error('Failed to remove from watchlist', err),
-        });
-      } else {
-        this.watchlistService.addToWatchlist(contentId).subscribe({
-          next: () => this.loadCategories(),
-          error: (err) => console.error('Failed to add to watchlist', err),
-        });
-      }
+      const call = this.isInWatchlist(contentId)
+        ? this.watchlistService.removeFromWatchlist(contentId)
+        : this.watchlistService.addToWatchlist(contentId);
+
+      call.subscribe({
+        next: () => this.loadCategories(),
+        error: err => console.error(err)
+      });
     });
   }
 
   startRating(contentId: string): void {
-    this.isLoggedIn$.subscribe((loggedIn) => {
+    this.isLoggedIn$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
@@ -134,40 +153,35 @@ export class HomeComponent implements OnInit {
     this.isRatingSubmitted = false;
   }
 
-  submitRating(contentId: string): void {
-    const rating = parseFloat(this.ratingScore);
-    if (isNaN(rating) || rating < 0 || rating > 10) {
+  submitRating(tmdbId: string): void {
+    const score = parseFloat(this.ratingScore);
+    if (isNaN(score) || score < 0 || score > 10) {
       console.error('Invalid rating: must be between 0.0 and 10.0');
       return;
     }
-    this.isLoggedIn$.subscribe((loggedIn) => {
+    this.isLoggedIn$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
       }
-      this.watchlistService.setRating(contentId, rating).subscribe({
+      // RATE VIA RatingsService
+      this.ratingsService.rateContent(tmdbId, score).subscribe({
         next: () => {
           this.isRatingSubmitted = true;
-          this.loadCategories();
+          // neu laden, damit Badge angezeigt wird
+          this.ratingsService.fetchUserRatings().subscribe();
           setTimeout(() => this.stopRating(), 500);
         },
-        error: (err) => console.error('Failed to set rating', err),
+        error: err => console.error('Failed to set rating', err)
       });
     });
   }
 
-  /** Scrollt den Content-Container horizontal */
   scrollLeft(categoryId: string): void {
-    const container = document.getElementById(categoryId);
-    if (container) {
-      container.scrollBy({ left: -300, behavior: 'smooth' });
-    }
+    document.getElementById(categoryId)?.scrollBy({ left: -300, behavior: 'smooth' });
   }
 
   scrollRight(categoryId: string): void {
-    const container = document.getElementById(categoryId);
-    if (container) {
-      container.scrollBy({ left: 300, behavior: 'smooth' });
-    }
+    document.getElementById(categoryId)?.scrollBy({ left: 300, behavior: 'smooth' });
   }
 }

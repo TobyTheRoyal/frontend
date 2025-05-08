@@ -69,9 +69,12 @@ class="rating-input-container"
 </div>
 
 <!-- Nach abgeschicktem Rating: Badge oben rechts -->
-<div class="own-rating-tag" *ngIf="getRating(item.tmdbId) !== null">
-<span class="star-icon">★</span>
-{{ getRating(item.tmdbId) }}
+<div
+  class="own-rating-tag"
+  *ngIf="getRating(item.tmdbId) !== null"
+>
+  <span class="star-icon">★</span>
+  {{ getRating(item.tmdbId) | number:'1.1-1' }}
 </div>
             </div>
 
