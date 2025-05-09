@@ -35,7 +35,8 @@ export class MoviesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.contentService.getAllMovies().subscribe({
+    // Lade z.B. 5 Seiten á 20 Filme = 100 Filme
+    this.contentService.getAllMovies(5).subscribe({
       next: data => this.movies = data,
       error: err => console.error('Failed to load movies', err),
     });
