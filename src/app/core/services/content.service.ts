@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Content } from '../../interfaces/content.interface';
-import { forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +40,15 @@ export class ContentService {
       map(responses =>
         responses.flatMap(resp => resp.results.map(item => this.mapToContent(item)))
       )
+    );
+  }
+
+  getMoviesPage(page: number): Observable<Content[]> {
+    return this.http.get<{ results: any[] }>(
+      `${this.tmdbApiUrl}/discover/movie`,
+      { params: { api_key: this.apiKey, page: page.toString() } }
+    ).pipe(
+      map(resp => resp.results.map(item => this.mapToContent(item)))
     );
   }
   

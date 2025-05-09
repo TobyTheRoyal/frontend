@@ -24,6 +24,10 @@ export class MoviesComponent implements OnInit {
   isRatingSubmitted: boolean       = false;
   isLoggedIn$: Observable<boolean>;
 
+  currentPage = 1;
+  isLoading = false;
+  hasMore = true;
+
   constructor(
     private contentService: ContentService,
     private ratingsService: RatingsService,
@@ -35,12 +39,16 @@ export class MoviesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadPage();
+  }
+
+  /*ngOnInit(): void {
     // Lade z.B. 5 Seiten á 20 Filme = 100 Filme
     this.contentService.getAllMovies(5).subscribe({
       next: data => this.movies = data,
       error: err => console.error('Failed to load movies', err),
     });
-  }
+  }*/
 
   startRating(tmdbId: string): void {
     this.isLoggedIn$.subscribe((loggedIn: boolean) => {
@@ -109,6 +117,20 @@ export class MoviesComponent implements OnInit {
     return this.ratingsService.getRating(tmdbId);
   }
 
+  loadPage(): void {
+    if (!this.hasMore || this.isLoading) return;
+    this.isLoading = true;
+    this.contentService.getMoviesPage(this.currentPage).subscribe(
+      data => {
+        if (data.length === 0) this.hasMore = false;
+        this.movies.push(...data);
+        this.currentPage++;
+        this.isLoading = false;
+      },
+      () => { this.isLoading = false; }
+    );
+  }
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (!this.selectedContentId) return;
@@ -132,5 +154,13 @@ export class MoviesComponent implements OnInit {
     } else if (event.key === 'Enter') {
       this.submitRating(this.selectedContentId!);
     }
+  }
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    const threshold = 300; // px vor Ende
+    const pos = window.innerHeight + window.scrollY;
+    const height = document.body.offsetHeight;
+    if (height - pos < threshold) this.loadPage();
   }
 }

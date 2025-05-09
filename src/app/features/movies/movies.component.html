@@ -45,6 +45,7 @@
             <ng-container *ngIf="item.rtRating != null; else rtNA">{{ item.rtRating | number:'1.0-0' }}%</ng-container>
             <ng-template #rtNA>N/A</ng-template>
           </div>
+          <div *ngIf="isLoading" class="loading-indicator">Loading...</div>
         </div>
       </div>
     </div>
