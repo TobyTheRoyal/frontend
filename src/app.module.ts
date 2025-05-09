@@ -7,12 +7,15 @@ import { AppComponent } from './app/app.component';
 import { RouterModule } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MoviesComponent } from './app/features/movies/movies.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent],
+  declarations: [AppComponent, HomeComponent, MoviesComponent],
   imports: [
     BrowserModule,
     HttpClientModule, // Für API-Aufrufe
+    CommonModule,
     AppRoutingModule,
     RouterModule.forRoot([]),
     FormsModule,

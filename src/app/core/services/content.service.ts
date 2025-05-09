@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Content } from '../../interfaces/content.interface';
 
 @Injectable({
@@ -8,6 +9,8 @@ import { Content } from '../../interfaces/content.interface';
 })
 export class ContentService {
   private apiUrl = 'http://localhost:3000';
+  private tmdbApiUrl = 'https://api.themoviedb.org/3';
+  private apiKey = '1b3d7c196e53b4ebab10bf60054ef369';
 
   constructor(private http: HttpClient) {}
 
@@ -21,5 +24,27 @@ export class ContentService {
 
   getNewReleases(): Observable<Content[]> {
     return this.http.get<Content[]>(`${this.apiUrl}/content/new-releases`);
+  }
+
+  getAllMovies(): Observable<Content[]> {
+    return this.http.get<{ results: any[] }>(
+      `${this.tmdbApiUrl}/discover/movie?api_key=${this.apiKey}`
+    ).pipe(
+      map(response =>
+        response.results.map(item => ({
+          id: item.id,
+          tmdbId: item.id.toString(),
+          title: item.title,
+          releaseYear: +item.release_date.slice(0,4),
+          poster: item.poster_path
+            ? 'https://image.tmdb.org/t/p/w200' + item.poster_path
+            : 'https://placehold.co/200x300',
+          type: 'movie',
+          imdbRating: item.vote_average,
+          rtRating: undefined,
+          rating: undefined
+        } as Content))
+      )
+    );
   }
 }

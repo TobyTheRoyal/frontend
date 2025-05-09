@@ -36,32 +36,40 @@
       }
   
       .card-image {
-        position: relative;
-        height: 270px;
+        width: 100%;
+        aspect-ratio: 20 / 27;  /* 200 × 270 */
+        height: auto;
         background-size: cover;
         background-position: center;
-  
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    
+        /* Add & Rate Buttons */
+        .add-btn,
         .rating-btn {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            padding: 8px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-      
-            &:hover {
-              background: #00c4b4;
-              transform: scale(1.1);
-            }
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          padding: 8px;
+          border-radius: 50%;
+          background: rgba(0,0,0,0.6);
+          color: #fff;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 0.2s ease, transform 0.2s ease;
+    
+          &:hover {
+            background: #00c4b4;
+            transform: scale(1.1);
           }
-          .rating-btn { top: 12px; left: 12px; }
+        }
+        .add-btn { top: 12px; left: 12px; }
+        .rating-btn { top: 56px; left: 12px; }
 
   
         .own-rating-tag {
