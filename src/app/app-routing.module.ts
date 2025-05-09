@@ -6,6 +6,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { WatchlistComponent } from './features/watchlist/watchlist.component';
 import { RatingComponent } from './features/rating/rating.component';
+import { HistoryComponent } from './features/history/history.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,7 +14,7 @@ export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'watchlist', component: WatchlistComponent, canActivate: [AuthGuard] },
   { path: 'ratings', component: RatingComponent, canActivate: [AuthGuard] },
-  { path: 'history', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'history', component: HistoryComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'reviews', component: HomeComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
