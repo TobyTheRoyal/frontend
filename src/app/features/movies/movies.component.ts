@@ -39,16 +39,8 @@ export class MoviesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadPage();
+      this.loadPage();
   }
-
-  /*ngOnInit(): void {
-    // Lade z.B. 5 Seiten á 20 Filme = 100 Filme
-    this.contentService.getAllMovies(5).subscribe({
-      next: data => this.movies = data,
-      error: err => console.error('Failed to load movies', err),
-    });
-  }*/
 
   startRating(tmdbId: string): void {
     this.isLoggedIn$.subscribe((loggedIn: boolean) => {
@@ -118,17 +110,24 @@ export class MoviesComponent implements OnInit {
   }
 
   loadPage(): void {
-    if (!this.hasMore || this.isLoading) return;
-    this.isLoading = true;
-    this.contentService.getMoviesPage(this.currentPage).subscribe(
-      data => {
-        if (data.length === 0) this.hasMore = false;
+    if (this.isLoading || !this.hasMore) return;
+  this.isLoading = true;
+
+  this.contentService.getAllMoviesCached(this.currentPage).subscribe({
+    next: data => {
+      if (!data.length) {
+        this.hasMore = false;
+      } else {
         this.movies.push(...data);
         this.currentPage++;
-        this.isLoading = false;
-      },
-      () => { this.isLoading = false; }
-    );
+      }
+      this.isLoading = false;
+    },
+    error: () => {
+      console.error('Failed to load page', this.currentPage);
+      this.isLoading = false;
+    }
+  });
   }
 
   @HostListener('document:keydown', ['$event'])

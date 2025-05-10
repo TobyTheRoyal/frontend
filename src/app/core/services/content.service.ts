@@ -43,6 +43,13 @@ export class ContentService {
     );
   }
 
+  getAllMoviesCached(page: number = 1): Observable<Content[]> {
+    return this.http.get<Content[]>(
+      `${this.apiUrl}/content/movies-page`,
+      { params: { page: page.toString() } }
+    );
+    }
+
   getMoviesPage(page: number): Observable<Content[]> {
     return this.http.get<{ results: any[] }>(
       `${this.tmdbApiUrl}/discover/movie`,
@@ -59,7 +66,7 @@ export class ContentService {
       title: item.title,
       releaseYear: +item.release_date.slice(0, 4),
       poster: item.poster_path
-        ? 'https://image.tmdb.org/t/p/w200' + item.poster_path
+        ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : 'https://placehold.co/200x300',
       type: 'movie',
       imdbRating: item.vote_average,
