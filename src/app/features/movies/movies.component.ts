@@ -109,6 +109,10 @@ export class MoviesComponent implements OnInit {
     return this.ratingsService.getRating(tmdbId);
   }
 
+  goToDetail(tmdbId: string) {
+    this.router.navigate(['/movies', tmdbId]);
+  }
+
   loadPage(): void {
     if (this.isLoading || !this.hasMore) return;
   this.isLoading = true;

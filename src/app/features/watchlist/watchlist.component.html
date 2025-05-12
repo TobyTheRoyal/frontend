@@ -6,6 +6,7 @@
       class="content-card"
       *ngFor="let item of allContents"
       (mouseleave)="stopRating()"
+      (click)="goToDetail(item.tmdbId)"
     >
       <div
         class="card-image"

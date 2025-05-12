@@ -16,8 +16,7 @@
       <button class="slider-arrow left-arrow" (click)="scrollLeft(category.id)">◄</button>
       <div class="scroll-container" [id]="category.id">
         <div class="content-list">
-          <div class="content-card" *ngFor="let item of category.items" (mouseleave)="stopRating()">
-
+          <div class="content-card" *ngFor="let item of category.items" (click)="goToDetail(item.tmdbId)" (mouseleave)="stopRating()">
             <!-- Poster + Add/Rate Buttons -->
             <div
               class="card-image"

@@ -1,7 +1,7 @@
 // src/app/features/history/history.component.ts
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule }   from '@angular/common';
-import { RouterModule }   from '@angular/router';
+import { Router, RouterModule }   from '@angular/router';
 import { FormsModule }    from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService }    from '../../core/services/auth.service';
@@ -34,7 +34,8 @@ export class HistoryComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -68,6 +69,10 @@ export class HistoryComponent implements OnInit {
   stopRating() {
     this.selectedContentId = null;
     this.isRatingSubmitted = false;
+  }
+
+  goToDetail(tmdbId: string) {
+    this.router.navigate(['/movies', tmdbId]);
   }
 
   @HostListener('document:keydown', ['$event'])

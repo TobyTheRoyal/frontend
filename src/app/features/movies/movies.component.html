@@ -1,7 +1,7 @@
 <div class="history-container movies-container">
     <h2>All Movies</h2>
     <div class="content-list">
-      <div class="content-card" *ngFor="let item of movies" (mouseleave)="stopRating()">
+      <div class="content-card" *ngFor="let item of movies" (mouseleave)="stopRating()" (click)="goToDetail(item.tmdbId)">
         <div class="card-image" [style.backgroundImage]="'url(' + (item.poster || 'https://placehold.co/200x300') + ')'">
           <!-- Watchlist-Button -->
           <button

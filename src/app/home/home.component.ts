@@ -184,4 +184,8 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
   scrollRight(categoryId: string): void {
     document.getElementById(categoryId)?.scrollBy({ left: 300, behavior: 'smooth' });
   }
+
+  goToDetail(tmdbId: string) {
+    this.router.navigate(['/movies', tmdbId]);
+  }
 }

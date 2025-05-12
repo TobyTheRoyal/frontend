@@ -6,6 +6,7 @@
         class="content-card"
         *ngFor="let entry of history"
         (mouseleave)="stopRating()"
+        (click)="goToDetail(entry.content.tmdbId)"
       >
         <div
           class="card-image"

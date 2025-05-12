@@ -73,6 +73,10 @@ export class WatchlistComponent implements OnInit {
     });
   }
 
+  goToDetail(tmdbId: string) {
+    this.router.navigate(['/movies', tmdbId]);
+  }
+
   stopRating(): void {
     this.selectedContentId = null;
     this.ratingScore       = '';

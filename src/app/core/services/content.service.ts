@@ -88,4 +88,11 @@ export class ContentService {
       rating: undefined,
     };
   }
+
+  getMovieDetails(tmdbId: string): Observable<Content> {
+    return this.http.post<Content>(
+      `${this.apiUrl}/content/add-tmdb`,
+      { tmdbId, type: 'movie' }
+    );
+  }
 }
