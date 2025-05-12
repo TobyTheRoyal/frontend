@@ -50,6 +50,13 @@ export class ContentService {
     );
     }
 
+  getAllSeriesCached(page: number = 1): Observable<Content[]> {
+      return this.http.get<Content[]>(
+        `${this.apiUrl}/content/series-page`,
+        { params: { page: page.toString() } }
+      );
+      }
+
   getMoviesPage(page: number): Observable<Content[]> {
     return this.http.get<{ results: any[] }>(
       `${this.tmdbApiUrl}/discover/movie`,
