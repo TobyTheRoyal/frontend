@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, of} from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Content } from '../../interfaces/content.interface';
 
@@ -58,13 +58,27 @@ export class ContentService {
       map(resp => resp.results.map(item => this.mapToContent(item)))
     );
   }
+
+  searchTmdb(query: string): Observable<Content[]> {
+    if (!query.trim()) {
+      return of([]); // importiere dazu am File-Anfang: `import { of } from 'rxjs';`
+    }
+    // Gib direkt das Array von Content-Objekten zurück,
+    // Dein Backend hat sie ja schon im richtigen Shape.
+    return this.http.post<Content[]>(`${this.apiUrl}/content/search`, { query });
+  }
   
   private mapToContent(item: any): Content {
+
+    const releaseYear = item.release_date
+    ? parseInt(item.release_date.slice(0, 4), 10)
+    : 0;
+
     return {
       id: item.id,
       tmdbId: item.id.toString(),
       title: item.title,
-      releaseYear: +item.release_date.slice(0, 4),
+      releaseYear,
       poster: item.poster_path
         ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : 'https://placehold.co/200x300',
