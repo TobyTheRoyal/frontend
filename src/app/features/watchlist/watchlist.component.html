@@ -6,14 +6,14 @@
       class="content-card"
       *ngFor="let item of allContents"
       (mouseleave)="stopRating()"
-      (click)="goToDetail(item.tmdbId)"
+      (click)="onCardClick(item.tmdbId)"
     >
       <div
         class="card-image"
         [style.backgroundImage]="'url(' + (item.poster || 'https://placehold.co/200x300') + ')'"
       >
         <!-- Remove from Watchlist -->
-        <button class="add-btn" (click)="removeFromWatchlist(item.tmdbId)">
+        <button class="add-btn" (click)="removeFromWatchlist(item.tmdbId); $event.stopPropagation()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"/>
@@ -21,7 +21,7 @@
         </button>
 
         <!-- Rate Content -->
-        <button class="rating-btn" (click)="startRating(item.tmdbId)">
+        <button class="rating-btn" (click)="startRating(item.tmdbId); $event.stopPropagation()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 
                      9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>

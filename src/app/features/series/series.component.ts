@@ -112,6 +112,13 @@ export class SeriesComponent implements OnInit {
   goToDetail(tmdbId: string) {
     this.router.navigate(['/series', tmdbId]);
   }
+  onCardClick(tmdbId: string) {
+    // Wenn gerade ein Rating-Dialog offen ist, nichts tun:
+    if (this.selectedContentId) {
+      return;
+    }
+    this.goToDetail(tmdbId);
+  }
 
   loadPage(): void {
     if (this.isLoading || !this.hasMore) return;

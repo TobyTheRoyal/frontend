@@ -16,7 +16,7 @@
       <button class="slider-arrow left-arrow" (click)="scrollLeft(category.id)">◄</button>
       <div class="scroll-container" [id]="category.id">
         <div class="content-list">
-          <div class="content-card" *ngFor="let item of category.items" (click)="goToDetail(item.tmdbId)" (mouseleave)="stopRating()">
+          <div class="content-card" *ngFor="let item of category.items" (click)="onCardClick(item.tmdbId)" (mouseleave)="stopRating()">
             <!-- Poster + Add/Rate Buttons -->
             <div
               class="card-image"
@@ -24,7 +24,7 @@
             >
               <button
                 class="add-btn"
-                (click)="toggleWatchlist(item.tmdbId)"
+                (click)="toggleWatchlist(item.tmdbId); $event.stopPropagation()"
                 [disabled]="isInWatchlist(item.tmdbId)"
               >
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
@@ -32,7 +32,7 @@
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
               </button>
-              <button class="rating-btn" (click)="startRating(item.tmdbId)">
+              <button class="rating-btn" (click)="startRating(item.tmdbId); $event.stopPropagation()">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2
                            9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>

@@ -188,4 +188,12 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
   goToDetail(tmdbId: string) {
     this.router.navigate(['/movies', tmdbId]);
   }
+
+  onCardClick(tmdbId: string) {
+    // Wenn gerade ein Rating-Dialog offen ist, nichts tun:
+    if (this.selectedContentId) {
+      return;
+    }
+    this.goToDetail(tmdbId);
+  }
 }
