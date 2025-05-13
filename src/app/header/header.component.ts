@@ -102,10 +102,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   // When user selects a suggestion
-  selectSuggestion(movie: Content) {
-    this.router.navigate(['/movies', movie.tmdbId]);
-    this.suggestions = [];
-    this.searchControl.setValue('');
+  selectSuggestion(item: Content) {
+    if (item.type === 'movie') {
+    this.router.navigate(['/movies', item.tmdbId]);
+  } else {
+    this.router.navigate(['/series', item.tmdbId]);
+  }
+  this.suggestions = [];
+  this.searchControl.setValue('');
   }
 
   clearSuggestions() {

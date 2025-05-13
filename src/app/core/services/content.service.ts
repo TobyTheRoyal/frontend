@@ -67,13 +67,14 @@ export class ContentService {
   }
 
   searchTmdb(query: string): Observable<Content[]> {
-    if (!query.trim()) {
-      return of([]); // importiere dazu am File-Anfang: `import { of } from 'rxjs';`
-    }
-    // Gib direkt das Array von Content-Objekten zurück,
-    // Dein Backend hat sie ja schon im richtigen Shape.
-    return this.http.post<Content[]>(`${this.apiUrl}/content/search`, { query });
+  if (!query.trim()) {
+    return of([]);
   }
+  return this.http.post<Content[]>(
+    `${this.apiUrl}/content/search`,
+    { query }
+  );
+}
   
   private mapToContent(item: any): Content {
 
