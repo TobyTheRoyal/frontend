@@ -4,7 +4,7 @@ export interface Content {
     title: string;
     releaseYear: number;
     poster: string;
-    type: 'movie' | 'series';
+    type: 'movie' | 'tv';
     imdbRating?: number;
     rtRating?: number;
     rating?: number;

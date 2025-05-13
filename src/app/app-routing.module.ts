@@ -10,6 +10,7 @@ import { HistoryComponent } from './features/history/history.component';
 import { MoviesComponent } from './features/movies/movies.component';
 import { MovieDetailComponent } from './features/movie-detail/movie-detail.component';
 import { SeriesComponent } from './features/series/series.component';
+import { SeriesDetailComponent } from './features/series-detail/series-detail.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'movies', component: MoviesComponent, canActivate: [AuthGuard]  },
   { path: 'movies/:id', component: MovieDetailComponent, canActivate: [AuthGuard]},
   { path: 'series', component: SeriesComponent, canActivate: [AuthGuard]  },
+  { path: 'series/:id', component: SeriesDetailComponent, canActivate: [AuthGuard]  },
   { path: 'ratings', component: RatingComponent, canActivate: [AuthGuard] },
   { path: 'history', component: HistoryComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: HomeComponent, canActivate: [AuthGuard] },

@@ -77,19 +77,18 @@ export class ContentService {
   
   private mapToContent(item: any): Content {
 
-    const releaseYear = item.release_date
-    ? parseInt(item.release_date.slice(0, 4), 10)
-    : 0;
+    const rawDate = item.release_date ?? item.first_air_date ?? '';
+    const releaseYear = rawDate ? parseInt(rawDate.slice(0, 4), 10) : 0;
 
     return {
       id: item.id,
       tmdbId: item.id.toString(),
-      title: item.title,
+      title: item.title || item.name,
       releaseYear,
       poster: item.poster_path
         ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : 'https://placehold.co/200x300',
-      type: 'movie',
+      type: item.title ? 'movie' : 'tv',
       imdbRating: item.vote_average,
       rtRating: undefined,
       rating: undefined,
@@ -100,6 +99,13 @@ export class ContentService {
     return this.http.post<Content>(
       `${this.apiUrl}/content/add-tmdb`,
       { tmdbId, type: 'movie' }
+    );
+  }
+
+  getSeriesDetails(tmdbId: string): Observable<Content> {
+    return this.http.post<Content>(
+      `${this.apiUrl}/content/add-tmdb`,
+      { tmdbId, type: 'tv' }
     );
   }
 }

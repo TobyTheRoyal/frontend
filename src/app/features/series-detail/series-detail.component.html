@@ -1,0 +1,9 @@
+<!-- src/app/movie-detail/movie-detail.component.html -->
+<div *ngIf="isLoading" class="spinner">Lade …</div>
+<ng-container *ngIf="series">
+  <h1>{{ series.title }} ({{ series.releaseYear }})</h1>
+  <img [src]="series.poster" alt="{{ series.title }}" class="poster"/>
+  <p>IMDb: {{ series.imdbRating | number:'1.1-1' }}</p>
+  <p>Tomatometer: {{ series.rtRating != null ? series.rtRating + '%' : 'N/A' }}</p>
+  <!-- hier kannst du noch overview, genres, etc. ergänzen -->
+</ng-container>
