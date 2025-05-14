@@ -1,9 +1,90 @@
-<!-- src/app/movie-detail/movie-detail.component.html -->
-<div *ngIf="isLoading" class="spinner">Lade …</div>
-<ng-container *ngIf="movie">
-  <h1>{{ movie.title }} ({{ movie.releaseYear }})</h1>
-  <img [src]="movie.poster" alt="{{ movie.title }}" class="poster"/>
-  <p>IMDb: {{ movie.imdbRating | number:'1.1-1' }}</p>
-  <p>Tomatometer: {{ movie.rtRating != null ? movie.rtRating + '%' : 'N/A' }}</p>
-  <!-- hier kannst du noch overview, genres, etc. ergänzen -->
+<!-- src/app/features/movie-detail/movie-detail.component.html -->
+<ng-container *ngIf="isLoading">
+  <div class="loader">Lade …</div>
 </ng-container>
+
+<ng-container *ngIf="!isLoading && movie; else noMovie">
+  <div class="movie-detail-container">
+    <header class="movie-header">
+      <h1 class="movie-title">
+        {{ movie.title }}
+        <span class="movie-year">({{ movie.releaseYear }})</span>
+      </h1>
+    </header>
+
+    <div class="movie-content">
+      <div class="poster-wrapper">
+        <img
+          [src]="movie.poster || 'https://placehold.co/200x300'"
+          [alt]="movie.title"
+          class="movie-poster"
+        />
+      </div>
+
+      <div class="details-wrapper">
+        <div class="movie-stats">
+          <div class="stat-item">
+            <span class="stat-label">IMDb</span>
+            <span class="stat-value">
+              {{ movie.imdbRating != null 
+                 ? (movie.imdbRating | number:'1.1-1') 
+                 : '–' }}
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tomatometer</span>
+            <span class="stat-value">
+              {{ movie.rtRating != null 
+                 ? (movie.rtRating + '%') 
+                 : '–' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="genres">
+          <span
+            class="genre-pill"
+            *ngFor="let g of (movie.genres || [])"
+          >
+            {{ g }}
+          </span>
+        </div>
+
+        <section class="overview">
+          <h2>Handlung</h2>
+          <p>
+            {{ movie.overview || 'Keine Beschreibung vorhanden.' }}
+          </p>
+        </section>
+
+        <section
+          class="cast-section"
+          *ngIf="(movie.cast || []).length > 0"
+        >
+          <h2>Hauptbesetzung</h2>
+          <div class="cast-list">
+            <div
+              class="cast-item"
+              *ngFor="let actor of (movie.cast || [])"
+            >
+              <div class="cast-image-wrapper">
+                <img
+                  [src]="actor.profilePathUrl"
+                  [alt]="actor.name"
+                />
+              </div>
+              <div class="cast-info">
+                <span class="cast-name">{{ actor.name }}</span>
+                <span class="cast-char">{{ actor.character }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noMovie>
+  <div class="loader">Film nicht gefunden.</div>
+</ng-template>

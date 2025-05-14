@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, of} from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Content } from '../../interfaces/content.interface';
+import { CastMember, Content } from '../../interfaces/content.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +80,7 @@ export class ContentService {
 
     const rawDate = item.release_date ?? item.first_air_date ?? '';
     const releaseYear = rawDate ? parseInt(rawDate.slice(0, 4), 10) : 0;
+  
 
     return {
       id: item.id,
@@ -93,6 +94,9 @@ export class ContentService {
       imdbRating: item.vote_average,
       rtRating: undefined,
       rating: undefined,
+      genres: item.genres,
+      overview: item.overview,
+      cast: item.cast,
     };
   }
 
