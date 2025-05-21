@@ -1,23 +1,40 @@
 import { Component, OnInit }           from '@angular/core';
 import { CommonModule }                from '@angular/common';
-import { ActivatedRoute }              from '@angular/router';
+import { ActivatedRoute, Router }              from '@angular/router';
 import { ContentService }              from '../../core/services/content.service';
 import { Content }                     from '../../interfaces/content.interface';
+import { WatchlistService } from '../../core/services/watchlist.service';
+import { RatingsService } from '../../core/services/ratings.service';
+import { AuthService } from '../../core/services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-series-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './series-detail.component.html',
   styleUrls: ['./series-detail.component.scss']
 })
 export class SeriesDetailComponent implements OnInit {
   series: Content | null = null;
   isLoading = true;
+  isInWL                        = false;
+
+  // Rate‐Overlay
+  selectedContentId: string | null = null;
+  ratingScore            = '';
+  isRatingSubmitted      = false;
+
+  // Eigenes Rating
+  userRating: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private contentService: ContentService
+    private contentService: ContentService,
+    private router: Router,
+    private watchlist: WatchlistService,
+    private ratings: RatingsService,
+    private auth: AuthService
   ) {}
 
   ngOnInit() {
@@ -26,8 +43,61 @@ export class SeriesDetailComponent implements OnInit {
       next: s => {
         this.series = s;
         this.isLoading = false;
+        // Watchlist‐Cache laden
+        this.watchlist.getWatchlist().subscribe(list =>
+          this.isInWL = list.some(c => c.tmdbId === tmdbId)
+        );
+        // Rating‐Cache laden
+        this.ratings.fetchUserRatings().subscribe(() =>
+          this.userRating = this.ratings.getRating(tmdbId)
+        );
       },
       error: () => this.isLoading = false
     });
+  }
+  toggleWatchlist() {
+    if (!this.series) return;
+    const id = this.series.tmdbId;
+    const op = this.isInWL
+      ? this.watchlist.removeFromWatchlist(id)
+      : this.watchlist.addToWatchlist(id);
+    op.subscribe(() => this.isInWL = !this.isInWL);
+  }
+
+  onClickRateButton() {
+    this.auth.isLoggedIn().subscribe(loggedIn => {
+      if (!loggedIn) {
+        this.router.navigate(['/auth/login']);
+      } else if (this.series) {
+        this.selectedContentId = this.series.tmdbId;
+        this.ratingScore      = '';
+        this.isRatingSubmitted = false;
+      }
+    });
+  }
+
+  submitRating() {
+    if (!this.series) return;
+    const score = parseFloat(this.ratingScore);
+    if (isNaN(score) || score < 0 || score > 10) {
+      alert('Score must be between 0.0 and 10.0');
+      return;
+    }
+    this.ratings.rateContent(this.series.tmdbId, score).subscribe({
+      next: () => {
+        this.isRatingSubmitted = true;
+        this.ratings.fetchUserRatings().subscribe(() =>
+          this.userRating = this.ratings.getRating(this.series!.tmdbId)
+        );
+        setTimeout(() => this.selectedContentId = null, 500);
+      },
+      error: err => console.error('Failed to set rating', err)
+    });
+  }
+
+  cancelRating() {
+    this.selectedContentId = null;
+    this.ratingScore      = '';
+    this.isRatingSubmitted = false;
   }
 }
