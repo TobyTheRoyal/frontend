@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, of} from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CastMember, Content } from '../../interfaces/content.interface';
+import { FilterOptions } from '../../core/services/filter.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContentService {
   private apiUrl = 'http://localhost:3000';
@@ -48,14 +49,60 @@ export class ContentService {
       `${this.apiUrl}/content/movies-page`,
       { params: { page: page.toString() } }
     );
-    }
+  }
 
   getAllSeriesCached(page: number = 1): Observable<Content[]> {
-      return this.http.get<Content[]>(
-        `${this.apiUrl}/content/series-page`,
-        { params: { page: page.toString() } }
-      );
-      }
+    return this.http.get<Content[]>(
+      `${this.apiUrl}/content/series-page`,
+      { params: { page: page.toString() } }
+    );
+  }
+
+  getGenres(): Observable<string[]> {
+    return this.http.get<{ genres: { id: number; name: string }[] }>(
+      `${this.tmdbApiUrl}/genre/movie/list`,
+      { params: { api_key: this.apiKey } }
+    ).pipe(
+      map(response => response.genres.map(genre => genre.name))
+    );
+  }
+
+  getFilteredMovies(filters: FilterOptions, page: number = 1): Observable<Content[]> {
+    const params: any = {
+      page: page.toString(),
+      genre: filters.genre || '',
+      releaseYearMin: filters.releaseYearMin.toString(),
+      releaseYearMax: filters.releaseYearMax.toString(),
+      imdbRatingMin: filters.imdbRatingMin.toString(),
+      rtRatingMin: filters.rtRatingMin.toString(),
+    };
+    return this.http.get<Content[]>(`${this.apiUrl}/content/movies-page`, { params });
+  }
+
+  private getGenreId(genreName: string): string {
+    const genreMap: { [key: string]: string } = {
+      Action: '28',
+      Adventure: '12',
+      Animation: '16',
+      Comedy: '35',
+      Crime: '80',
+      Documentary: '99',
+      Drama: '18',
+      Family: '10751',
+      Fantasy: '14',
+      History: '36',
+      Horror: '27',
+      Music: '10402',
+      Mystery: '9648',
+      Romance: '10749',
+      'Science Fiction': '878',
+      'TV Movie': '10770',
+      Thriller: '53',
+      War: '10752',
+      Western: '37',
+    };
+    return genreMap[genreName] || '';
+  }
 
   getMoviesPage(page: number): Observable<Content[]> {
     return this.http.get<{ results: any[] }>(
@@ -67,20 +114,18 @@ export class ContentService {
   }
 
   searchTmdb(query: string): Observable<Content[]> {
-  if (!query.trim()) {
-    return of([]);
+    if (!query.trim()) {
+      return of([]);
+    }
+    return this.http.post<Content[]>(
+      `${this.apiUrl}/content/search`,
+      { query }
+    );
   }
-  return this.http.post<Content[]>(
-    `${this.apiUrl}/content/search`,
-    { query }
-  );
-}
-  
-  private mapToContent(item: any): Content {
 
+  private mapToContent(item: any): Content {
     const rawDate = item.release_date ?? item.first_air_date ?? '';
     const releaseYear = rawDate ? parseInt(rawDate.slice(0, 4), 10) : 0;
-  
 
     return {
       id: item.id,
@@ -91,12 +136,18 @@ export class ContentService {
         ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : 'https://placehold.co/200x300',
       type: item.title ? 'movie' : 'tv',
-      imdbRating: item.vote_average,
-      rtRating: undefined,
-      rating: undefined,
-      genres: item.genres,
+      imdbRating: item.imdbRating ?? null,
+      rtRating: item.rtRating ?? null,
+      rating: item.rating,
+      genres: item.genres || [],
       overview: item.overview,
-      cast: item.cast,
+      cast: (item.cast || []).map((c: any) => ({
+        tmdbId: c.tmdbId ?? c.id ?? 0, // Fallback to id or 0
+        name: c.name,
+        character: c.character,
+        profilePathUrl: c.profilePathUrl,
+      })),
+      language: item.original_language || 'en',
     };
   }
 
