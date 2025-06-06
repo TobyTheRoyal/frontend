@@ -1,9 +1,20 @@
-import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  take
+} from 'rxjs/operators';
 
 import { ContentService } from '../../core/services/content.service';
 import { RatingsService } from '../../core/services/ratings.service';
@@ -17,7 +28,7 @@ import { Content } from '../../interfaces/content.interface';
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './movies.component.html',
-  styleUrls: ['./movies.component.scss'],
+  styleUrls: ['./movies.component.scss']
 })
 export class MoviesComponent implements OnInit {
   movies: Content[] = [];
@@ -34,6 +45,9 @@ export class MoviesComponent implements OnInit {
 
   genres: string[] = [];
   private filterSubject = new Subject<FilterOptions>();
+  private filterSub?: Subscription;
+  private filterServiceSub?: Subscription;
+
 
   genre: string = '';
   releaseYearMin: number = 1900;
@@ -41,7 +55,8 @@ export class MoviesComponent implements OnInit {
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
 
-  @ViewChild('rangeSlider', { static: false }) rangeSlider!: ElementRef<HTMLDivElement>;
+  @ViewChild('rangeSlider', { static: false })
+  rangeSlider!: ElementRef<HTMLDivElement>;
 
   constructor(
     private contentService: ContentService,
@@ -57,46 +72,56 @@ export class MoviesComponent implements OnInit {
   ngOnInit(): void {
     this.loadGenres();
     this.loadPage();
-    this.filterSubject
+    this.filterSub = this.filterSubject
       .pipe(
         debounceTime(500),
         distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-        switchMap(filters => this.contentService.getFilteredMovies(filters, this.currentPage))
+        switchMap((filters) => this.contentService.getFilteredMovies(filters, this.currentPage))
       )
       .subscribe({
-        next: data => {
+        next: (data) => {
           this.movies = data;
-          console.log('Movies loaded:', data.slice(0, 3).map(m => ({
-            title: m.title,
-            imdbRating: m.imdbRating,
-            rtRating: m.rtRating,
-          })));
+          console.log(
+            'Movies loaded:',
+            data.slice(0, 3).map((m) => ({
+              title: m.title,
+              imdbRating: m.imdbRating,
+              rtRating: m.rtRating
+            }))
+          );
           this.isLoading = false;
           this.hasMore = data.length > 0;
         },
         error: () => {
           console.error('Failed to load filtered movies');
           this.isLoading = false;
-        },
+        }
       });
 
-    this.filterService.currentFilters.subscribe(filters => {
+    this.filterServiceSub = this.filterService.currentFilters.subscribe(filters => {
       this.genre = filters.genre;
       this.releaseYearMin = filters.releaseYearMin;
       this.releaseYearMax = filters.releaseYearMax;
       this.imdbRatingMin = filters.imdbRatingMin;
       this.rtRatingMin = filters.rtRatingMin;
       this.updateRangeSlider();
+      this.pulseFilter();
       this.filterSubject.next(filters);
     });
   }
 
+  ngOnDestroy(): void {
+    this.filterSub?.unsubscribe();
+    this.filterServiceSub?.unsubscribe();
+  }
+
+
   loadGenres(): void {
     this.contentService.getGenres().subscribe({
-      next: genres => {
+      next: (genres) => {
         this.genres = genres;
       },
-      error: () => console.error('Failed to load genres'),
+      error: () => console.error('Failed to load genres')
     });
   }
 
@@ -118,14 +143,30 @@ export class MoviesComponent implements OnInit {
   }
 
   toggleDropdown(dropdown: string | null): void {
+    console.log('Toggling dropdown:', dropdown, 'Current active:', this.activeDropdown);
     if (this.activeDropdown === dropdown) {
       this.activeDropdown = null;
     } else {
       this.activeDropdown = dropdown;
       if (dropdown === 'year') {
-        setTimeout(() => this.updateRangeSlider(), 0); // Ensure slider updates after dropdown opens
+        setTimeout(() => this.updateRangeSlider(), 0);
       }
     }
+  }
+
+  triggerRipple(event: MouseEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    const ripple = target.querySelector('.ripple') as HTMLElement;
+    if (!ripple) return;
+
+    const rect = target.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+    ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+
+    ripple.classList.add('animate');
+    setTimeout(() => ripple.classList.remove('animate'), 600);
   }
 
   hasActiveFilters(): boolean {
@@ -138,11 +179,28 @@ export class MoviesComponent implements OnInit {
     );
   }
 
+  pulseFilter(): void {
+    const controls = document.querySelectorAll<HTMLElement>('.filter-control');
+    controls.forEach((control) => {
+      control.classList.add('pulse');
+      setTimeout(() => control.classList.remove('pulse'), 500);
+    });
+  }
+
   updateRangeSlider(): void {
     if (this.rangeSlider && this.rangeSlider.nativeElement) {
-      this.rangeSlider.nativeElement.style.setProperty('--min-value', this.releaseYearMin.toString());
-      this.rangeSlider.nativeElement.style.setProperty('--max-value', this.releaseYearMax.toString());
-      this.rangeSlider.nativeElement.style.setProperty('--current-year', this.currentYear.toString());
+      this.rangeSlider.nativeElement.style.setProperty(
+        '--min-value',
+        this.releaseYearMin.toString()
+      );
+      this.rangeSlider.nativeElement.style.setProperty(
+        '--max-value',
+        this.releaseYearMax.toString()
+      );
+      this.rangeSlider.nativeElement.style.setProperty(
+        '--current-year',
+        this.currentYear.toString()
+      );
     }
   }
 
@@ -150,7 +208,7 @@ export class MoviesComponent implements OnInit {
     if (this.isLoading || !this.hasMore) return;
     this.isLoading = true;
     this.contentService.getFilteredMovies(this.filterService.getFilters(), this.currentPage).subscribe({
-      next: data => {
+      next: (data) => {
         if (!data.length) {
           this.hasMore = false;
         } else {
@@ -162,7 +220,7 @@ export class MoviesComponent implements OnInit {
       error: () => {
         console.error('Failed to load page', this.currentPage);
         this.isLoading = false;
-      },
+      }
     });
   }
 
@@ -190,7 +248,7 @@ export class MoviesComponent implements OnInit {
       alert('Bewertung muss zwischen 0.0 und 10.0 liegen');
       return;
     }
-    this.isLoggedIn$.subscribe((loggedIn: boolean) => {
+    this.isLoggedIn$.pipe(take(1)).subscribe((loggedIn: boolean) => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
@@ -201,7 +259,7 @@ export class MoviesComponent implements OnInit {
           this.ratingsService.fetchUserRatings().subscribe();
           setTimeout(() => this.stopRating(), 500);
         },
-        error: err => console.error('Bewertung fehlgeschlagen', err),
+        error: (err) => console.error('Bewertung fehlgeschlagen', err)
       });
     });
   }
@@ -211,7 +269,7 @@ export class MoviesComponent implements OnInit {
   }
 
   toggleWatchlist(contentId: string): void {
-    this.isLoggedIn$.subscribe((loggedIn: boolean) => {
+    this.isLoggedIn$.pipe(take(1)).subscribe((loggedIn: boolean) => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
@@ -222,7 +280,7 @@ export class MoviesComponent implements OnInit {
 
       call.subscribe({
         next: () => {},
-        error: err => console.error('Watchlist-Aktion fehlgeschlagen', err),
+        error: (err) => console.error('Watchlist-Aktion fehlgeschlagen', err)
       });
     });
   }
@@ -279,6 +337,7 @@ export class MoviesComponent implements OnInit {
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
     if (!target.closest('.filter-control')) {
+      console.log('Click outside, closing dropdown');
       this.activeDropdown = null;
     }
   }
