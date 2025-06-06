@@ -7,6 +7,7 @@ import { WatchlistService }         from '../../core/services/watchlist.service'
 import { RatingsService }           from '../../core/services/ratings.service';
 import { AuthService }              from '../../core/services/auth.service';
 import { Content }                  from '../../interfaces/content.interface';
+import { debugError } from '../../core/utils/logger';
 
 @Component({
   standalone: true,
@@ -92,7 +93,7 @@ export class MovieDetailComponent implements OnInit {
         );
         setTimeout(() => this.selectedContentId = null, 500);
       },
-      error: err => console.error('Failed to set rating', err)
+      error: err => debugError('Failed to set rating', err)
     });
   }
 

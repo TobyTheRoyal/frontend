@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { debugError } from '../../../core/utils/logger';
 
 @Component({
   selector: 'app-register',
@@ -32,7 +33,7 @@ export class RegisterComponent {
       this.authService.register(this.registerForm.value).subscribe({
         next: () => this.router.navigate(['/']),
         error: (err: any) => {
-          console.error('Registration failed', err);
+          debugError('Registration failed', err);
           this.errorMessage = err.error?.message || 'Registration failed. Please try a different username or email.';
         },
       });

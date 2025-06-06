@@ -9,6 +9,7 @@ import { RatingsService }    from '../../core/services/ratings.service';
 import { AuthService }       from '../../core/services/auth.service';
 import { WatchlistService }  from '../../core/services/watchlist.service';
 import { Content }           from '../../interfaces/content.interface';
+import { debugError } from '../../core/utils/logger';
 
 @Component({
   selector: 'app-series',
@@ -77,7 +78,7 @@ export class SeriesComponent implements OnInit {
           this.ratingsService.fetchUserRatings().subscribe();
           setTimeout(() => this.stopRating(), 500);
         },
-        error: err => console.error('Failed to set rating', err),
+        error: err => debugError('Failed to set rating', err),
       });
     });
   }
@@ -100,7 +101,7 @@ export class SeriesComponent implements OnInit {
         next: () => {
           // Hier kannst Du optional UI-Updates vornehmen, z.B. lokale Watchlist-IDs neu laden
         },
-        error: err => console.error('Watchlist toggle failed', err),
+        error: err => debugError('Watchlist toggle failed', err),
       });
     });
   }
@@ -135,7 +136,7 @@ export class SeriesComponent implements OnInit {
       this.isLoading = false;
     },
     error: () => {
-      console.error('Failed to load page', this.currentPage);
+      debugError('Failed to load page', this.currentPage);
       this.isLoading = false;
     }
   });

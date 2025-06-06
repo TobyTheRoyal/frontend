@@ -6,6 +6,7 @@ import { FormsModule }    from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService }    from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
+import { debugError } from '../../core/utils/logger';
 
 interface RatedContent {
   content: {
@@ -53,7 +54,7 @@ export class HistoryComponent implements OnInit {
       .get<RatedContent[]>(this.ratingsApi, { headers: this.getHeaders() })
       .subscribe({
         next: data => this.history = data,
-        error: err => console.error('Failed to load history', err),
+        error: err => debugError('Failed to load history', err),
       });
   }
 
@@ -119,7 +120,7 @@ export class HistoryComponent implements OnInit {
           this.loadHistory();   // neu laden, damit externes Rating & Badge updaten
           setTimeout(() => this.stopRating(), 500);
         },
-        error: err => console.error('Failed to rate', err),
+        error: err => debugError('Failed to rate', err),
       });
   }
 }

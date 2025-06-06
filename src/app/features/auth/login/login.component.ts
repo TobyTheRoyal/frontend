@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { debugError, debugLog } from '../../../core/utils/logger';
 
 @Component({
   selector: 'app-login',
@@ -29,22 +30,22 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm.reset();
-    console.log('Login form initial state:', this.loginForm.value, 'Valid:', this.loginForm.valid);
+    debugLog('Login form initial state:', this.loginForm.value, 'Valid:', this.loginForm.valid);
 
     // Verfolge, ob das Formular bearbeitet wurde
     this.loginForm.valueChanges.subscribe(() => {
       this.isFormTouched = true;
-      console.log('Form touched, value:', this.loginForm.value, 'Valid:', this.loginForm.valid);
+      debugLog('Form touched, value:', this.loginForm.value, 'Valid:', this.loginForm.valid);
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Submitting login:', this.loginForm.value);
+      debugLog('Submitting login:', this.loginForm.value);
       this.authService.login(this.loginForm.value).subscribe({
         next: () => this.router.navigate(['/']),
         error: (err) => {
-          console.error('Login failed', err);
+          debugError('Login failed', err);
           this.errorMessage = err.error?.message || 'Login failed. Please check your credentials.';
         },
       });

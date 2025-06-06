@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { debugError } from '../../core/utils/logger';
 
 @Component({
   selector: 'app-rating',
@@ -35,7 +36,7 @@ export class RatingComponent implements OnInit {
         this.ratings = data;
         this.enrichWithTmdbData();
       },
-      error: (err) => console.error('Failed to load ratings', err),
+      error: (err) => debugError('Failed to load ratings', err),
     });
   }
 
@@ -47,7 +48,7 @@ export class RatingComponent implements OnInit {
           rating.title = tmdbData.title || tmdbData.name;
           rating.poster = `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}`;
         },
-        error: (err) => console.error('Failed to load TMDb data', err),
+        error: (err) => debugError('Failed to load TMDb data', err),
       });
     });
   }
@@ -78,7 +79,7 @@ export class RatingComponent implements OnInit {
           this.closeRatingModal();
           this.loadRatings();
         },
-        error: (err) => console.error('Failed to submit rating', err),
+        error: (err) => debugError('Failed to submit rating', err),
       });
   }
 }

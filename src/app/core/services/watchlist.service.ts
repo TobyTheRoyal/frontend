@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { Content } from '../../interfaces/content.interface';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
+import { debugError, debugLog } from '../utils/logger';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class WatchlistService {
   getWatchlist(): Observable<Content[]> {
     const token = this.authService.getToken();
     if (!token) {
-      console.log('No token, skipping watchlist request');
+      debugLog('No token, skipping watchlist request');
       return of([]);
     }
     const headers = new HttpHeaders({
@@ -59,7 +60,7 @@ export class WatchlistService {
   setRating(contentId: string, rating: number): Observable<any> {
     const token = this.authService.getToken();
     if (!token) {
-      console.log('No token, skipping rating request');
+      debugLog('No token, skipping rating request');
       return of(null);
     }
     const headers = new HttpHeaders({
@@ -89,7 +90,7 @@ export class WatchlistService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`);
+      debugError(`${operation} failed: ${error.message}`);
       return of(result as T);
     };
   }

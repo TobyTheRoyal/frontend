@@ -9,6 +9,7 @@ import { WatchlistService } from '../../core/services/watchlist.service';
 import { RatingsService }   from '../../core/services/ratings.service';
 import { AuthService }      from '../../core/services/auth.service';
 import { Content }          from '../../interfaces/content.interface';
+import { debugError } from '../../core/utils/logger';
 
 @Component({
   selector: 'app-watchlist',
@@ -36,7 +37,7 @@ export class WatchlistComponent implements OnInit {
   ngOnInit(): void {
     // 1) Lade alle bisherigen User-Ratings
     this.ratingsService.fetchUserRatings().subscribe({
-      error: err => console.error('Failed to fetch user ratings', err),
+      error: err => debugError('Failed to fetch user ratings', err),
       complete: () => {
         // 2) Dann erst Watchlist laden
         this.loadWatchlist();
@@ -47,7 +48,7 @@ export class WatchlistComponent implements OnInit {
   private loadWatchlist(): void {
     this.watchlistService.getWatchlist().subscribe({
       next: data => this.allContents = data,
-      error: err => console.error('Failed to load watchlist', err),
+      error: err => debugError('Failed to load watchlist', err),
     });
   }
 
@@ -57,7 +58,7 @@ export class WatchlistComponent implements OnInit {
         this.loadWatchlist();
         this.ratingsService.fetchUserRatings().subscribe();
       },
-      error: err => console.error('Failed to remove from watchlist', err),
+      error: err => debugError('Failed to remove from watchlist', err),
     });
   }
 
@@ -108,7 +109,7 @@ export class WatchlistComponent implements OnInit {
           this.ratingsService.fetchUserRatings().subscribe();
           setTimeout(() => this.stopRating(), 500);
         },
-        error: err => console.error('Failed to set rating', err),
+        error: err => debugError('Failed to set rating', err),
       });
     });
   }

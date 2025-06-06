@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { debugLog, debugError } from '../utils/logger';
 
 @Injectable({
   providedIn: 'root',
@@ -18,11 +19,11 @@ export class AuthService {
   register(credentials: { username: string; email: string; password: string }): Observable<{ access_token: string }> {
     return this.http.post<{ access_token: string }>(`${this.apiUrl}/register`, credentials).pipe(
       tap((response) => {
-        console.log('Registration successful, response:', response);
+        debugLog('Registration successful, response:', response);
         if (response.access_token) {
           localStorage.setItem(this.tokenKey, response.access_token);
           this.isLoggedInSubject.next(true);
-          console.log('Stored token:', response.access_token);
+          debugLog('Stored token:', response.access_token);
         } else {
           console.warn('No token received:', response);
         }
@@ -37,7 +38,7 @@ export class AuthService {
         if (response.access_token) {
           localStorage.setItem(this.tokenKey, response.access_token);
           this.isLoggedInSubject.next(true);
-          console.log('Login successful, token saved:', response.access_token);
+          debugLog('Login successful, token saved:', response.access_token);
         }
       }),
       catchError(this.handleError('login'))
@@ -47,12 +48,12 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.isLoggedInSubject.next(false);
-    console.log('Logged out, token removed');
+    debugLog('Logged out, token removed');
   }
 
   getToken(): string | null {
     const token = localStorage.getItem(this.tokenKey);
-    console.log('Retrieved token:', token);
+    debugLog('Retrieved token:', token);
     return token;
   }
 
@@ -66,7 +67,7 @@ export class AuthService {
 
   private handleError(operation = 'operation') {
     return (error: any): Observable<never> => {
-      console.error(`${operation} failed: ${error.message}`);
+      debugError(`${operation} failed: ${error.message}`);
       return throwError(() => new Error(`${operation} failed: ${error.message}`));
     };
   }

@@ -22,6 +22,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { WatchlistService } from '../../core/services/watchlist.service';
 import { FilterService, FilterOptions } from '../../core/services/filter.service';
 import { Content } from '../../interfaces/content.interface';
+import { debugError, debugLog } from '../../core/utils/logger';
 
 @Component({
   selector: 'app-movies',
@@ -81,7 +82,7 @@ export class MoviesComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.movies = data;
-          console.log(
+          debugLog(
             'Movies loaded:',
             data.slice(0, 3).map((m) => ({
               title: m.title,
@@ -93,7 +94,7 @@ export class MoviesComponent implements OnInit {
           this.hasMore = data.length > 0;
         },
         error: () => {
-          console.error('Failed to load filtered movies');
+          debugError('Failed to load filtered movies');
           this.isLoading = false;
         }
       });
@@ -121,7 +122,7 @@ export class MoviesComponent implements OnInit {
       next: (genres) => {
         this.genres = genres;
       },
-      error: () => console.error('Failed to load genres')
+      error: () => debugError('Failed to load genres')
     });
   }
 
@@ -143,7 +144,7 @@ export class MoviesComponent implements OnInit {
   }
 
   toggleDropdown(dropdown: string | null): void {
-    console.log('Toggling dropdown:', dropdown, 'Current active:', this.activeDropdown);
+    debugLog('Toggling dropdown:', dropdown, 'Current active:', this.activeDropdown);
     if (this.activeDropdown === dropdown) {
       this.activeDropdown = null;
     } else {
@@ -218,7 +219,7 @@ export class MoviesComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        console.error('Failed to load page', this.currentPage);
+        debugError('Failed to load page', this.currentPage);
         this.isLoading = false;
       }
     });
@@ -259,7 +260,7 @@ export class MoviesComponent implements OnInit {
           this.ratingsService.fetchUserRatings().subscribe();
           setTimeout(() => this.stopRating(), 500);
         },
-        error: (err) => console.error('Bewertung fehlgeschlagen', err)
+        error: (err) => debugError('Bewertung fehlgeschlagen', err)
       });
     });
   }
@@ -280,7 +281,7 @@ export class MoviesComponent implements OnInit {
 
       call.subscribe({
         next: () => {},
-        error: (err) => console.error('Watchlist-Aktion fehlgeschlagen', err)
+        error: (err) => debugError('Watchlist-Aktion fehlgeschlagen', err)
       });
     });
   }
@@ -337,7 +338,7 @@ export class MoviesComponent implements OnInit {
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
     if (!target.closest('.filter-control')) {
-      console.log('Click outside, closing dropdown');
+      debugLog('Click outside, closing dropdown');
       this.activeDropdown = null;
     }
   }

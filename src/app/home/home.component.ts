@@ -10,6 +10,7 @@ import { WatchlistService } from '../core/services/watchlist.service';
 import { RatingsService } from '../core/services/ratings.service';
 import { AuthService } from '../core/services/auth.service';
 import { Content } from '../interfaces/content.interface';
+import { debugError } from '../core/utils/logger';
 
 @Component({
   selector: 'app-home',
@@ -44,7 +45,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     // zuerst alle User-Ratings laden
     this.ratingsService.fetchUserRatings().subscribe({
-      error: err => console.error('Failed to fetch user ratings', err)
+      error: err => debugError('Failed to fetch user ratings', err)
     });
 
     // dann Kategorien laden
@@ -60,20 +61,20 @@ export class HomeComponent implements OnInit {
   private loadCategories(): void {
     this.contentService.getTrending().subscribe({
       next: data => this.categories[0].items = data,
-      error: err => console.error('Failed to load trending', err),
+      error: err => debugError('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
       next: data => this.categories[1].items = data,
-      error: err => console.error('Failed to load top rated', err),
+      error: err => debugError('Failed to load top rated', err),
     });
     this.contentService.getNewReleases().subscribe({
       next: data => this.categories[2].items = data,
-      error: err => console.error('Failed to load new releases', err),
+      error: err => debugError('Failed to load new releases', err),
     });
     this.watchlistService.getWatchlist().subscribe({
       next: data => this.categories[3].items = data,
       error: err => {
-        console.error('Failed to load watchlist', err);
+        debugError('Failed to load watchlist', err);
         if (err.status === 401) {
           this.authService.logout();
           this.router.navigate(['/auth/login']);
@@ -85,15 +86,15 @@ export class HomeComponent implements OnInit {
   private loadPublicCategories(): void {
     this.contentService.getTrending().subscribe({
       next: data => this.categories[0].items = data,
-      error: err => console.error('Failed to load trending', err),
+      error: err => debugError('Failed to load trending', err),
     });
     this.contentService.getTopRated().subscribe({
       next: data => this.categories[1].items = data,
-      error: err => console.error('Failed to load top rated', err),
+      error: err => debugError('Failed to load top rated', err),
     });
     this.contentService.getNewReleases().subscribe({
       next: data => this.categories[2].items = data,
-      error: err => console.error('Failed to load new releases', err),
+      error: err => debugError('Failed to load new releases', err),
     });
   }
 
@@ -130,7 +131,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
 
       call.subscribe({
         next: () => this.loadCategories(),
-        error: err => console.error(err)
+        error: err => debugError(err)
       });
     });
   }
@@ -156,7 +157,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
   submitRating(tmdbId: string): void {
     const score = parseFloat(this.ratingScore);
     if (isNaN(score) || score < 0 || score > 10) {
-      console.error('Invalid rating: must be between 0.0 and 10.0');
+      debugError('Invalid rating: must be between 0.0 and 10.0');
       return;
     }
     this.isLoggedIn$.subscribe(loggedIn => {
@@ -172,7 +173,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
           this.ratingsService.fetchUserRatings().subscribe();
           setTimeout(() => this.stopRating(), 500);
         },
-        error: err => console.error('Failed to set rating', err)
+        error: err => debugError('Failed to set rating', err)
       });
     });
   }
