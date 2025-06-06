@@ -1,7 +1,7 @@
 <div class="movies-container">
   <h2>Alle Filme</h2>
   <div class="filter-row">
-    <div class="filter-control" (click)="toggleDropdown('genre')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'genre'}">
+    <button type="button" class="filter-control" (click)="toggleDropdown('genre')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'genre'}">
       <span class="ripple"></span>
       <span class="filter-label">Genre{{ genre ? ': ' + genre : '' }}</span>
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -13,8 +13,8 @@
           <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
         </select>
       </div>
-    </div>
-    <div class="filter-control" (click)="toggleDropdown('year')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'year'}">
+    </button>
+    <button type="button" class="filter-control" (click)="toggleDropdown('year')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'year'}">
       <span class="ripple"></span>
       <span class="filter-label">Jahr{{ releaseYearMin !== 1900 || releaseYearMax !== currentYear ? ': ' + releaseYearMin + '-' + releaseYearMax : '' }}</span>
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -46,8 +46,8 @@
           <div class="range-values">{{ releaseYearMin }} - {{ releaseYearMax }}</div>
         </div>
       </div>
-    </div>
-    <div class="filter-control" (click)="toggleDropdown('imdb')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'imdb'}">
+  </button>
+    <button type="button" class="filter-control" (click)="toggleDropdown('imdb')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'imdb'}">
       <span class="ripple"></span>
       <span class="filter-label">IMDb{{ imdbRatingMin > 0 ? ': ' + (imdbRatingMin | number:'1.1-1') : '' }}</span>
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -68,8 +68,8 @@
           <span class="unit">/10</span>
         </div>
       </div>
-    </div>
-    <div class="filter-control" (click)="toggleDropdown('rt')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'rt'}">
+    </button>
+    <button type="button" class="filter-control" (click)="toggleDropdown('rt')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'rt'}">
       <span class="ripple"></span>
       <span class="filter-label">RT{{ rtRatingMin > 0 ? ': ' + rtRatingMin + '%' : '' }}</span>
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -90,7 +90,7 @@
           <span class="unit">%</span>
         </div>
       </div>
-    </div>
+    </button>
     <button *ngIf="hasActiveFilters()" class="reset-btn" (click)="resetFilters()" title="Filter zurücksetzen">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M6 18L18 6M6 6l12 12"/>
