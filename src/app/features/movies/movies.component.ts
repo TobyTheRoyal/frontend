@@ -290,6 +290,10 @@ export class MoviesComponent implements OnInit {
     return this.ratingsService.getRating(tmdbId);
   }
 
+  trackByMovie(index: number, movie: Content): string {
+    return movie.tmdbId;
+  }
+
   goToDetail(tmdbId: string) {
     this.router.navigate(['/movies', tmdbId]);
   }

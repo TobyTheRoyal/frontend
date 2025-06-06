@@ -94,7 +94,7 @@
     </button>
   </div>
   <div class="content-list">
-    <div class="content-card" *ngFor="let item of movies" (mouseleave)="stopRating()" (click)="onCardClick(item.tmdbId)">
+    <div class="content-card" *ngFor="let item of movies; trackBy: trackByMovie" (mouseleave)="stopRating()" (click)="onCardClick(item.tmdbId)">
       <div class="card-image" [style.backgroundImage]="'url(' + (item.poster || 'https://placehold.co/200x300') + ')'">
         <button
           class="add-btn"
