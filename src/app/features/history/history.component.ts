@@ -5,6 +5,7 @@ import { Router, RouterModule }   from '@angular/router';
 import { FormsModule }    from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService }    from '../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 interface RatedContent {
   content: {
@@ -30,7 +31,7 @@ export class HistoryComponent implements OnInit {
   selectedContentId: string | null = null;
   ratingScore = '';
   isRatingSubmitted = false;
-  private ratingsApi = 'http://localhost:3000/ratings';
+  private ratingsApi = `${environment.apiUrl}/ratings`;
 
   constructor(
     private http: HttpClient,

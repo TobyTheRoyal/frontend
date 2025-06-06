@@ -4,14 +4,15 @@ import { Observable, forkJoin, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CastMember, Content } from '../../interfaces/content.interface';
 import { FilterOptions } from '../../core/services/filter.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContentService {
-  private apiUrl = 'http://localhost:3000';
-  private tmdbApiUrl = 'https://api.themoviedb.org/3';
-  private apiKey = '1b3d7c196e53b4ebab10bf60054ef369';
+  private apiUrl = environment.apiUrl;
+  private tmdbApiUrl = environment.tmdbApiUrl;
+  private apiKey = environment.tmdbApiKey;
 
   constructor(private http: HttpClient) {}
 

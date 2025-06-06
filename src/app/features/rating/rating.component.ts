@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-rating',
@@ -17,8 +18,8 @@ export class RatingComponent implements OnInit {
   selectedContentId: number | null = null;
   ratingScore: number = 0;
   selectedContentTitle: string = ''; // Neues Feld für den Titel
-  apiUrl = 'http://localhost:3000/ratings';
-  tmdbApiKey = '1b3d7c196e53b4ebab10bf60054ef369'; // Ersetze mit deinem TMDb API-Key
+  apiUrl = `${environment.apiUrl}/ratings`;
+  tmdbApiKey = environment.tmdbApiKey;
 
   constructor(private authService: AuthService, private http: HttpClient) {}
 

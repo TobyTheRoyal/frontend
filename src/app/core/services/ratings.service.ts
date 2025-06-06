@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../../environments/environment';
 
 export interface Rating {
   tmdbId: string;
@@ -13,7 +14,7 @@ export interface Rating {
 
 @Injectable({ providedIn: 'root' })
 export class RatingsService {
-  private apiUrl = 'http://localhost:3000/ratings';
+  private apiUrl = `${environment.apiUrl}/ratings`;
   private ratingsCache: Rating[] = [];
 
   constructor(

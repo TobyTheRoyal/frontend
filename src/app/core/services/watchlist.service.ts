@@ -4,12 +4,13 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Content } from '../../interfaces/content.interface';
 import { AuthService } from './auth.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WatchlistService {
-  private apiUrl = 'http://localhost:3000/watchlist';
+  private apiUrl = `${environment.apiUrl}/watchlist`;
   private watchlist: Content[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService) {}
