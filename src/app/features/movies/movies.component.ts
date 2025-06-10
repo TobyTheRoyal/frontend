@@ -49,7 +49,6 @@ export class MoviesComponent implements OnInit {
   private filterSub?: Subscription;
   private filterServiceSub?: Subscription;
 
-
   genre: string = '';
   releaseYearMin: number = 1900;
   releaseYearMax: number = this.currentYear;
@@ -116,7 +115,6 @@ export class MoviesComponent implements OnInit {
     this.filterServiceSub?.unsubscribe();
   }
 
-
   loadGenres(): void {
     this.contentService.getGenres().subscribe({
       next: (genres) => {
@@ -127,11 +125,22 @@ export class MoviesComponent implements OnInit {
   }
 
   updateFilters(newFilters: Partial<FilterOptions>): void {
+    const updatedFilters = { ...this.filterService.getFilters(), ...newFilters };
+    
+    // Prevent min year from exceeding max year
+    if (newFilters.releaseYearMin && updatedFilters.releaseYearMax < updatedFilters.releaseYearMin) {
+      updatedFilters.releaseYearMax = updatedFilters.releaseYearMin;
+    }
+    // Prevent max year from being less than min year
+    if (newFilters.releaseYearMax && updatedFilters.releaseYearMin > updatedFilters.releaseYearMax) {
+      updatedFilters.releaseYearMin = updatedFilters.releaseYearMax;
+    }
+
     this.currentPage = 1;
     this.movies = [];
     this.hasMore = true;
     this.isLoading = true;
-    this.filterService.updateFilters(newFilters);
+    this.filterService.updateFilters(updatedFilters);
   }
 
   resetFilters(): void {
@@ -341,7 +350,7 @@ export class MoviesComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.filter-control')) {
+    if (!target.closest('.filter-control') && !target.closest('.dropdown-panel')) {
       debugLog('Click outside, closing dropdown');
       this.activeDropdown = null;
     }
