@@ -214,6 +214,16 @@ export class MoviesComponent implements OnInit {
     }
   }
 
+  applyImdbFilter(): void {
+    this.updateFilters({ imdbRatingMin: this.imdbRatingMin });
+    this.toggleDropdown(null);
+  }
+
+  applyRtFilter(): void {
+    this.updateFilters({ rtRatingMin: this.rtRatingMin });
+    this.toggleDropdown(null);
+  }
+
   loadPage(): void {
     if (this.isLoading || !this.hasMore) return;
     this.isLoading = true;

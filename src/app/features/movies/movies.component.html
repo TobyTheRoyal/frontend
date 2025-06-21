@@ -10,7 +10,7 @@
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M7 10l5 5 5-5z"/>
       </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'genre'">
+      <div class="dropdown-panel" *ngIf="activeDropdown === 'genre'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
         <select id="genre" [(ngModel)]="genre" (ngModelChange)="updateFilters({ genre: $event }); toggleDropdown(null)">
           <option value="">Alle Genres</option>
           <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
@@ -26,13 +26,13 @@
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M7 10l5 5 5-5z"/>
       </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'year'">
+      <div class="dropdown-panel" *ngIf="activeDropdown === 'year'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
         <div class="dual-range-slider" #rangeSlider>
           <input
             type="range"
             id="release-year-min"
             [(ngModel)]="releaseYearMin"
-            (ngModelChange)="updateFilters({ releaseYearMin: $event })"
+            (ngModelChange)="updateFilters({ releaseYearMin: $event }); updateRangeSlider()"
             min="1900"
             [max]="currentYear"
             step="1"
@@ -42,7 +42,7 @@
             type="range"
             id="release-year-max"
             [(ngModel)]="releaseYearMax"
-            (ngModelChange)="updateFilters({ releaseYearMax: $event })"
+            (ngModelChange)="updateFilters({ releaseYearMax: $event }); updateRangeSlider()"
             min="1900"
             [max]="currentYear"
             step="1"
@@ -65,13 +65,14 @@
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M7 10l5 5 5-5z"/>
       </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'imdb'">
+      <div class="dropdown-panel" *ngIf="activeDropdown === 'imdb'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
         <div class="numeric-input">
           <input
             type="number"
             id="imdb-rating"
             [(ngModel)]="imdbRatingMin"
-            (ngModelChange)="updateFilters({ imdbRatingMin: $event }); toggleDropdown(null)"
+            (blur)="applyImdbFilter()"
+            (keyup.enter)="applyImdbFilter()"
             min="0"
             max="10"
             step="0.1"
@@ -90,13 +91,14 @@
       <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M7 10l5 5 5-5z"/>
       </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'rt'">
+      <div class="dropdown-panel" *ngIf="activeDropdown === 'rt'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
         <div class="numeric-input">
           <input
             type="number"
             id="rt-rating"
             [(ngModel)]="rtRatingMin"
-            (ngModelChange)="updateFilters({ rtRatingMin: $event }); toggleDropdown(null)"
+            (blur)="applyRtFilter()"
+            (keyup.enter)="applyRtFilter()"
             min="0"
             max="100"
             step="1"
