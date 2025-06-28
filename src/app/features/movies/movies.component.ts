@@ -2,8 +2,6 @@ import {
   Component,
   OnInit,
   HostListener,
-  ElementRef,
-  ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,11 +21,13 @@ import { WatchlistService } from '../../core/services/watchlist.service';
 import { FilterService, FilterOptions } from '../../core/services/filter.service';
 import { Content } from '../../interfaces/content.interface';
 import { debugError, debugLog } from '../../core/utils/logger';
+import { FilterControlsComponent } from '../filter-controls/filter-controls.component';
+
 
 @Component({
   selector: 'app-movies',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FilterControlsComponent],
   templateUrl: './movies.component.html',
   styleUrls: ['./movies.component.scss']
 })
@@ -42,9 +42,6 @@ export class MoviesComponent implements OnInit {
   isLoading = false;
   hasMore = true;
   currentYear = new Date().getFullYear();
-  activeDropdown: string | null = null;
-
-  genres: string[] = [];
   private filterSubject = new Subject<FilterOptions>();
   private filterSub?: Subscription;
   private filterServiceSub?: Subscription;
@@ -55,8 +52,6 @@ export class MoviesComponent implements OnInit {
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
 
-  @ViewChild('rangeSlider', { static: false })
-  rangeSlider!: ElementRef<HTMLDivElement>;
 
   constructor(
     private contentService: ContentService,
@@ -70,7 +65,6 @@ export class MoviesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadGenres();
     this.loadPage();
     this.filterSub = this.filterSubject
       .pipe(
@@ -104,8 +98,6 @@ export class MoviesComponent implements OnInit {
       this.releaseYearMax = filters.releaseYearMax;
       this.imdbRatingMin = filters.imdbRatingMin;
       this.rtRatingMin = filters.rtRatingMin;
-      this.updateRangeSlider();
-      this.pulseFilter();
       this.filterSubject.next(filters);
     });
   }
@@ -115,14 +107,7 @@ export class MoviesComponent implements OnInit {
     this.filterServiceSub?.unsubscribe();
   }
 
-  loadGenres(): void {
-    this.contentService.getGenres().subscribe({
-      next: (genres) => {
-        this.genres = genres;
-      },
-      error: () => debugError('Failed to load genres')
-    });
-  }
+
 
   updateFilters(newFilters: Partial<FilterOptions>): void {
     const updatedFilters = { ...this.filterService.getFilters(), ...newFilters };
@@ -148,81 +133,10 @@ export class MoviesComponent implements OnInit {
     this.movies = [];
     this.hasMore = true;
     this.isLoading = true;
-    this.activeDropdown = null;
     this.filterService.resetFilters();
   }
 
-  toggleDropdown(dropdown: string | null): void {
-    debugLog('Toggling dropdown:', dropdown, 'Current active:', this.activeDropdown);
-    if (this.activeDropdown === dropdown) {
-      this.activeDropdown = null;
-    } else {
-      this.activeDropdown = dropdown;
-      if (dropdown === 'year') {
-        setTimeout(() => this.updateRangeSlider(), 0);
-      }
-    }
-  }
-
-  triggerRipple(event: MouseEvent): void {
-    const target = event.currentTarget as HTMLElement;
-    const ripple = target.querySelector('.ripple') as HTMLElement;
-    if (!ripple) return;
-
-    const rect = target.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    ripple.style.width = ripple.style.height = `${size}px`;
-    ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
-    ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
-
-    ripple.classList.add('animate');
-    setTimeout(() => ripple.classList.remove('animate'), 600);
-  }
-
-  hasActiveFilters(): boolean {
-    return (
-      this.genre !== '' ||
-      this.releaseYearMin !== 1900 ||
-      this.releaseYearMax !== this.currentYear ||
-      this.imdbRatingMin > 0 ||
-      this.rtRatingMin > 0
-    );
-  }
-
-  pulseFilter(): void {
-    const controls = document.querySelectorAll<HTMLElement>('.filter-control');
-    controls.forEach((control) => {
-      control.classList.add('pulse');
-      setTimeout(() => control.classList.remove('pulse'), 500);
-    });
-  }
-
-  updateRangeSlider(): void {
-    if (this.rangeSlider && this.rangeSlider.nativeElement) {
-      this.rangeSlider.nativeElement.style.setProperty(
-        '--min-value',
-        this.releaseYearMin.toString()
-      );
-      this.rangeSlider.nativeElement.style.setProperty(
-        '--max-value',
-        this.releaseYearMax.toString()
-      );
-      this.rangeSlider.nativeElement.style.setProperty(
-        '--current-year',
-        this.currentYear.toString()
-      );
-    }
-  }
-
-  applyImdbFilter(): void {
-    this.updateFilters({ imdbRatingMin: this.imdbRatingMin });
-    this.toggleDropdown(null);
-  }
-
-  applyRtFilter(): void {
-    this.updateFilters({ rtRatingMin: this.rtRatingMin });
-    this.toggleDropdown(null);
-  }
+  
 
   loadPage(): void {
     if (this.isLoading || !this.hasMore) return;
@@ -357,12 +271,5 @@ export class MoviesComponent implements OnInit {
     if (height - pos < threshold) this.loadPage();
   }
 
-  @HostListener('document:click', ['$event'])
-  handleClickOutside(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.filter-control') && !target.closest('.dropdown-panel')) {
-      debugLog('Click outside, closing dropdown');
-      this.activeDropdown = null;
-    }
-  }
+  
 }
