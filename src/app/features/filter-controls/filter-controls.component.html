@@ -14,18 +14,13 @@
 
   <div class="filter-group">
     <label>Release Year: {{ releaseYearMin }} - {{ releaseYearMax }}</label>
-    <input
-      type="range"
-      [min]="1900"
-      [max]="currentYear"
-      [(ngModel)]="releaseYearMin"
-      (change)="emitChange()" />
-    <input
-      type="range"
-      [min]="1900"
-      [max]="currentYear"
-      [(ngModel)]="releaseYearMax"
-      (change)="emitChange()" />
+    <ngx-slider
+  [(value)]="releaseYearMin"
+  [(highValue)]="releaseYearMax"
+  [options]="sliderOptions"
+  (userChangeEnd)="emitChange()"
+></ngx-slider>
+
   </div>
 
   <div class="filter-group">

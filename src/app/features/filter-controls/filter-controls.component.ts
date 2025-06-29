@@ -1,6 +1,7 @@
-import { Component, OnInit, OnChanges, SimpleChanges, ElementRef, ViewChild, HostListener, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, HostListener, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NgxSliderModule, Options} from '@angular-slider/ngx-slider';
 import { ContentService } from '../../core/services/content.service';
 import { FilterOptions } from '../../core/services/filter.service';
 import { debugError } from '../../core/utils/logger';
@@ -8,7 +9,7 @@ import { debugError } from '../../core/utils/logger';
 @Component({
   selector: 'app-filter-controls',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxSliderModule],
   templateUrl: './filter-controls.component.html',
   styleUrls: ['./filter-controls.component.scss']
 })
@@ -23,11 +24,15 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   genres: string[] = [];
   activeDropdown: string | null = null;
 
+  sliderOptions: Options = {
+  floor: 1900,
+  ceil: this.currentYear,
+  step: 1
+};
+
   @Output() filtersChange = new EventEmitter<Partial<FilterOptions>>();
   @Output() reset = new EventEmitter<void>();
 
-  @ViewChild('rangeSlider', { static: false })
-  rangeSlider!: ElementRef<HTMLDivElement>;
 
   constructor(private contentService: ContentService) {}
 
@@ -36,9 +41,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['releaseYearMin'] || changes['releaseYearMax']) {
-      this.updateRangeSlider();
-    }
+    
     if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin']) {
       this.pulseFilter();
     }
@@ -70,9 +73,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       this.activeDropdown = null;
     } else {
       this.activeDropdown = dropdown;
-      if (dropdown === 'year') {
-        setTimeout(() => this.updateRangeSlider(), 0);
-      }
+      
     }
   }
 
@@ -89,14 +90,6 @@ export class FilterControlsComponent implements OnInit, OnChanges {
 
     ripple.classList.add('animate');
     setTimeout(() => ripple.classList.remove('animate'), 600);
-  }
-
-  updateRangeSlider(): void {
-    if (this.rangeSlider && this.rangeSlider.nativeElement) {
-      this.rangeSlider.nativeElement.style.setProperty('--min-value', this.releaseYearMin.toString());
-      this.rangeSlider.nativeElement.style.setProperty('--max-value', this.releaseYearMax.toString());
-      this.rangeSlider.nativeElement.style.setProperty('--current-year', this.currentYear.toString());
-    }
   }
 
   applyImdbFilter(): void {
