@@ -1,7 +1,9 @@
+// movies.component.ts
 import {
   Component,
   OnInit,
   HostListener,
+  OnDestroy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +25,6 @@ import { Content } from '../../interfaces/content.interface';
 import { debugError, debugLog } from '../../core/utils/logger';
 import { FilterControlsComponent } from '../filter-controls/filter-controls.component';
 
-
 @Component({
   selector: 'app-movies',
   standalone: true,
@@ -31,7 +32,7 @@ import { FilterControlsComponent } from '../filter-controls/filter-controls.comp
   templateUrl: './movies.component.html',
   styleUrls: ['./movies.component.scss']
 })
-export class MoviesComponent implements OnInit {
+export class MoviesComponent implements OnInit, OnDestroy {
   movies: Content[] = [];
   selectedContentId: string | null = null;
   ratingScore: string = '';
@@ -52,6 +53,7 @@ export class MoviesComponent implements OnInit {
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
 
+  showFilters = false;
 
   constructor(
     private contentService: ContentService,
@@ -75,14 +77,11 @@ export class MoviesComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.movies = data;
-          debugLog(
-            'Movies loaded:',
-            data.slice(0, 3).map((m) => ({
-              title: m.title,
-              imdbRating: m.imdbRating,
-              rtRating: m.rtRating
-            }))
-          );
+          debugLog('Movies loaded:', data.slice(0, 3).map((m) => ({
+            title: m.title,
+            imdbRating: m.imdbRating,
+            rtRating: m.rtRating
+          })));
           this.isLoading = false;
           this.hasMore = data.length > 0;
         },
@@ -107,20 +106,14 @@ export class MoviesComponent implements OnInit {
     this.filterServiceSub?.unsubscribe();
   }
 
-
-
   updateFilters(newFilters: Partial<FilterOptions>): void {
     const updatedFilters = { ...this.filterService.getFilters(), ...newFilters };
-    
-    // Prevent min year from exceeding max year
     if (newFilters.releaseYearMin && updatedFilters.releaseYearMax < updatedFilters.releaseYearMin) {
       updatedFilters.releaseYearMax = updatedFilters.releaseYearMin;
     }
-    // Prevent max year from being less than min year
     if (newFilters.releaseYearMax && updatedFilters.releaseYearMin > updatedFilters.releaseYearMax) {
       updatedFilters.releaseYearMin = updatedFilters.releaseYearMax;
     }
-
     this.currentPage = 1;
     this.movies = [];
     this.hasMore = true;
@@ -136,7 +129,20 @@ export class MoviesComponent implements OnInit {
     this.filterService.resetFilters();
   }
 
-  
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  hasActiveFilters(): boolean {
+    const f = this.filterService.getFilters();
+    return (
+      f.genre !== '' ||
+      f.releaseYearMin !== 1900 ||
+      f.releaseYearMax !== this.currentYear ||
+      f.imdbRatingMin > 0 ||
+      f.rtRatingMin > 0
+    );
+  }
 
   loadPage(): void {
     if (this.isLoading || !this.hasMore) return;
@@ -270,6 +276,4 @@ export class MoviesComponent implements OnInit {
     const height = document.body.offsetHeight;
     if (height - pos < threshold) this.loadPage();
   }
-
-  
 }

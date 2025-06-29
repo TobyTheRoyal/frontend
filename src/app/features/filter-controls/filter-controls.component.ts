@@ -55,6 +55,16 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     this.filtersChange.emit(filters);
   }
 
+  emitChange(): void {
+    this.filtersChange.emit({
+      genre: this.genre,
+      releaseYearMin: this.releaseYearMin,
+      releaseYearMax: this.releaseYearMax,
+      imdbRatingMin: this.imdbRatingMin,
+      rtRatingMin: this.rtRatingMin
+    });
+  }
+
   toggleDropdown(dropdown: string | null): void {
     if (this.activeDropdown === dropdown) {
       this.activeDropdown = null;
@@ -118,6 +128,12 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   }
 
   resetFilters(): void {
+    this.genre = '';
+    this.releaseYearMin = 1900;
+    this.releaseYearMax = this.currentYear;
+    this.imdbRatingMin = 0;
+    this.rtRatingMin = 0;
+    this.emitChange();
     this.reset.emit();
     this.activeDropdown = null;
   }

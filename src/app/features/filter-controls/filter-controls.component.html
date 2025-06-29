@@ -1,114 +1,54 @@
-<div class="filter-row">
-    <button type="button" class="filter-control" (click)="toggleDropdown('genre')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'genre'}">
-      <span class="ripple"></span>
-      <svg class="filter-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
-      </svg>
-      <span class="filter-label">Genre{{ genre ? ': ' + genre : '' }}</span>
-      <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M7 10l5 5 5-5z"/>
-      </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'genre'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
-        <select id="genre" [(ngModel)]="genre" (ngModelChange)="updateFilters({ genre: $event }); toggleDropdown(null)">
-          <option value="">Alle Genres</option>
-          <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
-        </select>
-      </div>
-    </button>
-    <button type="button" class="filter-control" (click)="toggleDropdown('year')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'year'}">
-      <span class="ripple"></span>
-      <svg class="filter-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19 4h-1V3a1 1 0 0 0-2 0v1H8V3a1 1 0 0 0-2 0v1H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
-      </svg>
-      <span class="filter-label">Jahr{{ releaseYearMin !== 1900 || releaseYearMax !== currentYear ? ': ' + releaseYearMin + '-' + releaseYearMax : '' }}</span>
-      <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M7 10l5 5 5-5z"/>
-      </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'year'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
-        <div class="dual-range-slider" #rangeSlider>
-          <input
-            type="range"
-            id="release-year-min"
-            [(ngModel)]="releaseYearMin"
-            (ngModelChange)="updateFilters({ releaseYearMin: $event }); updateRangeSlider()"
-            min="1900"
-            [max]="currentYear"
-            step="1"
-            [value]="releaseYearMin"
-          />
-          <input
-            type="range"
-            id="release-year-max"
-            [(ngModel)]="releaseYearMax"
-            (ngModelChange)="updateFilters({ releaseYearMax: $event }); updateRangeSlider()"
-            min="1900"
-            [max]="currentYear"
-            step="1"
-            [value]="releaseYearMax"
-          />
-          <div class="range-track"></div>
-          <div class="range-values">
-            <span>{{ releaseYearMin }}</span>
-            <span>{{ releaseYearMax }}</span>
-          </div>
-        </div>
-      </div>
-    </button>
-    <button type="button" class="filter-control" (click)="toggleDropdown('imdb')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'imdb'}">
-      <span class="ripple"></span>
-      <svg class="filter-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-      </svg>
-      <span class="filter-label">IMDb{{ imdbRatingMin > 0 ? ': ' + (imdbRatingMin | number:'1.1-1') : '' }}</span>
-      <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M7 10l5 5 5-5z"/>
-      </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'imdb'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
-        <div class="numeric-input">
-          <input
-            type="number"
-            id="imdb-rating"
-            [(ngModel)]="imdbRatingMin"
-            (blur)="applyImdbFilter()"
-            (keyup.enter)="applyImdbFilter()"
-            min="0"
-            max="10"
-            step="0.1"
-            placeholder="0.0"
-          />
-          <span class="unit">/10</span>
-        </div>
-      </div>
-    </button>
-    <button type="button" class="filter-control" (click)="toggleDropdown('rt')" (mousedown)="triggerRipple($event)" [ngClass]="{'active': activeDropdown === 'rt'}">
-      <span class="ripple"></span>
-      <svg class="filter-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
-      </svg>
-      <span class="filter-label">RT{{ rtRatingMin > 0 ? ': ' + rtRatingMin + '%' : '' }}</span>
-      <svg class="dropdown-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M7 10l5 5 5-5z"/>
-      </svg>
-      <div class="dropdown-panel" *ngIf="activeDropdown === 'rt'" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
-        <div class="numeric-input">
-          <input
-            type="number"
-            id="rt-rating"
-            [(ngModel)]="rtRatingMin"
-            (blur)="applyRtFilter()"
-            (keyup.enter)="applyRtFilter()"
-            min="0"
-            max="100"
-            step="1"
-            placeholder="0"
-          />
-          <span class="unit">%</span>
-        </div>
-      </div>
-    </button>
-    <button *ngIf="hasActiveFilters()" class="reset-btn" (click)="resetFilters()" title="Filter zurücksetzen">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
+<div class="filter-panel-inner">
+  <div class="filter-group">
+    <label>Genre</label>
+    <div class="genre-buttons">
+      <button
+        *ngFor="let g of genres"
+        (click)="updateFilters({ genre: genre === g ? '' : g })"
+        [class.active]="genre === g"
+        class="genre-button">
+        {{ g }}
+      </button>
+    </div>
   </div>
+
+  <div class="filter-group">
+    <label>Release Year: {{ releaseYearMin }} - {{ releaseYearMax }}</label>
+    <input
+      type="range"
+      [min]="1900"
+      [max]="currentYear"
+      [(ngModel)]="releaseYearMin"
+      (change)="emitChange()" />
+    <input
+      type="range"
+      [min]="1900"
+      [max]="currentYear"
+      [(ngModel)]="releaseYearMax"
+      (change)="emitChange()" />
+  </div>
+
+  <div class="filter-group">
+    <label>IMDb Rating ≥ {{ imdbRatingMin }}</label>
+    <input
+      type="range"
+      min="0"
+      max="10"
+      step="0.1"
+      [(ngModel)]="imdbRatingMin"
+      (change)="emitChange()" />
+  </div>
+
+  <div class="filter-group">
+    <label>RT Rating ≥ {{ rtRatingMin }}%</label>
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="1"
+      [(ngModel)]="rtRatingMin"
+      (change)="emitChange()" />
+  </div>
+
+  <button class="reset-btn" (click)="resetFilters()">Reset</button>
+</div>

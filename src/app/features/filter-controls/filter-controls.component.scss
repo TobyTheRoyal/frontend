@@ -1,334 +1,95 @@
-.filter-row {
+/* filter-controls.component.scss */
+.filter-panel-inner {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 30px;
-  background: rgba(30, 42, 68, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 255, 204, 0.2);
-  overflow: visible;
-  white-space: nowrap;
-  scrollbar-width: none;
-  position: relative;
-  z-index: 100;
-  animation: glowPulse 2s ease-in-out infinite;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  @keyframes glowPulse {
-    0% { box-shadow: 0 6px 20px rgba(0, 255, 204, 0.2); }
-    50% { box-shadow: 0 6px 25px rgba(0, 255, 204, 0.3); }
-    100% { box-shadow: 0 6px 20px rgba(0, 255, 204, 0.2); }
-  }
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #181818;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.1);
 }
 
-.filter-control {
-  position: relative;
-  background: linear-gradient(135deg, #00ffcc, #00b7f5);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  cursor: pointer;
+.filter-group {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 255, 204, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  overflow: visible;
-  z-index: 200;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
 
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 255, 204, 0.5);
-    background: linear-gradient(135deg, #00ffcc, #007bff);
+  label {
+    color: #a1a1aa;
+    font-size: 0.85rem;
+    font-weight: 600;
   }
 
-  &.active {
-    background: linear-gradient(135deg, #ff007a, #b700ff);
-    box-shadow: 0 0 14px rgba(255, 0, 122, 0.6);
-    transform: scale(1.03);
+  .genre-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
-  &.pulse {
-    animation: filterPulse 0.5s ease;
-  }
+  .genre-button {
+    padding: 0.4rem 0.8rem;
+    background-color: #27272a;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    color: #fafafa;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
 
-  @keyframes filterPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
+    &.active {
+      background-color: rgba(34, 197, 94, 0.1);
+      border-color: #22c55e;
+      color: #22c55e;
+    }
 
-  .ripple {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple 0.6s linear;
-    pointer-events: none;
-  }
-
-  @keyframes ripple {
-    to {
-      transform: scale(4);
-      opacity: 0;
+    &:hover {
+      background-color: rgba(34, 197, 94, 0.2);
     }
   }
 
-  .filter-icon {
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #27272a;
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.2s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
     width: 16px;
     height: 16px;
-    fill: #fff;
+    border-radius: 50%;
+    background: #22c55e;
+    cursor: pointer;
+    border: none;
   }
 
-  .filter-label {
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .dropdown-icon {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.3s ease;
-  }
-
-  &.active .dropdown-icon {
-    transform: rotate(180deg);
-  }
-
-  .dropdown-panel {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    min-width: 220px;
-    background: rgba(20, 30, 50, 0.9);
-    backdrop-filter: blur(12px);
-    border-radius: 10px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0, 255, 204, 0.4);
-    border: 1px solid rgba(0, 255, 204, 0.3);
-    z-index: 3000;
-    animation: slideIn 0.3s ease-out;
-    overflow: visible;
-
-    @keyframes slideIn {
-      0% { transform: translateY(-10px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    select {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid #00ffcc;
-      border-radius: 6px;
-      padding: 10px;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      appearance: none;
-      background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-      background-repeat: no-repeat;
-      background-position: right 10px top 50%;
-      background-size: 14px;
-      transition: border-color 0.2s ease, background 0.2s ease;
-
-      &:focus {
-        outline: none;
-        border-color: #ff007a;
-        background: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 0 8px rgba(255, 0, 122, 0.3);
-      }
-
-      option {
-        background: #1e2a44;
-        color: #fff;
-      }
-    }
-
-    .dual-range-slider {
-      position: relative;
-      box-sizing: border-box;
-      padding: 20px 10px;
-      margin: 10px 0;
-
-      input[type="range"] {
-        position: absolute;
-        width: 100%;
-        margin: 0;
-        pointer-events: none;
-        -webkit-appearance: none;
-        appearance: none;
-        background: transparent;
-        z-index: 2;
-
-        &::-webkit-slider-runnable-track {
-          height: 8px;
-          background: transparent;
-        }
-
-        &::-webkit-slider-thumb {
-          pointer-events: all;
-          -webkit-appearance: none;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: #ff007a;
-          border: 2px solid #fff;
-          margin-top: -5px;
-          cursor: pointer;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          z-index: 3;
-
-          &:hover, &:active {
-            transform: scale(1.4);
-            box-shadow: 0 0 12px rgba(255, 0, 122, 0.8);
-          }
-        }
-
-        &::-moz-range-track {
-          height: 8px;
-          background: transparent;
-        }
-
-        &::-moz-range-thumb {
-          pointer-events: all;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          background: #ff007a;
-          border: 2px solid #fff;
-          cursor: pointer;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          z-index: 3;
-
-          &:hover, &:active {
-            transform: scale(1.4);
-            box-shadow: 0 0 12px rgba(255, 0, 122, 0.8);
-          }
-        }
-
-        &[id="release-year-min"] {
-          z-index: 2;
-        }
-
-        &[id="release-year-max"] {
-          z-index: 1;
-        }
-      }
-
-      .range-track {
-        height: 8px;
-        background: linear-gradient(
-          to right,
-          #1e2a44 0%,
-          #1e2a44 calc((var(--min-value) - 1900) / (var(--current-year) - 1900) * 100%),
-          #00ffcc calc((var(--min-value) - 1900) / (var(--current-year) - 1900) * 100%),
-          #00ffcc calc((var(--max-value) - 1900) / (var(--current-year) - 1900) * 100%),
-          #1e2a44 calc((var(--max-value) - 1900) / (var(--current-year) - 1900) * 100%),
-          #1e2a44 100%
-        );
-        border-radius: 4px;
-        position: relative;
-        z-index: 1;
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 255, 204, 0.3);
-      }
-
-      .range-values {
-        display: flex;
-        justify-content: space-between;
-        color: #fff;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-top: 12px;
-        text-shadow: 0 0 4px rgba(0, 255, 204, 0.4);
-        padding: 0 5px;
-
-        span {
-          background: rgba(255, 0, 122, 0.2);
-          padding: 4px 8px;
-          border-radius: 4px;
-        }
-      }
-    }
-
-    .numeric-input {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-
-      input[type="number"] {
-        width: 70px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid #00ffcc;
-        border-radius: 6px;
-        padding: 8px 10px;
-        color: #fff;
-        font-size: 0.85rem;
-        font-weight: 500;
-        transition: border-color 0.2s ease, background 0.2s ease;
-
-        &::-webkit-outer-spin-button,
-        &::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-
-        &[type=number] {
-          -moz-appearance: textfield;
-        }
-
-        &:focus {
-          outline: none;
-          border-color: #ff007a;
-          background: rgba(255, 255, 255, 0.15);
-          box-shadow: 0 0 8px rgba(255, 0, 122, 0.3);
-        }
-
-        &::placeholder {
-          color: #aaa;
-        }
-      }
-
-      .unit {
-        color: #00ffcc;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-shadow: 0 0 4px rgba(0, 255, 204, 0.3);
-      }
-    }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #22c55e;
+    cursor: pointer;
+    border: none;
   }
 }
 
 .reset-btn {
-  background: linear-gradient(135deg, #ff007a, #b700ff);
+  margin-top: auto;
+  margin-left: auto;
+  background: none;
   border: none;
-  border-radius: 8px;
-  padding: 10px;
+  color: #ef4444;
+  font-weight: bold;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(255, 0, 122, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  z-index: 150;
 
   &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(255, 0, 122, 0.5);
-  }
-
-  svg {
-    width: 14px;
-    height: 14px;
-    stroke: #fff;
+    color: #f87171;
   }
 }
