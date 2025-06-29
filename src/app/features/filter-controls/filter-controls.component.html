@@ -1,48 +1,50 @@
 <div class="filter-panel-inner">
-  <div class="filter-group">
-    <label>Genre</label>
-    <div class="genre-buttons">
-      <button
-        *ngFor="let g of genres"
-        (click)="updateFilters({ genre: genre === g ? '' : g })"
-        [class.active]="genre === g"
-        class="genre-button">
-        {{ g }}
-      </button>
+  <div class="genre-column">
+    <div class="filter-group">
+      <label>Genre</label>
+      <div class="genre-buttons">
+        <button
+          *ngFor="let g of genres"
+          (click)="updateFilters({ genre: genre === g ? '' : g })"
+          [class.active]="genre === g"
+          class="genre-button">
+          {{ g }}
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="filter-group">
-    <label>Release Year: {{ releaseYearMin }} - {{ releaseYearMax }}</label>
-    <ngx-slider
-  [(value)]="releaseYearMin"
-  [(highValue)]="releaseYearMax"
-  [options]="sliderOptions"
-  (userChangeEnd)="emitChange()"
-></ngx-slider>
+  <div class="slider-column">
+    <div class="filter-group">
+      <label>Release Year: {{ releaseYearMin }} - {{ releaseYearMax }}</label>
+      <ngx-slider
+        [(value)]="releaseYearMin"
+        [(highValue)]="releaseYearMax"
+        [options]="sliderOptions"
+        (userChangeEnd)="emitChange()"></ngx-slider>
+    </div>
 
-  </div>
+   <div class="filter-group">
+      <label>IMDb Rating ≥ {{ imdbRatingMin }}</label>
+      <input
+        type="range"
+        min="0"
+        max="10"
+        step="0.1"
+        [(ngModel)]="imdbRatingMin"
+        (change)="emitChange()" />
+    </div>
 
   <div class="filter-group">
-    <label>IMDb Rating ≥ {{ imdbRatingMin }}</label>
-    <input
-      type="range"
-      min="0"
-      max="10"
-      step="0.1"
-      [(ngModel)]="imdbRatingMin"
-      (change)="emitChange()" />
-  </div>
-
-  <div class="filter-group">
-    <label>RT Rating ≥ {{ rtRatingMin }}%</label>
-    <input
-      type="range"
-      min="0"
-      max="100"
-      step="1"
-      [(ngModel)]="rtRatingMin"
-      (change)="emitChange()" />
+      <label>RT Rating ≥ {{ rtRatingMin }}%</label>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        [(ngModel)]="rtRatingMin"
+        (change)="emitChange()" />
+    </div>
   </div>
 
   <button class="reset-btn" (click)="resetFilters()">Reset</button>

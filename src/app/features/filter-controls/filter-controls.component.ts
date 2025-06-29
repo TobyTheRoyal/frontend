@@ -43,7 +43,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     
     if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin']) {
-      this.pulseFilter();
+      // previously triggered a visual pulse effect here
     }
   }
 
@@ -92,16 +92,6 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     setTimeout(() => ripple.classList.remove('animate'), 600);
   }
 
-  applyImdbFilter(): void {
-    this.updateFilters({ imdbRatingMin: this.imdbRatingMin });
-    this.toggleDropdown(null);
-  }
-
-  applyRtFilter(): void {
-    this.updateFilters({ rtRatingMin: this.rtRatingMin });
-    this.toggleDropdown(null);
-  }
-
   hasActiveFilters(): boolean {
     return (
       this.genre !== '' ||
@@ -110,14 +100,6 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       this.imdbRatingMin > 0 ||
       this.rtRatingMin > 0
     );
-  }
-
-  pulseFilter(): void {
-    const controls = document.querySelectorAll<HTMLElement>('.filter-control');
-    controls.forEach(control => {
-      control.classList.add('pulse');
-      setTimeout(() => control.classList.remove('pulse'), 500);
-    });
   }
 
   resetFilters(): void {
@@ -134,7 +116,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.filter-control') && !target.closest('.dropdown-panel')) {
+    if (!target.closest('.dropdown-panel')) {
       this.activeDropdown = null;
     }
   }

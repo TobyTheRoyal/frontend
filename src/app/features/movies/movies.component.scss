@@ -279,25 +279,6 @@ h2 {
     overflow-x: auto;
   }
 
-  .filter-control {
-  background: #181818;
-  border: 1px solid #27272a;
-  color: #fafafa;
-  border-radius: 0.75rem;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #22c55e22;
-    border-color: #22c55e;
-    color: #22c55e;
-  }
-
-  &.active {
-    background-color: #22c55e22;
-    border-color: #22c55e;
-  }
-}
-
 .reset-btn {
   color: #ef4444;
   &:hover {
