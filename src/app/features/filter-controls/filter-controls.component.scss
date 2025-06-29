@@ -1,7 +1,9 @@
 /* filter-controls.component.scss */
+
+/* Layout */
 .filter-panel-inner {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 260px 1fr;
   align-items: start;
   gap: 1rem;
   padding: 1rem;
@@ -10,6 +12,7 @@
   border-radius: 0.75rem;
   box-shadow: 0 0 12px rgba(34, 197, 94, 0.1);
 }
+
 .genre-column {
   display: flex;
   flex-direction: column;
@@ -19,7 +22,9 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 360px;
 }
+
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -60,6 +65,7 @@
   }
 }
 
+/* Reset-Button */
 .reset-btn {
   grid-column: 2;
   justify-self: end;
@@ -72,4 +78,79 @@
   &:hover {
     color: #f87171;
   }
+}
+
+:host ::ng-deep .ngx-slider {
+  height: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+:host ::ng-deep .ngx-slider .ngx-slider-bar {
+  height: 6px;
+  background-color: #2d2d2d;
+  border-radius: 3px;
+}
+
+:host ::ng-deep .ngx-slider .ngx-slider-selection {
+  background-color: #22c55e;
+  height: 6px;
+}
+
+:host ::ng-deep .ngx-slider .ngx-slider-pointer {
+  width: 12px;
+  height: 12px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  border: none;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: box-shadow 0.2s ease;
+}
+
+:host ::ng-deep .ngx-slider .ngx-slider-pointer:hover,
+:host ::ng-deep .ngx-slider .ngx-slider-pointer:focus {
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+  outline: none;
+}
+
+:host ::ng-deep .ngx-slider .ngx-slider-bubble,
+:host ::ng-deep .ngx-slider .ngx-slider-tick,
+:host ::ng-deep .ngx-slider .ngx-slider-limit {
+  display: none !important;
+}
+
+
+/* ─────────────────────────────── */
+/* Gleiche Optik für native range inputs (IMDb/RT Slider) */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #2d2d2d;
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 }

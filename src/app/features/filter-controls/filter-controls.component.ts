@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, HostListener, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, HostListener, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxSliderModule, Options} from '@angular-slider/ngx-slider';
@@ -7,6 +7,7 @@ import { FilterOptions } from '../../core/services/filter.service';
 import { debugError } from '../../core/utils/logger';
 
 @Component({
+  encapsulation: ViewEncapsulation.None, 
   selector: 'app-filter-controls',
   standalone: true,
   imports: [CommonModule, FormsModule, NgxSliderModule],
