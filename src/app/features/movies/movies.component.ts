@@ -209,6 +209,55 @@ export class MoviesComponent implements OnInit, OnDestroy {
   tryNextPage();
 }
 
+  loadMoviesUntil(minCount: number): void {
+  if (this.isLoading || !this.hasMore) return;
+  this.isLoading = true;
+
+  const filters = this.filterService.getFilters();
+  let batchMovies: Content[] = [];
+
+  const tryNext = () => {
+    if (this.currentPage > this.maxPageLimit) {
+      this.hasMore = false;
+      this.isLoading = false;
+      return;
+    }
+
+    this.contentService.getFilteredMovies(filters, this.currentPage).subscribe({
+      next: (data) => {
+        const filtered = data.filter(m => typeof m.imdbRating === 'number');
+
+        if (filtered.length > 0) {
+          batchMovies.push(...filtered);
+          this.emptyPageCount = 0;
+        } else {
+          this.emptyPageCount++;
+        }
+
+        this.currentPage++;
+
+        if (batchMovies.length >= minCount || this.emptyPageCount >= this.maxEmptyPages) {
+          this.movies.push(...batchMovies);
+          this.isLoading = false;
+          if (this.emptyPageCount >= this.maxEmptyPages || this.currentPage > this.maxPageLimit) {
+            this.hasMore = false;
+          }
+          return;
+        }
+
+        tryNext(); // nächste Seite
+      },
+      error: () => {
+        debugError('Fehler beim Laden Seite', this.currentPage);
+        this.isLoading = false;
+      }
+    });
+  };
+
+  tryNext();
+}
+
+
 
   loadPage(): void {
   if (this.isLoading || !this.hasMore) return;
