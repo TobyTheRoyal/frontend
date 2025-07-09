@@ -128,6 +128,15 @@ export class ContentService {
     const rawDate = item.release_date ?? item.first_air_date ?? '';
     const releaseYear = rawDate ? parseInt(rawDate.slice(0, 4), 10) : 0;
 
+    const parseRating = (val: any): number | null => {
+      if (val === undefined || val === null || val === 'N/A') {
+        return null;
+      }
+      const num = parseFloat(val);
+      return isNaN(num) ? null : num;
+    };
+
+
     return {
       id: item.id,
       tmdbId: item.id.toString(),
@@ -137,8 +146,8 @@ export class ContentService {
         ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : 'https://placehold.co/200x300',
       type: item.title ? 'movie' : 'tv',
-      imdbRating: item.imdbRating ?? null,
-      rtRating: item.rtRating ?? null,
+      imdbRating: parseRating(item.imdbRating),
+      rtRating: parseRating(item.rtRating),
       rating: item.rating,
       genres: item.genres || [],
       overview: item.overview,

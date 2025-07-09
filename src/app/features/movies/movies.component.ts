@@ -76,14 +76,15 @@ export class MoviesComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.movies = data;
+          const filtered = data.filter(m => typeof m.imdbRating === 'number');
+          this.movies = filtered;
           debugLog('Movies loaded:', data.slice(0, 3).map((m) => ({
             title: m.title,
             imdbRating: m.imdbRating,
             rtRating: m.rtRating
           })));
           this.isLoading = false;
-          this.hasMore = data.length > 0;
+          this.hasMore = filtered.length > 0;
         },
         error: () => {
           debugError('Failed to load filtered movies');
@@ -107,7 +108,13 @@ export class MoviesComponent implements OnInit, OnDestroy {
   }
 
   updateFilters(newFilters: Partial<FilterOptions>): void {
-    const updatedFilters = { ...this.filterService.getFilters(), ...newFilters };
+    const updatedFilters = { ...this.filterService.getFilters(), ...newFilters } as FilterOptions;
+    if (newFilters.imdbRatingMin !== undefined) {
+      updatedFilters.imdbRatingMin = Number(newFilters.imdbRatingMin);
+    }
+    if (newFilters.rtRatingMin !== undefined) {
+      updatedFilters.rtRatingMin = Number(newFilters.rtRatingMin);
+    }
     if (newFilters.releaseYearMin && updatedFilters.releaseYearMax < updatedFilters.releaseYearMin) {
       updatedFilters.releaseYearMax = updatedFilters.releaseYearMin;
     }
@@ -149,10 +156,11 @@ export class MoviesComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.contentService.getFilteredMovies(this.filterService.getFilters(), this.currentPage).subscribe({
       next: (data) => {
-        if (!data.length) {
+        const filtered = data.filter(m => typeof m.imdbRating === 'number');
+        if (!filtered.length) {
           this.hasMore = false;
         } else {
-          this.movies.push(...data);
+           this.movies.push(...filtered);
           this.currentPage++;
         }
         this.isLoading = false;

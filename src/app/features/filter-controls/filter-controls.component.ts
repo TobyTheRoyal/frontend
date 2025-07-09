@@ -62,10 +62,10 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   emitChange(): void {
     this.filtersChange.emit({
       genre: this.genre,
-      releaseYearMin: this.releaseYearMin,
-      releaseYearMax: this.releaseYearMax,
-      imdbRatingMin: this.imdbRatingMin,
-      rtRatingMin: this.rtRatingMin
+      releaseYearMin: Number(this.releaseYearMin),
+      releaseYearMax: Number(this.releaseYearMax),
+      imdbRatingMin: Number(this.imdbRatingMin),
+      rtRatingMin: Number(this.rtRatingMin)
     });
   }
 
