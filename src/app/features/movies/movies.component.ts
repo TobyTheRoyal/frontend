@@ -47,6 +47,11 @@ export class MoviesComponent implements OnInit, OnDestroy {
   private filterSub?: Subscription;
   private filterServiceSub?: Subscription;
 
+  private emptyPageCount = 0;
+  private readonly maxEmptyPages = 10;
+  private readonly maxPageLimit = 50;
+
+
   genre: string = '';
   releaseYearMin: number = 1900;
   releaseYearMax: number = this.currentYear;
@@ -69,28 +74,37 @@ export class MoviesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadPage();
     this.filterSub = this.filterSubject
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-        switchMap((filters) => this.contentService.getFilteredMovies(filters, this.currentPage))
-      )
-      .subscribe({
-        next: (data) => {
-          const filtered = data.filter(m => typeof m.imdbRating === 'number');
-          this.movies = filtered;
-          debugLog('Movies loaded:', data.slice(0, 3).map((m) => ({
-            title: m.title,
-            imdbRating: m.imdbRating,
-            rtRating: m.rtRating
-          })));
-          this.isLoading = false;
-          this.hasMore = filtered.length > 0;
-        },
-        error: () => {
-          debugError('Failed to load filtered movies');
-          this.isLoading = false;
-        }
-      });
+  .pipe(
+    debounceTime(500),
+    distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+    switchMap((filters) => {
+      this.currentPage = 1;
+      this.emptyPageCount = 0;
+      this.hasMore = true;
+      this.movies = [];
+      this.isLoading = true;
+      return this.contentService.getFilteredMovies(filters, this.currentPage);
+    })
+  )
+  .subscribe({
+    next: (data) => {
+      const filtered = data.filter(m => typeof m.imdbRating === 'number');
+      this.movies = filtered;
+      this.currentPage++;
+      this.isLoading = false;
+
+      if (filtered.length === 0) {
+        // Starte automatisches Preloading
+        this.loadUntilHitOrLimit();
+      }
+      this.hasMore = true; // lassen wir offen, scroll entscheidet selbst mit emptyPageCount
+    },
+    error: () => {
+      debugError('Failed to load filtered movies');
+      this.isLoading = false;
+    }
+  });
+
 
     this.filterServiceSub = this.filterService.currentFilters.subscribe(filters => {
       this.genre = filters.genre;
@@ -151,26 +165,80 @@ export class MoviesComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadPage(): void {
-    if (this.isLoading || !this.hasMore) return;
-    this.isLoading = true;
-    this.contentService.getFilteredMovies(this.filterService.getFilters(), this.currentPage).subscribe({
+  loadUntilHitOrLimit(): void {
+  if (this.isLoading || !this.hasMore) return;
+
+  this.isLoading = true;
+  const filters = this.filterService.getFilters();
+
+  const tryNextPage = () => {
+    this.contentService.getFilteredMovies(filters, this.currentPage).subscribe({
       next: (data) => {
         const filtered = data.filter(m => typeof m.imdbRating === 'number');
-        if (!filtered.length) {
-          this.hasMore = false;
+
+        if (filtered.length > 0) {
+          this.movies.push(...filtered);
+          this.emptyPageCount = 0;
         } else {
-           this.movies.push(...filtered);
-          this.currentPage++;
+          this.emptyPageCount++;
         }
-        this.isLoading = false;
+
+        this.currentPage++;
+
+        // ⛔ Abbrechen, wenn Grenze erreicht
+        if (this.emptyPageCount >= this.maxEmptyPages || this.currentPage > this.maxPageLimit) {
+          this.hasMore = false;
+          this.isLoading = false;
+          return;
+        }
+
+        // ✅ Wenn noch keine Treffer → nächste Seite laden
+        if (this.movies.length === 0) {
+          tryNextPage(); // rekursiv
+        } else {
+          this.isLoading = false;
+        }
       },
       error: () => {
-        debugError('Failed to load page', this.currentPage);
+        debugError('Fehler beim Vorladen Seite', this.currentPage);
         this.isLoading = false;
       }
     });
-  }
+  };
+
+  tryNextPage();
+}
+
+
+  loadPage(): void {
+  if (this.isLoading || !this.hasMore) return;
+  this.isLoading = true;
+
+  this.contentService.getFilteredMovies(this.filterService.getFilters(), this.currentPage).subscribe({
+    next: (data) => {
+      const filtered = data.filter(m => typeof m.imdbRating === 'number');
+
+      if (filtered.length > 0) {
+        this.movies.push(...filtered);
+        this.emptyPageCount = 0; // Reset
+      } else {
+        this.emptyPageCount++;
+      }
+
+      this.currentPage++;
+      this.isLoading = false;
+
+      if (this.emptyPageCount >= this.maxEmptyPages) {
+        this.hasMore = false;
+      }
+    },
+    error: () => {
+      debugError('Fehler beim Laden von Seite', this.currentPage);
+      this.isLoading = false;
+    }
+  });
+}
+
 
   startRating(tmdbId: string): void {
     this.isLoggedIn$.subscribe((loggedIn: boolean) => {
