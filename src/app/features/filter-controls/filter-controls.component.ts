@@ -21,6 +21,16 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   @Input() imdbRatingMin = 0;
   @Input() rtRatingMin = 0;
   @Input() currentYear = new Date().getFullYear();
+  @Input() provider = '';
+
+  readonly providers = [
+    'Netflix',
+    'Disney+',
+    'Apple TV+',
+    'Prime Video',
+    'Paramount+',
+    'Sky/Wow'
+  ];
 
   genres: string[] = [];
   activeDropdown: string | null = null;
@@ -65,7 +75,8 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       releaseYearMin: Number(this.releaseYearMin),
       releaseYearMax: Number(this.releaseYearMax),
       imdbRatingMin: Number(this.imdbRatingMin),
-      rtRatingMin: Number(this.rtRatingMin)
+      rtRatingMin: Number(this.rtRatingMin),
+      provider: this.provider
     });
   }
 
@@ -99,7 +110,8 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       this.releaseYearMin !== 1900 ||
       this.releaseYearMax !== this.currentYear ||
       this.imdbRatingMin > 0 ||
-      this.rtRatingMin > 0
+      this.rtRatingMin > 0 ||
+      this.provider !== ''
     );
   }
 
@@ -109,6 +121,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     this.releaseYearMax = this.currentYear;
     this.imdbRatingMin = 0;
     this.rtRatingMin = 0;
+    this.provider = '';
     this.emitChange();
     this.reset.emit();
     this.activeDropdown = null;

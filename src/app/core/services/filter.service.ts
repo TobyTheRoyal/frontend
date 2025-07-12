@@ -7,6 +7,7 @@ export interface FilterOptions {
   releaseYearMax: number;
   imdbRatingMin: number;
   rtRatingMin: number;
+  provider: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -17,6 +18,7 @@ export class FilterService {
     releaseYearMax: new Date().getFullYear(),
     imdbRatingMin: 0,
     rtRatingMin: 0,
+    provider: '',
   });
   currentFilters = this.filters.asObservable();
 
@@ -31,6 +33,7 @@ export class FilterService {
       releaseYearMax: new Date().getFullYear(),
       imdbRatingMin: 0,
       rtRatingMin: 0,
+      provider: '',
     });
   }
 

@@ -12,6 +12,7 @@ export interface Content {
   overview?: string;
   cast?: CastMember[];
   language?: string;
+  providers?: string[];
 }
 
 export interface CastMember {

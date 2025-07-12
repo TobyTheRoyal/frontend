@@ -45,6 +45,18 @@
         [(ngModel)]="rtRatingMin"
         (change)="emitChange()" />
     </div>
+    <div class="filter-group">
+      <label>Provider</label>
+      <div class="provider-buttons">
+        <button
+          *ngFor="let p of providers"
+          (click)="updateFilters({ provider: provider === p ? '' : p })"
+          [class.active]="provider === p"
+          class="provider-button">
+          {{ p }}
+        </button>
+      </div>
+    </div>
   </div>
 
   <button class="reset-btn" (click)="resetFilters()">Reset</button>

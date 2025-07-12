@@ -77,6 +77,11 @@ export class ContentService {
       imdbRatingMin: filters.imdbRatingMin.toString(),
       rtRatingMin: filters.rtRatingMin.toString(),
     };
+
+    if (filters.provider) {
+      params.provider = filters.provider;
+    }
+    
     return this.http.get<Content[]>(`${this.apiUrl}/content/movies-page`, { params });
   }
 

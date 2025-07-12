@@ -57,6 +57,7 @@ export class MoviesComponent implements OnInit, OnDestroy {
   releaseYearMax: number = this.currentYear;
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
+  provider: string = '';
 
   showFilters = false;
 
@@ -112,6 +113,7 @@ export class MoviesComponent implements OnInit, OnDestroy {
       this.releaseYearMax = filters.releaseYearMax;
       this.imdbRatingMin = filters.imdbRatingMin;
       this.rtRatingMin = filters.rtRatingMin;
+      this.provider = filters.provider;
       this.filterSubject.next(filters);
     });
   }
@@ -161,7 +163,8 @@ export class MoviesComponent implements OnInit, OnDestroy {
       f.releaseYearMin !== 1900 ||
       f.releaseYearMax !== this.currentYear ||
       f.imdbRatingMin > 0 ||
-      f.rtRatingMin > 0
+      f.rtRatingMin > 0 ||
+      f.provider !== ''
     );
   }
 
