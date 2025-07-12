@@ -53,7 +53,7 @@
           (click)="updateFilters({ provider: provider === p ? '' : p })"
           [class.active]="provider === p"
           class="provider-button">
-          {{ p }}
+          <img [src]="getProviderLogoPath(p)" [alt]="p" class="provider-logo" />
         </button>
       </div>
     </div>

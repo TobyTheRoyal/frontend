@@ -32,6 +32,15 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     'Sky/Wow'
   ];
 
+  private readonly providerLogoMap: Record<string, string> = {
+    'Netflix': 'netflix.svg',
+    'Disney+': 'disney-plus.svg',
+    'Apple TV+': 'apple-tv.svg',
+    'Prime Video': 'prime.svg',
+    'Paramount+': 'paramount.svg',
+    'Sky/Wow': 'sky.svg'
+  };
+
   genres: string[] = [];
   activeDropdown: string | null = null;
 
@@ -125,6 +134,11 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     this.emitChange();
     this.reset.emit();
     this.activeDropdown = null;
+  }
+
+  getProviderLogoPath(provider: string): string {
+    const file = this.providerLogoMap[provider];
+    return '/assets/images/providers/' + file;
   }
 
   @HostListener('document:click', ['$event'])
