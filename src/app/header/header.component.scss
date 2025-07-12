@@ -115,7 +115,7 @@
     height: 60px;
     object-fit: cover;
     border-radius: variables.$border-radius-sm;
-    background: #333;
+    background: variables.$secondary-color;
   }
 
   .suggestion-text {
