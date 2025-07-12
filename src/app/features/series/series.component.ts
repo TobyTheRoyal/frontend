@@ -21,7 +21,7 @@ import { FilterControlsComponent } from '../filter-controls/filter-controls.comp
   templateUrl: './series.component.html',
   styleUrls: ['./series.component.scss'],
 })
-export class SeriesComponent implements OnInit {
+export class SeriesComponent implements OnInit, OnDestroy  {
   series: Content[]                = [];
   selectedContentId: string | null = null;
   ratingScore: string              = '';
@@ -347,7 +347,7 @@ export class SeriesComponent implements OnInit {
 
   loadPage(): void {
     if (this.isLoading || !this.hasMore) return;
-  this.isLoading = true;
+    this.isLoading = true;
 
     this.contentService.getFilteredSeries(this.filterService.getFilters(), this.currentPage).subscribe({
       next: data => {
