@@ -1,3 +1,5 @@
+@use 'variables';
+
 .auth-page {
   display: flex;
   justify-content: center;
@@ -31,7 +33,7 @@ h2 {
 }
 
 .auth-button {
-  background: #00c4b4;
+  background: variables.$accent-color;
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -56,7 +58,7 @@ h2 {
   margin-top: 20px;
 
   a {
-    color: #00c4b4;
+    color: variables.$accent-color;
     text-decoration: none;
 
     &:hover {
@@ -66,7 +68,7 @@ h2 {
 }
 
 .error-message {
-  color: #ff4444;
+  color: variables.$danger-color;
   font-size: 12px;
   margin-top: 10px;
 }

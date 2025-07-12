@@ -1,3 +1,5 @@
+@use 'variables';
+
 .navbar {
   background: #1a1a1a;
   padding: 10px 30px;
@@ -26,7 +28,7 @@
   transition: color 0.3s ease;
 
   &:hover {
-    color: #00c4b4;
+    color: variables.$accent-color;
   }
 }
 
@@ -47,7 +49,7 @@
   border-radius: 20px;
   color: #ffffff;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: variables.$font-family;
   outline: none;
   height: 40px;
   box-sizing: border-box;
@@ -168,7 +170,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   
   /* Standard Hintergrund, kann später je nach Link überschrieben werden */
-  background: linear-gradient(45deg, #00c4b4, #008f85);
+  background: linear-gradient(45deg, variables.$accent-color, #008f85);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   
   &:hover {
@@ -200,20 +202,20 @@
   text-transform: uppercase;
   text-decoration: none;
   padding: 6px 12px;
-  border: 1px solid #00c4b4;
+  border: 1px solid variables.$accent-color;
   border-radius: 4px;
   transition: background 0.3s ease, color 0.3s ease;
   background: transparent;
 
   &:hover {
-    background: #00c4b4;
+    background: variables.$accent-color;
     color: #ffffff;
   }
 }
 
 /* Für den Sign Up Button als gefüllte Variante */
 .auth-link.signup-link {
-  background: #00c4b4;
+  background: variables.$accent-color;
   border: none;
 }
 
@@ -279,7 +281,7 @@
 
   &:hover {
     background: #3a3a3a;
-    color: #00c4b4;
+    color: variables.$accent-color;
   }
 }
 
@@ -323,12 +325,12 @@
     transform: translateX(-50%);
     width: 0%;
     height: 2px;
-    background: #00c4b4;
+    background: variables.$accent-color;
     transition: width 0.3s ease;
   }
   
   &:hover {
-    color: #00c4b4;
+    color: variables.$accent-color;
   }
   
   &:hover:after {
@@ -336,7 +338,7 @@
   }
   
   &.active {
-    color: #00c4b4;
+    color: variables.$accent-color;
   }
   
   &.active:after {

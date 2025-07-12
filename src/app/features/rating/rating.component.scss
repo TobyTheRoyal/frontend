@@ -1,3 +1,5 @@
+@use 'variables';
+
 .rating-container {
     padding: 40px 30px;
     background: #1a1a1a;
@@ -41,20 +43,20 @@
       -webkit-appearance: none;
       width: 16px;
       height: 16px;
-      background: #00c4b4;
+      background: variables.$accent-color;
       border-radius: 50%;
       cursor: pointer;
     }
   }
   
   .score-display {
-    color: #00c4b4;
+    color: variables.$accent-color;
     font-size: 16px;
     font-weight: 500;
   }
   
   button {
-    background: #00c4b4;
+    background: variables.$accent-color;
     color: #ffffff;
     border: none;
     padding: 8px 16px;

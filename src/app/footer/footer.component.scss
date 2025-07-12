@@ -1,3 +1,5 @@
+@use 'variables';
+
 .footer {
   background: #1a1a1a;
   padding: 40px 30px;
@@ -45,7 +47,7 @@ ul a {
   transition: color 0.3s ease;
 
   &:hover {
-    color: #00c4b4;
+    color: variables.$accent-color;
   }
 }
 

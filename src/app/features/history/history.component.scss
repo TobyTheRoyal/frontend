@@ -1,3 +1,4 @@
+@use 'variables';
 /* src/app/features/history/history.component.scss */
 .history-container {
     background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
@@ -57,7 +58,7 @@
             transition: background 0.2s, transform 0.2s;
       
             &:hover {
-              background: #00c4b4;
+              background: variables.$accent-color;
               transform: scale(1.1);
             }
           }
@@ -107,7 +108,7 @@
             .rating-input {
               width: 80px;
               padding: 8px;
-              border: 2px solid #00c4b4;
+              border: 2px solid variables.$accent-color;
               border-radius: 6px;
               background: transparent;
               color: #fff;
@@ -116,7 +117,7 @@
             }
   
             .submit-rating-btn {
-              background: #00c4b4;
+              background: variables.$accent-color;
               color: #fff;
               border: none;
               padding: 8px 16px;

@@ -1,3 +1,5 @@
+@use 'variables';
+
 .auth-page {
     min-height: 100vh;
     background: #1a1a1a;
@@ -38,7 +40,7 @@
   
   .auth-button {
     width: 100%;
-    background: #00c4b4;
+    background: variables.$accent-color;
     color: #ffffff;
     border: none;
     padding: 12px;
@@ -57,7 +59,7 @@
     }
   }
   .error-message {
-    color: #ff4444;
+    color: variables.$danger-color;
     font-size: 12px;
     margin-top: 10px;
     text-align: center;
@@ -69,7 +71,7 @@
     margin-top: 15px;
   
     a {
-      color: #00c4b4;
+      color: variables.$accent-color;
       &:hover {
         text-decoration: underline;
       }

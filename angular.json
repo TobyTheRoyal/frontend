@@ -25,8 +25,11 @@
     "polyfills": ["zone.js"],
     "tsConfig": "tsconfig.app.json",
     "assets": ["src/favicon.ico", "src/assets"],
-    "styles": ["src/styles.scss"],
-    "scripts": [],
+    "stylePreprocessorOptions": {
+        "includePaths": ["src/styles"]
+      },
+      "styles": ["src/styles.scss"],
+      "scripts": [],
     "baseHref": "/"
   },
   "configurations": {
@@ -87,6 +90,9 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": ["src/favicon.ico", "src/assets"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "styles": ["src/styles.scss"],
             "scripts": []
           }
