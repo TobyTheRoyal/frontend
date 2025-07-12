@@ -124,7 +124,8 @@ export class MoviesComponent implements OnInit, OnDestroy {
   }
 
   updateFilters(newFilters: Partial<FilterOptions>): void {
-    const updatedFilters = { ...this.filterService.getFilters(), ...newFilters } as FilterOptions;
+    const currentFilters = this.filterService.getFilters();
+    const updatedFilters = { ...currentFilters, ...newFilters } as FilterOptions;
     if (newFilters.imdbRatingMin !== undefined) {
       updatedFilters.imdbRatingMin = Number(newFilters.imdbRatingMin);
     }
@@ -137,6 +138,11 @@ export class MoviesComponent implements OnInit, OnDestroy {
     if (newFilters.releaseYearMax && updatedFilters.releaseYearMin > updatedFilters.releaseYearMax) {
       updatedFilters.releaseYearMin = updatedFilters.releaseYearMax;
     }
+
+    if (JSON.stringify(currentFilters) === JSON.stringify(updatedFilters)) {
+      return;
+    }
+
     this.currentPage = 1;
     this.movies = [];
     this.hasMore = true;
@@ -145,6 +151,19 @@ export class MoviesComponent implements OnInit, OnDestroy {
   }
 
   resetFilters(): void {
+    const defaultFilters: FilterOptions = {
+      genre: '',
+      releaseYearMin: 1900,
+      releaseYearMax: this.currentYear,
+      imdbRatingMin: 0,
+      rtRatingMin: 0,
+      provider: '',
+    };
+
+    if (JSON.stringify(this.filterService.getFilters()) === JSON.stringify(defaultFilters)) {
+      return;
+    }
+    
     this.currentPage = 1;
     this.movies = [];
     this.hasMore = true;
