@@ -1,13 +1,13 @@
-import { Component, OnInit, OnChanges, SimpleChanges, HostListener, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgxSliderModule, Options} from '@angular-slider/ngx-slider';
+import { NgxSliderModule, Options } from '@angular-slider/ngx-slider';
 import { ContentService } from '../../core/services/content.service';
 import { FilterOptions } from '../../core/services/filter.service';
 import { debugError } from '../../core/utils/logger';
 
 @Component({
-  encapsulation: ViewEncapsulation.None, 
+  encapsulation: ViewEncapsulation.None,
   selector: 'app-filter-controls',
   standalone: true,
   imports: [CommonModule, FormsModule, NgxSliderModule],
@@ -23,6 +23,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   @Input() currentYear = new Date().getFullYear();
   @Input() provider = '';
 
+  genres: string[] = [];
   readonly providers = [
     'Netflix',
     'Disney+',
@@ -41,29 +42,29 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     'Sky/Wow': 'sky.svg'
   };
 
-  genres: string[] = [];
-  activeDropdown: string | null = null;
-
   sliderOptions: Options = {
-  floor: 1900,
-  ceil: this.currentYear,
-  step: 1
-};
+    floor: 1900,
+    ceil: this.currentYear,
+    step: 1,
+    translate: (value: number) => `${value}`
+  };
 
   @Output() filtersChange = new EventEmitter<Partial<FilterOptions>>();
   @Output() reset = new EventEmitter<void>();
-
 
   constructor(private contentService: ContentService) {}
 
   ngOnInit(): void {
     this.loadGenres();
+    this.sliderOptions.ceil = this.currentYear;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    
-    if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin']) {
-      // previously triggered a visual pulse effect here
+    if (changes['currentYear']) {
+      this.sliderOptions = { ...this.sliderOptions, ceil: this.currentYear };
+    }
+    if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin'] || changes['releaseYearMin'] || changes['releaseYearMax'] || changes['provider']) {
+      this.emitChange();
     }
   }
 
@@ -74,8 +75,14 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     });
   }
 
-  updateFilters(filters: Partial<FilterOptions>): void {
-    this.filtersChange.emit(filters);
+  selectGenre(genre: string): void {
+    this.genre = genre;
+    this.emitChange();
+  }
+
+  selectProvider(provider: string): void {
+    this.provider = provider;
+    this.emitChange();
   }
 
   emitChange(): void {
@@ -87,15 +94,6 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       rtRatingMin: Number(this.rtRatingMin),
       provider: this.provider
     });
-  }
-
-  toggleDropdown(dropdown: string | null): void {
-    if (this.activeDropdown === dropdown) {
-      this.activeDropdown = null;
-    } else {
-      this.activeDropdown = dropdown;
-      
-    }
   }
 
   triggerRipple(event: MouseEvent): void {
@@ -133,19 +131,10 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     this.provider = '';
     this.emitChange();
     this.reset.emit();
-    this.activeDropdown = null;
   }
 
   getProviderLogoPath(provider: string): string {
     const file = this.providerLogoMap[provider];
     return '/assets/images/providers/' + file;
-  }
-
-  @HostListener('document:click', ['$event'])
-  handleClickOutside(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-panel')) {
-      this.activeDropdown = null;
-    }
   }
 }

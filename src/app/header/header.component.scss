@@ -1,16 +1,17 @@
 @use 'variables';
 
 .navbar {
-  background: #1a1a1a;
-  padding: 10px 30px;
+  background: variables.$primary-color;
+  padding: variables.$spacing-md variables.$spacing-xl;
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid #2a2a2a;
-  transition: padding 0.3s ease;
+  border-bottom: 1px solid variables.$secondary-color;
+  transition: variables.$transition-base;
 
   &.scrolled {
-    padding: 5px 30px;
+    padding: variables.$spacing-sm variables.$spacing-xl;
+    box-shadow: variables.$shadow-sm;
   }
 }
 
@@ -18,14 +19,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
 }
 
 .logo-link {
-  color: #ffffff;
-  font-size: 24px;
+  color: variables.$text-color;
+  font-size: variables.$font-size-heading;
   font-weight: 700;
+  font-family: variables.$font-family;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: variables.$transition-fast;
 
   &:hover {
     color: variables.$accent-color;
@@ -34,45 +40,40 @@
 
 .search-container {
   flex-grow: 1;
-  margin: 0 40px;
+  max-width: 500px;
   position: relative;
-  max-width: 50%;
-  transition: all 0.3s ease;
+  margin: 0 variables.$spacing-md;
 }
-
 
 .search-bar {
   width: 100%;
-  padding: 12px 40px 12px 20px;
-  background: #2a2a2a;
+  padding: variables.$spacing-sm variables.$spacing-lg;
+  background: variables.$secondary-color;
   border: none;
-  border-radius: 20px;
-  color: #ffffff;
-  font-size: 14px;
+  border-radius: variables.$border-radius-lg;
+  color: variables.$text-color;
+  font-size: variables.$font-size-body;
   font-family: variables.$font-family;
   outline: none;
   height: 40px;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
+  transition: variables.$transition-fast;
 
   &:focus {
-    box-shadow: 0 0 8px rgba(0, 196, 180, 0.3);
-    transition: box-shadow 0.3s ease;
+    box-shadow: 0 0 8px variables.$shadow-color;
   }
 
   &::placeholder {
-    color: #b3b3b3;
-    font-size: 14px;
+    color: variables.$secondary-text-color;
   }
 }
 
 .search-icon {
   position: absolute;
-  right: 15px;
+  right: variables.$spacing-md;
   top: 50%;
   transform: translateY(-50%);
+  color: variables.$accent-color;
   pointer-events: none;
-  animation: pulse 1.5s infinite;
 }
 
 .autocomplete-list {
@@ -81,42 +82,39 @@
   left: 0;
   width: 100%;
   max-height: 300px;
-  margin-top: 0.5rem;
-  padding: 0.25rem 0;
-  background: #1f1f1f;           // dunkler Hintergrund
-  border-radius: 0.5rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  margin-top: variables.$spacing-sm;
+  background: variables.$secondary-color;
+  border-radius: variables.$border-radius-md;
+  box-shadow: variables.$shadow-md;
   overflow-y: auto;
   z-index: 1000;
 
-  /* scrollbar styling (Webkit) */
   &::-webkit-scrollbar {
     width: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+    background: variables.$secondary-text-color;
+    border-radius: variables.$border-radius-sm;
   }
 }
 
 .suggestion-item {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.75rem;
-  gap: 0.75rem;
+  padding: variables.$spacing-sm variables.$spacing-md;
+  gap: variables.$spacing-md;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: variables.$transition-fast;
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
   }
 
   .suggestion-poster {
-    flex-shrink: 0;
     width: 40px;
     height: 60px;
     object-fit: cover;
-    border-radius: 0.25rem;
+    border-radius: variables.$border-radius-sm;
     background: #333;
   }
 
@@ -126,100 +124,100 @@
     overflow: hidden;
 
     .suggestion-title {
-      font-size: 0.95rem;
+      font-size: variables.$font-size-body;
       font-weight: 600;
-      color: #fff;
+      color: variables.$text-color;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
     }
 
     .suggestion-year {
-      font-size: 0.85rem;
-      color: #bbb;
-      margin-top: 2px;
+      font-size: variables.$font-size-small;
+      color: variables.$secondary-text-color;
     }
   }
-}
-
-
-@keyframes pulse {
-  0% { transform: translateY(-50%) scale(1); }
-  50% { transform: translateY(-50%) scale(1.1); }
-  100% { transform: translateY(-50%) scale(1); }
 }
 
 .user-options {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: variables.$spacing-sm;
+  flex-shrink: 0;
 }
 
-/* Gemeinsamer Stil für die User-Links */
 .user-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  
-  /* Standard Hintergrund, kann später je nach Link überschrieben werden */
-  background: linear-gradient(45deg, variables.$accent-color, #008f85);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* Icons in den Links */
-.link-icon {
-  fill: currentColor;
-  transition: fill 0.3s ease;
-}
-
-/* Zusätzliche Anpassungen falls nötig */
-.watchlist {
-  /* Optionale spezifische Anpassungen für Watchlist */
-}
-
-.history {
-  /* Optionale spezifische Anpassungen für History */
-}
-
-/* Für Gäste: Sign In / Sign Up */
-.auth-link.guest-link {
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 6px 12px;
-  border: 1px solid variables.$accent-color;
-  border-radius: 4px;
-  transition: background 0.3s ease, color 0.3s ease;
+  gap: 6px;
+  padding: 8px 16px;
   background: transparent;
+  border: 2px solid variables.$accent-color;
+  border-radius: variables.$border-radius-lg;
+  color: variables.$accent-color;
+  font-size: variables.$font-size-small;
+  font-weight: 600;
+  font-family: variables.$font-family;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: variables.$transition-fast;
+  line-height: 1.2;
+  white-space: nowrap;
 
   &:hover {
-    background: variables.$accent-color;
-    color: #ffffff;
+    background: linear-gradient(45deg, variables.$accent-color, darken(variables.$accent-color, 10%));
+    color: variables.$text-color;
+    transform: translateY(-2px);
+    box-shadow: variables.$shadow-sm;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: variables.$accent-color;
+    transition: variables.$transition-fast;
+  }
+
+  &:hover svg {
+    stroke: variables.$text-color;
   }
 }
 
-/* Für den Sign Up Button als gefüllte Variante */
-.auth-link.signup-link {
-  background: variables.$accent-color;
-  border: none;
+.auth-link {
+  padding: 8px 16px;
+  border-radius: variables.$border-radius-lg;
+  font-size: variables.$font-size-small;
+  font-weight: 600;
+  font-family: variables.$font-family;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: variables.$transition-fast;
+
+  &.guest-link {
+    background: transparent;
+    border: 2px solid variables.$accent-color;
+    color: variables.$accent-color;
+
+    &:hover {
+      background: variables.$accent-color;
+      color: variables.$text-color;
+      transform: translateY(-2px);
+      box-shadow: variables.$shadow-sm;
+    }
+  }
+
+  &.signup-link {
+    background: linear-gradient(45deg, variables.$accent-color, darken(variables.$accent-color, 10%));
+    color: variables.$text-color;
+    border: none;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: variables.$shadow-sm;
+    }
+  }
 }
 
-/* Profil-Dropdown (wie vorher) */
 .profile-dropdown {
   position: relative;
 }
@@ -228,120 +226,152 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #ffffff;
+  color: variables.$text-color;
   display: flex;
   align-items: center;
-  padding: 0;
-  transition: transform 0.3s ease;
+  padding: 8px;
+  transition: variables.$transition-fast;
 
   &:hover {
-    transform: rotate(10deg);
+    color: variables.$accent-color;
   }
-}
 
-.user-icon {
-  transition: fill 0.3s ease;
+  svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+  }
 }
 
 .dropdown-menu {
   position: absolute;
   top: 110%;
   right: 0;
-  background: #2a2a2a;
-  list-style: none;
-  padding: 10px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: variables.$secondary-color;
+  padding: variables.$spacing-sm 0;
+  border-radius: variables.$border-radius-md;
+  box-shadow: variables.$shadow-md;
   min-width: 150px;
   transform: translateY(10px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
+  transition: variables.$transition-fast;
 
-.dropdown-menu.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
 
-.dropdown-menu li {
-  margin: 0;
-}
+  a {
+    display: flex;
+    align-items: center;
+    gap: variables.$spacing-sm;
+    color: variables.$secondary-text-color;
+    font-size: variables.$font-size-small;
+    padding: variables.$spacing-sm variables.$spacing-md;
+    text-decoration: none;
+    transition: variables.$transition-fast;
 
-.dropdown-menu a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #b3b3b3;
-  font-size: 14px;
-  padding: 10px 15px;
-  text-decoration: none;
-  transition: background 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    background: #3a3a3a;
-    color: variables.$accent-color;
+    &:hover {
+      background: darken(variables.$secondary-color, 5%);
+      color: variables.$accent-color;
+    }
   }
 }
 
-.menu-icon {
-  font-size: 16px;
-}
-
-
 .category-bar {
-  background: #1a1a1a;
-  padding: 15px 30px;
+  background: variables.$primary-color;
+  padding: variables.$spacing-md variables.$spacing-xl;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .category-links {
   list-style: none;
   display: flex;
   justify-content: center;
-  align-items: center;
+  gap: variables.$spacing-lg;
   margin: 0;
   padding: 0;
-  gap: 30px;
 }
 
 .category-links a {
-  color: #ffffff;
-  font-size: 16px;
+  color: variables.$text-color;
+  font-size: variables.$font-size-body;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
   text-decoration: none;
-  transition: color 0.3s ease;
+  position: relative;
+  transition: variables.$transition-fast;
 
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0%;
-    height: 2px;
-    background: variables.$accent-color;
-    transition: width 0.3s ease;
-  }
-  
-  &:hover {
-    color: variables.$accent-color;
-  }
-  
-  &:hover:after {
-    width: 100%;
-  }
-  
+  &:hover,
   &.active {
     color: variables.$accent-color;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 2px;
+      background: variables.$accent-color;
+    }
   }
-  
-  &.active:after {
-    width: 100%;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: variables.$spacing-sm variables.$spacing-md;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: variables.$spacing-sm;
+  }
+
+  .search-container {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .user-options {
+    justify-content: center;
+    gap: variables.$spacing-xs;
+    flex-wrap: wrap;
+  }
+
+  .user-link, .auth-link {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .profile-btn {
+    padding: 6px;
+  }
+
+  .category-links {
+    flex-wrap: wrap;
+    gap: variables.$spacing-md;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-link, .auth-link {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+  }
+
+  .profile-btn svg {
+    width: 20px;
+    height: 20px;
   }
 }

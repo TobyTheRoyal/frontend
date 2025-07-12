@@ -5,70 +5,108 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #1a1a1a;
+  background: variables.$primary-color;
+  padding: variables.$spacing-md;
 }
 
 .auth-box {
-  background: #2a2a2a;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  background: variables.$secondary-color;
+  padding: variables.$spacing-xl;
+  border-radius: variables.$border-radius-md;
+  box-shadow: variables.$shadow-md;
   text-align: center;
+  max-width: 400px;
+  width: 100%;
 }
 
 h2 {
-  color: #ffffff;
-  margin-bottom: 20px;
+  color: variables.$text-color;
+  font-size: variables.$font-size-heading;
+  font-weight: 700;
+  font-family: variables.$font-family;
+  margin-bottom: variables.$spacing-lg;
 }
 
 .auth-input {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background: #3a3a3a;
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-  font-size: 14px;
+  padding: variables.$spacing-sm variables.$spacing-md;
+  margin: variables.$spacing-sm 0;
+  background: variables.$primary-color;
+  border: 1px solid transparent;
+  border-radius: variables.$border-radius-sm;
+  color: variables.$text-color;
+  font-size: variables.$font-size-body;
+  font-family: variables.$font-family;
+  outline: none;
+  transition: variables.$transition-fast;
+
+  &:focus {
+    border-color: variables.$accent-color;
+    box-shadow: 0 0 8px variables.$shadow-color;
+  }
+
+  &::placeholder {
+    color: variables.$secondary-text-color;
+  }
 }
 
 .auth-button {
-  background: variables.$accent-color;
-  color: #ffffff;
+  background: linear-gradient(45deg, variables.$accent-color, darken(variables.$accent-color, 10%));
+  color: variables.$text-color;
   border: none;
-  padding: 10px 20px;
-  margin-top: 20px;
-  border-radius: 4px;
+  padding: variables.$spacing-sm variables.$spacing-md;
+  margin-top: variables.$spacing-md;
+  border-radius: variables.$border-radius-lg;
+  font-size: variables.$font-size-body;
+  font-weight: 600;
+  font-family: variables.$font-family;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: variables.$transition-fast;
 
   &:hover {
-    background: #00a899;
+    transform: scale(1.05);
+    box-shadow: variables.$shadow-sm;
   }
 
   &[disabled] {
-    background: #666;
+    background: variables.$secondary-text-color;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 
 .auth-link {
-  color: #b3b3b3;
-  font-size: 12px;
-  margin-top: 20px;
+  color: variables.$secondary-text-color;
+  font-size: variables.$font-size-small;
+  font-family: variables.$font-family;
+  margin-top: variables.$spacing-md;
+  display: block;
 
   a {
     color: variables.$accent-color;
     text-decoration: none;
+    transition: variables.$transition-fast;
 
     &:hover {
-      color: #00a899;
+      color: variables.$hover-color;
     }
   }
 }
 
 .error-message {
   color: variables.$danger-color;
-  font-size: 12px;
-  margin-top: 10px;
+  font-size: variables.$font-size-small;
+  font-family: variables.$font-family;
+  margin-top: variables.$spacing-sm;
+}
+
+@media (max-width: 768px) {
+  .auth-box {
+    padding: variables.$spacing-md;
+  }
+
+  h2 {
+    font-size: variables.$font-size-subheading;
+  }
 }

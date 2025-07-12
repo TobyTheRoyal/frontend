@@ -5,10 +5,20 @@
       <div class="genre-buttons">
         <button
           *ngFor="let g of genres"
-          (click)="updateFilters({ genre: genre === g ? '' : g })"
+          (click)="selectGenre(g); triggerRipple($event)"
           [class.active]="genre === g"
-          class="genre-button">
+          class="genre-button"
+        >
+          <span class="ripple"></span>
           {{ g }}
+        </button>
+        <button
+          (click)="selectGenre(''); triggerRipple($event)"
+          [class.active]="genre === ''"
+          class="genre-button"
+        >
+          <span class="ripple"></span>
+          All Genres
         </button>
       </div>
     </div>
@@ -21,43 +31,60 @@
         [(value)]="releaseYearMin"
         [(highValue)]="releaseYearMax"
         [options]="sliderOptions"
-        (userChangeEnd)="emitChange()"></ngx-slider>
+        (userChangeEnd)="emitChange()"
+      ></ngx-slider>
     </div>
 
-   <div class="filter-group">
-      <label>IMDb Rating ≥ {{ imdbRatingMin }}</label>
+    <div class="filter-group">
+      <label>IMDb Rating ≥ {{ imdbRatingMin | number:'1.1-1' }}</label>
       <input
         type="range"
         min="0"
         max="10"
         step="0.1"
         [(ngModel)]="imdbRatingMin"
-        (change)="emitChange()" />
+        (change)="emitChange()"
+      />
     </div>
 
-  <div class="filter-group">
-      <label>RT Rating ≥ {{ rtRatingMin }}%</label>
+    <div class="filter-group">
+      <label>RT Rating ≥ {{ rtRatingMin | number:'1.0-0' }}%</label>
       <input
         type="range"
         min="0"
         max="100"
         step="1"
         [(ngModel)]="rtRatingMin"
-        (change)="emitChange()" />
+        (change)="emitChange()"
+      />
     </div>
+
     <div class="filter-group">
       <label>Provider</label>
       <div class="provider-buttons">
         <button
           *ngFor="let p of providers"
-          (click)="updateFilters({ provider: provider === p ? '' : p })"
+          (click)="selectProvider(p); triggerRipple($event)"
           [class.active]="provider === p"
-          class="provider-button">
+          class="provider-button"
+        >
+          <span class="ripple"></span>
           <img [src]="getProviderLogoPath(p)" [alt]="p" class="provider-logo" />
+        </button>
+        <button
+          (click)="selectProvider(''); triggerRipple($event)"
+          [class.active]="provider === ''"
+          class="provider-button"
+        >
+          <span class="ripple"></span>
+          All
         </button>
       </div>
     </div>
   </div>
 
-  <button class="reset-btn" (click)="resetFilters()">Reset</button>
+  <button class="reset-btn" (click)="resetFilters(); triggerRipple($event)">
+    <span class="ripple"></span>
+    Reset
+  </button>
 </div>

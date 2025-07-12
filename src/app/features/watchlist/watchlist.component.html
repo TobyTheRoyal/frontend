@@ -1,4 +1,3 @@
-<!-- src/app/features/watchlist/watchlist.component.html -->
 <div class="watchlist-container">
   <h2>My Watchlist</h2>
   <div class="content-list">
@@ -12,31 +11,21 @@
         class="card-image"
         [style.backgroundImage]="'url(' + (item.poster || 'https://placehold.co/200x300') + ')'"
       >
-        <!-- Remove from Watchlist -->
-        <button class="add-btn" (click)="removeFromWatchlist(item.tmdbId); $event.stopPropagation()">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
-               stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <button
+          class="add-btn"
+          (click)="removeFromWatchlist(item.tmdbId); $event.stopPropagation()"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3">
             <path d="M5 12h14"/>
           </svg>
         </button>
-
-        <!-- Rate Content -->
         <button class="rating-btn" (click)="startRating(item.tmdbId); $event.stopPropagation()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 
-                     9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
           </svg>
         </button>
-
-        <!-- Rating Overlay + Input -->
-        <div
-          class="rating-overlay"
-          *ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted"
-        ></div>
-        <div
-          class="rating-input-container"
-          *ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted"
-        >
+        <div class="rating-overlay" *ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted"></div>
+        <div class="rating-input-container" *ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted">
           <div class="rating-card">
             <button class="close-btn" (click)="stopRating()">✕</button>
             <h3>Rate “{{ item.title }}”</h3>
@@ -47,30 +36,21 @@
               class="rating-input-field"
               (keydown.enter)="submitRating(item.tmdbId)"
             />
-            <button
-              class="submit-rating-btn"
-              (click)="submitRating(item.tmdbId)"
-            >
+            <button class="submit-rating-btn" (click)="submitRating(item.tmdbId)">
               Submit
             </button>
           </div>
         </div>
-
-        <!-- Own Rating Badge -->
         <div class="own-rating-tag" *ngIf="getRating(item.tmdbId) !== null">
           <span class="star-icon">★</span>
           {{ getRating(item.tmdbId) | number:'1.1-1' }}
         </div>
       </div>
-
       <p class="card-title">{{ item.title }} ({{ item.releaseYear }})</p>
-
       <div class="ratings-container">
         <div class="imdb-rating">
           <img src="/assets/images/imdb-logo.png" alt="IMDb" class="rating-icon imdb-rating-icon" />
-          {{ item.imdbRating != null
-             ? (item.imdbRating | number:'1.1-1')
-             : 'N/A' }}
+          {{ item.imdbRating != null ? (item.imdbRating | number:'1.1-1') : 'N/A' }}
         </div>
         <div class="rt-rating">
           <img src="/assets/images/rt-logo-cf.png" alt="Rotten Tomatoes" class="rating-icon rt-rating-icon" />
