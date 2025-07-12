@@ -81,10 +81,27 @@ export class ContentService {
     if (filters.provider) {
       params.provider = filters.provider;
     }
-    
+
     return this.http.get<Content[]>(`${this.apiUrl}/content/movies-page`, { params });
   }
 
+  getFilteredSeries(filters: FilterOptions, page: number = 1): Observable<Content[]> {
+    const params: any = {
+      page: page.toString(),
+      genre: filters.genre || '',
+      releaseYearMin: filters.releaseYearMin.toString(),
+      releaseYearMax: filters.releaseYearMax.toString(),
+      imdbRatingMin: filters.imdbRatingMin.toString(),
+      rtRatingMin: filters.rtRatingMin.toString(),
+    };
+
+    if (filters.provider) {
+      params.provider = filters.provider;
+    }
+
+    return this.http.get<Content[]>(`${this.apiUrl}/content/series-page`, { params });
+  }
+  
   private getGenreId(genreName: string): string {
     const genreMap: { [key: string]: string } = {
       Action: '28',
