@@ -182,9 +182,9 @@
   padding: 0;
 
   .ngx-slider-bar {
-    height: 6px;
-    background: variables.$secondary-color;
-    border-radius: variables.$border-radius-sm;
+    height: 6px !important;
+    background: variables.$secondary-color !important;
+    border-radius: variables.$border-radius-sm !important;
   }
 
   .ngx-slider-selection {
@@ -193,14 +193,14 @@
   }
 
   .ngx-slider-pointer {
-    width: 12px;
-    height: 12px;
-    background: variables.$accent-color;
-    border-radius: 50%;
-    border: none;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    transition: box-shadow variables.$transition-fast;
+    width: 12px !important;
+    height: 12px !important;
+    background: variables.$accent-color !important;
+    border-radius: 50% !important;
+    border: none !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    transition: box-shadow variables.$transition-fast !important;
   }
 
   .ngx-slider-pointer:hover,
@@ -212,11 +212,11 @@
   .ngx-slider-bubble,
   .ngx-slider-tick,
   .ngx-slider-limit {
-    display: none;
+    display: none !important;
   }
 
   .ngx-slider-pointer::after {
-    display: none;
+    display: none !important;
   }
 }
 
