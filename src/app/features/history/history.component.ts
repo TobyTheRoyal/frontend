@@ -19,6 +19,8 @@ interface RatedContent {
     releaseYear?: number;
     imdbRating?: number;   // <-- neu
     rtRating?: number;     // <-- neu
+    genres?: string;
+    providers?: string;
   };
   score: number;
 }
