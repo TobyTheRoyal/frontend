@@ -1,9 +1,43 @@
 <div class="watchlist-container">
   <h2>My Watchlist</h2>
+  <div class="filter-actions">
+    <button
+      class="filter-toggle-btn"
+      [ngClass]="{ 'active': showFilters }"
+      (click)="toggleFilters()"
+    >
+      <svg
+        class="filter-icon"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <polygon points="22 3 2 3 10 12.5 10 21 14 21 14 12.5 22 3"></polygon>
+      </svg>
+      Filter
+      <span *ngIf="hasActiveFilters()" class="active-indicator"></span>
+    </button>
+  </div>
+
+  <app-filter-controls
+    *ngIf="showFilters"
+    [genre]="genre"
+    [releaseYearMin]="releaseYearMin"
+    [releaseYearMax]="releaseYearMax"
+    [imdbRatingMin]="imdbRatingMin"
+    [rtRatingMin]="rtRatingMin"
+    [provider]="provider"
+    [currentYear]="currentYear"
+    (filtersChange)="updateFilters($event)"
+    (reset)="resetFilters()"
+  ></app-filter-controls>
   <div class="content-list">
     <div
       class="content-card"
-      *ngFor="let item of allContents"
+      *ngFor="let item of filteredContents"
       (mouseleave)="stopRating()"
       (click)="onCardClick(item.tmdbId)"
     >

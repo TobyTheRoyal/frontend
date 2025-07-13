@@ -17,6 +17,49 @@ h2 {
   text-shadow: 0 0 10px variables.$shadow-color;
 }
 
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: variables.$spacing-lg;
+}
+
+.filter-toggle-btn {
+  background: linear-gradient(135deg, variables.$secondary-color, darken(variables.$secondary-color, 10%));
+  border: 2px solid variables.$accent-color;
+  color: variables.$text-color;
+  padding: variables.$spacing-sm variables.$spacing-md;
+  border-radius: variables.$border-radius-lg;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: variables.$spacing-sm;
+  box-shadow: variables.$shadow-sm;
+  transition: variables.$transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 0, 122, 0.3);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, variables.$accent-color, darken(variables.$accent-color, 15%));
+    border-color: variables.$accent-color;
+    color: variables.$text-color;
+  }
+
+  .filter-icon {
+    stroke: currentColor;
+  }
+
+  .active-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+  }
+}
+
 .content-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

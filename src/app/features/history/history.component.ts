@@ -1,5 +1,5 @@
 // src/app/features/history/history.component.ts
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule }   from '@angular/common';
 import { Router, RouterModule }   from '@angular/router';
 import { FormsModule }    from '@angular/forms';
@@ -7,6 +7,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService }    from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 import { debugError } from '../../core/utils/logger';
+import { FilterService, FilterOptions } from '../../core/services/filter.service';
+import { Subscription } from 'rxjs';
+import { FilterControlsComponent } from '../filter-controls/filter-controls.component';
 
 interface RatedContent {
   content: {
@@ -23,25 +26,47 @@ interface RatedContent {
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FilterControlsComponent],
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent implements OnInit, OnDestroy {
   history: RatedContent[] = [];
+  filteredHistory: RatedContent[] = [];
   selectedContentId: string | null = null;
   ratingScore = '';
   isRatingSubmitted = false;
   private ratingsApi = `${environment.apiUrl}/ratings`;
 
+  currentYear = new Date().getFullYear();
+  genre: string = '';
+  releaseYearMin: number = 1900;
+  releaseYearMax: number = this.currentYear;
+  imdbRatingMin: number = 0;
+  rtRatingMin: number = 0;
+  provider: string = '';
+  showFilters = false;
+
+  private filterServiceSub?: Subscription;
+
   constructor(
     private http: HttpClient,
     private auth: AuthService,
     private router: Router,
+    private filterService: FilterService,
   ) {}
 
   ngOnInit() {
     this.loadHistory();
+    this.filterServiceSub = this.filterService.currentFilters.subscribe(f => {
+      this.genre = f.genre;
+      this.releaseYearMin = f.releaseYearMin;
+      this.releaseYearMax = f.releaseYearMax;
+      this.imdbRatingMin = f.imdbRatingMin;
+      this.rtRatingMin = f.rtRatingMin;
+      this.provider = f.provider;
+      this.applyFilters();
+    });
   }
 
   private getHeaders(): HttpHeaders {
@@ -53,7 +78,7 @@ export class HistoryComponent implements OnInit {
     this.http
       .get<RatedContent[]>(this.ratingsApi, { headers: this.getHeaders() })
       .subscribe({
-        next: data => this.history = data,
+        next: data => { this.history = data; this.applyFilters(); },
         error: err => debugError('Failed to load history', err),
       });
   }
@@ -122,5 +147,83 @@ export class HistoryComponent implements OnInit {
         },
         error: err => debugError('Failed to rate', err),
       });
+  }
+
+  updateFilters(newFilters: Partial<FilterOptions>): void {
+    const current = this.filterService.getFilters();
+    const updated = { ...current, ...newFilters } as FilterOptions;
+    if (newFilters.imdbRatingMin !== undefined) {
+      updated.imdbRatingMin = Number(newFilters.imdbRatingMin);
+    }
+    if (newFilters.rtRatingMin !== undefined) {
+      updated.rtRatingMin = Number(newFilters.rtRatingMin);
+    }
+    if (newFilters.releaseYearMin && updated.releaseYearMax < updated.releaseYearMin) {
+      updated.releaseYearMax = updated.releaseYearMin;
+    }
+    if (newFilters.releaseYearMax && updated.releaseYearMin > updated.releaseYearMax) {
+      updated.releaseYearMin = updated.releaseYearMax;
+    }
+
+    if (JSON.stringify(current) === JSON.stringify(updated)) {
+      return;
+    }
+
+    this.filterService.updateFilters(updated);
+  }
+
+  resetFilters(): void {
+    const defaults: FilterOptions = {
+      genre: '',
+      releaseYearMin: 1900,
+      releaseYearMax: this.currentYear,
+      imdbRatingMin: 0,
+      rtRatingMin: 0,
+      provider: ''
+    };
+
+    if (JSON.stringify(this.filterService.getFilters()) === JSON.stringify(defaults)) {
+      return;
+    }
+
+    this.filterService.resetFilters();
+  }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  hasActiveFilters(): boolean {
+    const f = this.filterService.getFilters();
+    return (
+      f.genre !== '' ||
+      f.releaseYearMin !== 1900 ||
+      f.releaseYearMax !== this.currentYear ||
+      f.imdbRatingMin > 0 ||
+      f.rtRatingMin > 0 ||
+      f.provider !== ''
+    );
+  }
+
+  private applyFilters(): void {
+    const f = this.filterService.getFilters();
+    this.filteredHistory = this.history.filter(h => {
+      const c = h.content;
+      if (f.genre && !(c.genres?.includes(f.genre))) return false;
+      if (f.provider && !(c.providers?.includes(f.provider))) return false;
+      const year = c.releaseYear ?? 0;
+      if (year < f.releaseYearMin || year > f.releaseYearMax) return false;
+      if (f.imdbRatingMin > 0) {
+        if (c.imdbRating == null || c.imdbRating < f.imdbRatingMin) return false;
+      }
+      if (f.rtRatingMin > 0) {
+        if (c.rtRating == null || c.rtRating < f.rtRatingMin) return false;
+      }
+      return true;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.filterServiceSub?.unsubscribe();
   }
 }
