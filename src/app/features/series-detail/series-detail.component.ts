@@ -7,6 +7,7 @@ import { WatchlistService } from '../../core/services/watchlist.service';
 import { RatingsService } from '../../core/services/ratings.service';
 import { AuthService } from '../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { providerLogoMap } from '../../shared/provider-logos';
 import { debugError } from '../../core/utils/logger';
 
 @Component({
@@ -28,6 +29,8 @@ export class SeriesDetailComponent implements OnInit {
 
   // Eigenes Rating
   userRating: number | null = null;
+
+  readonly providerLogoMap = providerLogoMap;
 
   constructor(
     private route: ActivatedRoute,
@@ -100,5 +103,10 @@ export class SeriesDetailComponent implements OnInit {
     this.selectedContentId = null;
     this.ratingScore      = '';
     this.isRatingSubmitted = false;
+  }
+
+  getProviderLogoPath(provider: string): string {
+    const file = this.providerLogoMap[provider];
+    return '/assets/images/providers/' + file;
   }
 }

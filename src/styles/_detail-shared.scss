@@ -224,6 +224,19 @@
   gap: variables.$spacing-sm;
 }
 
+.providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+  align-items: center;
+}
+
+.provider-logo {
+  width: 60px;
+  height: auto;
+  object-fit: contain;
+}
+
 .genre-pill {
   background: linear-gradient(135deg, variables.$secondary-color, darken(variables.$secondary-color, 15%));
   color: variables.$text-color;

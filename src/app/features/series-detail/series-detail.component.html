@@ -107,6 +107,15 @@
           </span>
         </div>
 
+        <section class="providers" *ngIf="series.providers?.length">
+          <img
+            *ngFor="let p of series.providers"
+            [src]="getProviderLogoPath(p)"
+            [alt]="p"
+            class="provider-logo"
+          />
+        </section>
+
         <!-- Overview -->
         <section class="overview">
           <h2>Handlung</h2>

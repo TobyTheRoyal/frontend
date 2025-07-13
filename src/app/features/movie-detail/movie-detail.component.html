@@ -107,6 +107,16 @@
           </span>
         </div>
 
+        <section class="providers" *ngIf="movie.providers?.length">
+          <img
+            *ngFor="let p of movie.providers"
+            [src]="getProviderLogoPath(p)"
+            [alt]="p"
+            class="provider-logo"
+          />
+        </section>
+
+
         <!-- Overview -->
         <section class="overview">
           <h2>Handlung</h2>

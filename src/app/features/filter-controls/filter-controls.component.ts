@@ -26,20 +26,20 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   genres: string[] = [];
   readonly providers = [
     'Netflix',
-    'Disney+',
+    'Disney Plus',
     'Apple TV+',
-    'Prime Video',
-    'Paramount+',
-    'Sky/Wow'
+    'Amazon Prime Video',
+    'Paramount Plus',
+    'Sky Go'
   ];
 
   private readonly providerLogoMap: Record<string, string> = {
     'Netflix': 'netflix.svg',
-    'Disney+': 'disney-plus.svg',
+    'Disney Plus': 'disney-plus.svg',
     'Apple TV+': 'apple-tv.svg',
-    'Prime Video': 'prime.svg',
-    'Paramount+': 'paramount.svg',
-    'Sky/Wow': 'sky.svg'
+    'Amazon Prime Video': 'prime.svg',
+    'Paramount Plus': 'paramount.svg',
+    'Sky Go': 'sky.svg'
   };
 
   sliderOptions: Options = {
