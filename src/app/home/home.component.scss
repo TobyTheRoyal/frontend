@@ -2,19 +2,14 @@
 @use 'variables';
 
 .home-container {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  background-size: 200% 200%;
+  background: variables.$primary-color;
+  padding: variables.$spacing-xl;
   min-height: 100vh;
-  padding: 60px 40px;
-  animation: gradientShift 15s ease infinite;
+  color: variables.$text-color;
+  font-family: variables.$font-family;
   display: flex;
   flex-direction: column;
-  gap: 60px;
-}
-
-@keyframes gradientShift {
-  0%,100% { background-position: 0% 50%; }
-  50%     { background-position: 100% 50%; }
+  gap: variables.$spacing-xl;
 }
 
 /* Hero Section */
@@ -84,11 +79,12 @@
   margin: 0 auto;
 
   h2 {
-    font-size: 2rem;
+    font-size: variables.$font-size-heading;
     font-weight: 700;
-    color: #fff;
-    margin-bottom: 1rem;
-    letter-spacing: 0.5px;
+    margin-bottom: variables.$spacing-lg;
+    text-align: left;
+    color: variables.$accent-color;
+    text-shadow: 0 0 10px variables.$shadow-color;
   }
 
   .slider-container {
@@ -127,8 +123,8 @@
 
 /* Cards */
 .content-card {
-  background: #2a2a2a;
-  border-radius: 12px;
+  background: linear-gradient(135deg, variables.$secondary-color, darken(variables.$secondary-color, 15%));
+  border-radius: variables.$border-radius-md;
   flex: 0 0 auto;
   width: 200px;
   aspect-ratio: 5 / 9;     /* 200 × 360 */
@@ -136,12 +132,12 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: variables.$shadow-md;
+  transition: variables.$transition-base;
 
   &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(255, 0, 122, 0.4);
   }
 
   .card-image {
@@ -150,8 +146,8 @@
     height: auto;
     background-size: cover;
     background-position: center;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    border-top-left-radius: variables.$border-radius-md;
+    border-top-right-radius: variables.$border-radius-md;
     position: relative;
     overflow: hidden;
 
@@ -163,8 +159,9 @@
       height: 32px;
       padding: 8px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
+      background: rgba(0,0,0,0.7);
+      color: variables.$text-color;
+
       border: none;
       display: flex;
       align-items: center;
@@ -184,8 +181,8 @@
     .rating-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
       border-radius: inherit;
       z-index: 1;
     }
@@ -202,65 +199,76 @@
     .rating-card {
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
+      background: rgba(42, 42, 42, 0.9);
+      padding: variables.$spacing-lg;
+      border-radius: variables.$border-radius-md;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      border-radius: inherit;
+      width: 80%;
+      max-width: 240px;
+      box-shadow: variables.$shadow-md;
 
       .close-btn {
         position: absolute;
-        top: 12px;
-        right: 12px;
+        top: 10px;
+        right: 10px;
         background: transparent;
         border: none;
-        color: #fff;
-        font-size: 1.25rem;
+        color: variables.$text-color;
+        font-size: variables.$font-size-body;
         cursor: pointer;
+        transition: variables.$transition-fast;
+
+        &:hover {
+          color: variables.$accent-color;
+        }
       }
 
       h3 {
-        color: #fff;
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
+        color: variables.$text-color;
+        font-size: variables.$font-size-body;
+        font-weight: 700;
+        margin-bottom: variables.$spacing-md;
         text-align: center;
-        padding: 0 8px;
+       
       }
 
       .rating-input-field {
-        width: 80px;
-        padding: 8px;
-        font-size: 1rem;
+        width: 100px;
+        padding: variables.$spacing-sm;
         border: 2px solid variables.$accent-color;
-        border-radius: 6px;
+        border-radius: variables.$border-radius-sm;
         background: transparent;
-        color: #fff;
+        color: variables.$text-color;
         text-align: center;
-        margin-bottom: 1rem;
-        transition: border-color 0.2s;
+        font-size: variables.$font-size-small;
+        font-family: variables.$font-family;
+        transition: variables.$transition-fast;
 
         &:focus {
+          border-color: variables.$hover-color;
+          box-shadow: 0 0 8px variables.$shadow-color;
           outline: none;
-          border-color: #fff;
+          
         }
       }
 
       .submit-rating-btn {
-        background: variables.$accent-color;
-        color: #fff;
+        background: linear-gradient(135deg, variables.$accent-color, darken(variables.$accent-color, 15%));
+        color: variables.$text-color;
         border: none;
-        padding: 8px 20px;
-        border-radius: 20px;
-        font-size: 0.95rem;
+        padding: variables.$spacing-sm variables.$spacing-md;
+        border-radius: variables.$border-radius-lg;
+        font-size: variables.$font-size-small;
         font-weight: 600;
+        font-family: variables.$font-family;
         cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
+        margin-top: variables.$spacing-md;
+        transition: variables.$transition-fast;
 
         &:hover {
-          background: #00a899;
+          box-shadow: 0 4px 8px rgba(255, 0, 122, 0.3);
           transform: translateY(-2px);
         }
       }
@@ -271,38 +279,44 @@
       position: absolute;
       top: 12px;
       right: 12px;
+      background: rgba(255, 0, 122, 0.9);
+      padding: 6px 12px;
+      border-radius: variables.$border-radius-sm;
+      color: variables.$text-color;
+      font-size: variables.$font-size-small;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 6px 10px;
-      background: rgba(0,196,180,0.8);
-      backdrop-filter: blur(4px);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      z-index: 3;
+      gap: 6px;
+      box-shadow: 0 0 6px rgba(255, 0, 122, 0.5);
     }
   }
 
   .card-title {
-    padding: 12px;
+    padding: variables.$spacing-sm variables.$spacing-md;
     font-size: 1rem;
     font-weight: 600;
-    color: #eee;
+    color: variables.$text-color;
     text-align: center;
     line-height: 1.2;
     height: 2.4em;
     margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
   }
 
   .ratings-container {
     display: flex;
-    gap: 12px;
     justify-content: center;
     align-items: center;
-    padding: 8px 0;
+    gap: variables.$spacing-xs;
+    padding: variables.$spacing-sm 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-height: 2rem;
 
     .imdb-rating,
     .rt-rating {
@@ -311,13 +325,12 @@
       gap: 4px;
       font-size: 0.85rem;
       font-weight: 600;
+      white-space: nowrap;
     }
     .imdb-rating { color: #f5c518; }
     .rt-rating  { color: #ff6f00; }
 
-    .rating-icon,
-    .imdb-rating-icon,
-    .rt-rating-icon {
+    .rating-icon {
       width: 16px;
       height: 16px;
       object-fit: contain;
