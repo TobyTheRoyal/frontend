@@ -107,13 +107,15 @@
           </span>
         </div>
 
-        <section class="providers" *ngIf="series.providers?.length">
-          <img
-            *ngFor="let p of series.providers"
-            [src]="getProviderLogoPath(p)"
-            [alt]="p"
-            class="provider-logo"
-          />
+        <section class="providers" *ngIf="getKnownProviders(series.providers).length">
+          <ng-container *ngFor="let p of getKnownProviders(series.providers)">
+            <img
+              *ngIf="getProviderLogoPath(p) as logo"
+              [src]="logo"
+              [alt]="p"
+              class="provider-logo"
+            />
+          </ng-container>
         </section>
 
         <!-- Overview -->

@@ -5,6 +5,10 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: variables.$spacing-xl;
+    background: variables.$primary-color;
+    color: variables.$text-color;
+    min-height: 100vh;
+    font-family: variables.$font-family;
   }
 
   .#{$prefix}-header {

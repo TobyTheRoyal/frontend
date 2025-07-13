@@ -105,8 +105,12 @@ export class SeriesDetailComponent implements OnInit {
     this.isRatingSubmitted = false;
   }
 
-  getProviderLogoPath(provider: string): string {
+  getKnownProviders(providers: string[] | undefined): string[] {
+    return (providers || []).filter(p => this.providerLogoMap[p]);
+  }
+
+  getProviderLogoPath(provider: string): string | null {
     const file = this.providerLogoMap[provider];
-    return '/assets/images/providers/' + file;
+    return file ? '/assets/images/providers/' + file : null;
   }
 }
