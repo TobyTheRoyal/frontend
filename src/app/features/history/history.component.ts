@@ -41,12 +41,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private ratingsApi = `${environment.apiUrl}/ratings`;
 
   currentYear = new Date().getFullYear();
-  genre: string = '';
+  genres: string[] = [];
   releaseYearMin: number = 1900;
   releaseYearMax: number = this.currentYear;
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
-  provider: string = '';
+  providers: string[] = [];
   userRatingMin: number = 0;
   showFilters = false;
 
@@ -62,12 +62,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadHistory();
     this.filterServiceSub = this.filterService.currentFilters.subscribe(f => {
-      this.genre = f.genre;
+      this.genres = f.genres;
       this.releaseYearMin = f.releaseYearMin;
       this.releaseYearMax = f.releaseYearMax;
       this.imdbRatingMin = f.imdbRatingMin;
       this.rtRatingMin = f.rtRatingMin;
-      this.provider = f.provider;
+      this.providers = f.providers;
       this.userRatingMin = f.userRatingMin ?? 0;
       this.applyFilters();
     });
@@ -181,12 +181,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   resetFilters(): void {
     const defaults: FilterOptions = {
-      genre: '',
+      genres: [],
       releaseYearMin: 1900,
       releaseYearMax: this.currentYear,
       imdbRatingMin: 0,
       rtRatingMin: 0,
-      provider: '',
+      providers: [],
       userRatingMin: 0
     };
 
@@ -204,13 +204,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
   hasActiveFilters(): boolean {
     const f = this.filterService.getFilters();
     return (
-      f.genre !== '' ||
+      f.genres.length > 0 ||
       f.releaseYearMin !== 1900 ||
       f.releaseYearMax !== this.currentYear ||
       f.imdbRatingMin > 0 ||
       f.rtRatingMin > 0 ||
       (f.userRatingMin ?? 0) > 0 ||
-      f.provider !== ''
+      f.providers.length > 0
     );
   }
 
@@ -218,8 +218,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     const f = this.filterService.getFilters();
     this.filteredHistory = this.history.filter(h => {
       const c = h.content;
-      if (f.genre && !(c.genres?.includes(f.genre))) return false;
-      if (f.provider && !(c.providers?.includes(f.provider))) return false;
+      if (f.genres.length > 0) {
+        const contentGenres = c.genres?.split(',').map(g => g.trim()) ?? [];
+        if (!f.genres.some(g => contentGenres.includes(g))) return false;
+      }
+      if (f.providers.length > 0) {
+        const contentProviders = c.providers?.split(',').map(p => p.trim()) ?? [];
+        if (!f.providers.some(p => contentProviders.includes(p))) return false;
+      }
       const year = c.releaseYear ?? 0;
       if (year < f.releaseYearMin || year > f.releaseYearMax) return false;
       if (f.imdbRatingMin > 0) {

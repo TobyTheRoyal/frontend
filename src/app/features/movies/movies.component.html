@@ -24,12 +24,12 @@
 
 <app-filter-controls
   *ngIf="showFilters"
-  [genre]="genre"
+  [genresSelected]="genres"
   [releaseYearMin]="releaseYearMin"
   [releaseYearMax]="releaseYearMax"
   [imdbRatingMin]="imdbRatingMin"
   [rtRatingMin]="rtRatingMin"
-  [provider]="provider"
+  [providersSelected]="providers"
   [currentYear]="currentYear"
   (filtersChange)="updateFilters($event)"
   (reset)="resetFilters()"

@@ -71,15 +71,15 @@ export class ContentService {
   getFilteredMovies(filters: FilterOptions, page: number = 1): Observable<Content[]> {
     const params: any = {
       page: page.toString(),
-      genre: filters.genre || '',
+      genre: filters.genres.join(','),
       releaseYearMin: filters.releaseYearMin.toString(),
       releaseYearMax: filters.releaseYearMax.toString(),
       imdbRatingMin: filters.imdbRatingMin.toString(),
       rtRatingMin: filters.rtRatingMin.toString(),
     };
 
-    if (filters.provider) {
-      params.provider = filters.provider;
+    if (filters.providers.length) {
+      params.provider = filters.providers.join(',');
     }
 
     return this.http.get<Content[]>(`${this.apiUrl}/content/movies-page`, { params });
@@ -88,15 +88,15 @@ export class ContentService {
   getFilteredSeries(filters: FilterOptions, page: number = 1): Observable<Content[]> {
     const params: any = {
       page: page.toString(),
-      genre: filters.genre || '',
+      genre: filters.genres.join(','),
       releaseYearMin: filters.releaseYearMin.toString(),
       releaseYearMax: filters.releaseYearMax.toString(),
       imdbRatingMin: filters.imdbRatingMin.toString(),
       rtRatingMin: filters.rtRatingMin.toString(),
     };
 
-    if (filters.provider) {
-      params.provider = filters.provider;
+    if (filters.providers.length) {
+      params.provider = filters.providers.join(',');
     }
 
     return this.http.get<Content[]>(`${this.apiUrl}/content/series-page`, { params });

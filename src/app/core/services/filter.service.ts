@@ -2,24 +2,24 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export interface FilterOptions {
-  genre: string;
+  genres: string[];
   releaseYearMin: number;
   releaseYearMax: number;
   imdbRatingMin: number;
   rtRatingMin: number;
-  provider: string;
+  providers: string[];
   userRatingMin?: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class FilterService {
   private filters = new BehaviorSubject<FilterOptions>({
-    genre: '',
+    genres: [],
     releaseYearMin: 1900,
     releaseYearMax: new Date().getFullYear(),
     imdbRatingMin: 0,
     rtRatingMin: 0,
-    provider: '',
+    providers: [],
     userRatingMin: 0,
   });
   currentFilters = this.filters.asObservable();
@@ -30,12 +30,12 @@ export class FilterService {
 
   resetFilters() {
     this.filters.next({
-      genre: '',
+      genres: [],
       releaseYearMin: 1900,
       releaseYearMax: new Date().getFullYear(),
       imdbRatingMin: 0,
       rtRatingMin: 0,
-      provider: '',
+      providers: [],
       userRatingMin: 0,
     });
   }

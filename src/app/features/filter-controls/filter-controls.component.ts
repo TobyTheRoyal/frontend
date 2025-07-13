@@ -15,14 +15,14 @@ import { debugError } from '../../core/utils/logger';
   styleUrls: ['./filter-controls.component.scss']
 })
 export class FilterControlsComponent implements OnInit, OnChanges {
-  @Input() genre = '';
+  @Input() genresSelected: string[] = [];
   @Input() releaseYearMin = 1900;
   @Input() releaseYearMax = new Date().getFullYear();
   @Input() imdbRatingMin = 0;
   @Input() rtRatingMin = 0;
   @Input() userRatingMin = 0;
   @Input() currentYear = new Date().getFullYear();
-  @Input() provider = '';
+  @Input() providersSelected: string[] = [];
 
   genres: string[] = [];
   readonly providers = [
@@ -64,7 +64,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     if (changes['currentYear']) {
       this.sliderOptions = { ...this.sliderOptions, ceil: this.currentYear };
     }
-    if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin'] || changes['userRatingMin'] || changes['releaseYearMin'] || changes['releaseYearMax'] || changes['provider']) {
+    if (changes['genresSelected'] || changes['imdbRatingMin'] || changes['rtRatingMin'] || changes['userRatingMin'] || changes['releaseYearMin'] || changes['releaseYearMax'] || changes['providersSelected']) {
       this.emitChange();
     }
   }
@@ -76,24 +76,42 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     });
   }
 
-  selectGenre(genre: string): void {
-    this.genre = genre;
+  toggleGenre(genre: string): void {
+    if (this.genresSelected.includes(genre)) {
+      this.genresSelected = this.genresSelected.filter(g => g !== genre);
+    } else {
+      this.genresSelected = [...this.genresSelected, genre];
+    }
     this.emitChange();
   }
 
-  selectProvider(provider: string): void {
-    this.provider = provider;
+  clearGenres(): void {
+    this.genresSelected = [];
+    this.emitChange();
+  }
+
+  toggleProvider(provider: string): void {
+    if (this.providersSelected.includes(provider)) {
+      this.providersSelected = this.providersSelected.filter(p => p !== provider);
+    } else {
+      this.providersSelected = [...this.providersSelected, provider];
+    }
+    this.emitChange();
+  }
+
+  clearProviders(): void {
+    this.providersSelected = [];
     this.emitChange();
   }
 
   emitChange(): void {
     this.filtersChange.emit({
-      genre: this.genre,
+      genres: this.genresSelected,
       releaseYearMin: Number(this.releaseYearMin),
       releaseYearMax: Number(this.releaseYearMax),
       imdbRatingMin: Number(this.imdbRatingMin),
       rtRatingMin: Number(this.rtRatingMin),
-      provider: this.provider,
+      providers: this.providersSelected,
       userRatingMin: Number(this.userRatingMin)
     });
   }
@@ -115,24 +133,24 @@ export class FilterControlsComponent implements OnInit, OnChanges {
 
   hasActiveFilters(): boolean {
     return (
-      this.genre !== '' ||
+      this.genresSelected.length > 0 ||
       this.releaseYearMin !== 1900 ||
       this.releaseYearMax !== this.currentYear ||
       this.imdbRatingMin > 0 ||
       this.rtRatingMin > 0 ||
       this.userRatingMin > 0 ||
-      this.provider !== ''
+      this.providersSelected.length > 0
     );
   }
 
   resetFilters(): void {
-    this.genre = '';
+    this.genresSelected = [];
     this.releaseYearMin = 1900;
     this.releaseYearMax = this.currentYear;
     this.imdbRatingMin = 0;
     this.rtRatingMin = 0;
      this.userRatingMin = 0;
-    this.provider = '';
+    this.providersSelected = [];
     this.emitChange();
     this.reset.emit();
   }

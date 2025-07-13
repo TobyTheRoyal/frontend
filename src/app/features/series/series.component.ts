@@ -40,12 +40,12 @@ export class SeriesComponent implements OnInit, OnDestroy  {
   private readonly maxEmptyPages = 10;
   private readonly maxPageLimit = 50;
 
-  genre: string = '';
+  genres: string[] = [];
   releaseYearMin: number = 1900;
   releaseYearMax: number = this.currentYear;
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
-  provider: string = '';
+  providers: string[] = [];
 
   showFilters = false;
 
@@ -94,12 +94,12 @@ export class SeriesComponent implements OnInit, OnDestroy  {
       });
 
     this.filterServiceSub = this.filterService.currentFilters.subscribe(filters => {
-      this.genre = filters.genre;
+      this.genres = filters.genres;
       this.releaseYearMin = filters.releaseYearMin;
       this.releaseYearMax = filters.releaseYearMax;
       this.imdbRatingMin = filters.imdbRatingMin;
       this.rtRatingMin = filters.rtRatingMin;
-      this.provider = filters.provider;
+      this.providers = filters.providers;
       this.filterSubject.next(filters);
     });
   }
@@ -138,12 +138,12 @@ export class SeriesComponent implements OnInit, OnDestroy  {
 
   resetFilters(): void {
     const defaultFilters: FilterOptions = {
-      genre: '',
+      genres: [],
       releaseYearMin: 1900,
       releaseYearMax: this.currentYear,
       imdbRatingMin: 0,
       rtRatingMin: 0,
-      provider: '',
+      providers: [],
     };
 
     if (JSON.stringify(this.filterService.getFilters()) === JSON.stringify(defaultFilters)) {
@@ -164,12 +164,12 @@ export class SeriesComponent implements OnInit, OnDestroy  {
   hasActiveFilters(): boolean {
     const f = this.filterService.getFilters();
     return (
-      f.genre !== '' ||
+      f.genres.length > 0 ||
       f.releaseYearMin !== 1900 ||
       f.releaseYearMax !== this.currentYear ||
       f.imdbRatingMin > 0 ||
       f.rtRatingMin > 0 ||
-      f.provider !== ''
+      f.providers.length > 0
     );
   }
 

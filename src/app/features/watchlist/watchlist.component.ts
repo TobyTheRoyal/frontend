@@ -29,12 +29,12 @@ export class WatchlistComponent implements OnInit, OnDestroy {
   isLoggedIn$: Observable<boolean>;
 
   currentYear = new Date().getFullYear();
-  genre: string = '';
+  genres: string[] = [];
   releaseYearMin: number = 1900;
   releaseYearMax: number = this.currentYear;
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
-  provider: string = '';
+  providers: string[] = [];
   showFilters = false;
 
   private filterServiceSub?: Subscription;
@@ -59,12 +59,12 @@ export class WatchlistComponent implements OnInit, OnDestroy {
       }
     });
     this.filterServiceSub = this.filterService.currentFilters.subscribe(f => {
-      this.genre = f.genre;
+      this.genres = f.genres;
       this.releaseYearMin = f.releaseYearMin;
       this.releaseYearMax = f.releaseYearMax;
       this.imdbRatingMin = f.imdbRatingMin;
       this.rtRatingMin = f.rtRatingMin;
-      this.provider = f.provider;
+      this.providers = f.providers;
       this.applyFilters();
     });
   }
@@ -167,12 +167,12 @@ export class WatchlistComponent implements OnInit, OnDestroy {
 
   resetFilters(): void {
     const defaults: FilterOptions = {
-      genre: '',
+      genres: [],
       releaseYearMin: 1900,
       releaseYearMax: this.currentYear,
       imdbRatingMin: 0,
       rtRatingMin: 0,
-      provider: ''
+      providers: [],
     };
 
     if (JSON.stringify(this.filterService.getFilters()) === JSON.stringify(defaults)) {
@@ -189,20 +189,20 @@ export class WatchlistComponent implements OnInit, OnDestroy {
   hasActiveFilters(): boolean {
     const f = this.filterService.getFilters();
     return (
-      f.genre !== '' ||
+      f.genres.length > 0 ||
       f.releaseYearMin !== 1900 ||
       f.releaseYearMax !== this.currentYear ||
       f.imdbRatingMin > 0 ||
       f.rtRatingMin > 0 ||
-      f.provider !== ''
+      f.providers.length > 0
     );
   }
 
   private applyFilters(): void {
     const f = this.filterService.getFilters();
     this.filteredContents = this.allContents.filter(c => {
-      if (f.genre && !(c.genres?.includes(f.genre))) return false;
-      if (f.provider && !(c.providers?.includes(f.provider))) return false;
+      if (f.genres.length > 0 && !(c.genres?.some(g => f.genres.includes(g)))) return false;
+      if (f.providers.length > 0 && !(c.providers?.some(p => f.providers.includes(p)))) return false;
       if (c.releaseYear < f.releaseYearMin || c.releaseYear > f.releaseYearMax) return false;
       if (f.imdbRatingMin > 0) {
         if (c.imdbRating == null || c.imdbRating < f.imdbRatingMin) return false;

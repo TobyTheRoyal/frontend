@@ -5,16 +5,16 @@
       <div class="genre-buttons">
         <button
           *ngFor="let g of genres"
-          (click)="selectGenre(g); triggerRipple($event)"
-          [class.active]="genre === g"
+          (click)="toggleGenre(g); triggerRipple($event)"
+          [class.active]="genresSelected.includes(g)"
           class="genre-button"
         >
           <span class="ripple"></span>
           {{ g }}
         </button>
         <button
-          (click)="selectGenre(''); triggerRipple($event)"
-          [class.active]="genre === ''"
+          (click)="clearGenres(); triggerRipple($event)"
+          [class.active]="genresSelected.length === 0"
           class="genre-button"
         >
           <span class="ripple"></span>
@@ -70,22 +70,22 @@
         (change)="emitChange()"
       />
     </div>
-    
+
     <div class="filter-group">
       <label>Provider</label>
       <div class="provider-buttons">
         <button
           *ngFor="let p of providers"
-          (click)="selectProvider(p); triggerRipple($event)"
-          [class.active]="provider === p"
+          (click)="toggleProvider(p); triggerRipple($event)"
+          [class.active]="providersSelected.includes(p)"
           class="provider-button"
         >
           <span class="ripple"></span>
           <img [src]="getProviderLogoPath(p)" [alt]="p" class="provider-logo" />
         </button>
         <button
-          (click)="selectProvider(''); triggerRipple($event)"
-          [class.active]="provider === ''"
+          (click)="clearProviders(); triggerRipple($event)"
+          [class.active]="providersSelected.length === 0"
           class="provider-button"
         >
           <span class="ripple"></span>
