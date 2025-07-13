@@ -223,17 +223,27 @@
 }
 
 .profile-btn {
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
   cursor: pointer;
   color: variables.$text-color;
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 8px;
   transition: variables.$transition-fast;
+  backdrop-filter: blur(4px);
 
   &:hover {
-    color: variables.$accent-color;
+    background: linear-gradient(
+      135deg,
+      variables.$accent-color,
+      darken(variables.$accent-color, 10%)
+    );
+    color: variables.$text-color;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   }
 
   svg {
@@ -247,8 +257,9 @@
   position: absolute;
   top: 110%;
   right: 0;
-  background: variables.$secondary-color;
+  background: rgba(15, 18, 16, 0.95);
   padding: variables.$spacing-sm 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: variables.$border-radius-md;
   box-shadow: variables.$shadow-md;
   min-width: 150px;
@@ -256,6 +267,7 @@
   opacity: 0;
   pointer-events: none;
   transition: variables.$transition-fast;
+  backdrop-filter: blur(6px);
 
   &.show {
     opacity: 1;
@@ -274,8 +286,12 @@
     transition: variables.$transition-fast;
 
     &:hover {
-      background: darken(variables.$secondary-color, 5%);
+      background: rgba(100, 217, 145, 0.1);
       color: variables.$accent-color;
+    }
+      .menu-icon {
+      width: 16px;
+      text-align: center;
     }
   }
 }
