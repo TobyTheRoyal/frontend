@@ -8,6 +8,7 @@ export interface FilterOptions {
   imdbRatingMin: number;
   rtRatingMin: number;
   provider: string;
+  userRatingMin?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -19,6 +20,7 @@ export class FilterService {
     imdbRatingMin: 0,
     rtRatingMin: 0,
     provider: '',
+    userRatingMin: 0,
   });
   currentFilters = this.filters.asObservable();
 
@@ -34,6 +36,7 @@ export class FilterService {
       imdbRatingMin: 0,
       rtRatingMin: 0,
       provider: '',
+      userRatingMin: 0,
     });
   }
 

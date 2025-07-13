@@ -20,6 +20,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   @Input() releaseYearMax = new Date().getFullYear();
   @Input() imdbRatingMin = 0;
   @Input() rtRatingMin = 0;
+  @Input() userRatingMin = 0;
   @Input() currentYear = new Date().getFullYear();
   @Input() provider = '';
 
@@ -63,7 +64,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     if (changes['currentYear']) {
       this.sliderOptions = { ...this.sliderOptions, ceil: this.currentYear };
     }
-    if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin'] || changes['releaseYearMin'] || changes['releaseYearMax'] || changes['provider']) {
+    if (changes['genre'] || changes['imdbRatingMin'] || changes['rtRatingMin'] || changes['userRatingMin'] || changes['releaseYearMin'] || changes['releaseYearMax'] || changes['provider']) {
       this.emitChange();
     }
   }
@@ -92,7 +93,8 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       releaseYearMax: Number(this.releaseYearMax),
       imdbRatingMin: Number(this.imdbRatingMin),
       rtRatingMin: Number(this.rtRatingMin),
-      provider: this.provider
+      provider: this.provider,
+      userRatingMin: Number(this.userRatingMin)
     });
   }
 
@@ -118,6 +120,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       this.releaseYearMax !== this.currentYear ||
       this.imdbRatingMin > 0 ||
       this.rtRatingMin > 0 ||
+      this.userRatingMin > 0 ||
       this.provider !== ''
     );
   }
@@ -128,6 +131,7 @@ export class FilterControlsComponent implements OnInit, OnChanges {
     this.releaseYearMax = this.currentYear;
     this.imdbRatingMin = 0;
     this.rtRatingMin = 0;
+     this.userRatingMin = 0;
     this.provider = '';
     this.emitChange();
     this.reset.emit();

@@ -47,6 +47,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   imdbRatingMin: number = 0;
   rtRatingMin: number = 0;
   provider: string = '';
+  userRatingMin: number = 0;
   showFilters = false;
 
   private filterServiceSub?: Subscription;
@@ -67,6 +68,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.imdbRatingMin = f.imdbRatingMin;
       this.rtRatingMin = f.rtRatingMin;
       this.provider = f.provider;
+      this.userRatingMin = f.userRatingMin ?? 0;
       this.applyFilters();
     });
   }
@@ -160,6 +162,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (newFilters.rtRatingMin !== undefined) {
       updated.rtRatingMin = Number(newFilters.rtRatingMin);
     }
+    if (newFilters.userRatingMin !== undefined) {
+      updated.userRatingMin = Number(newFilters.userRatingMin);
+    }
     if (newFilters.releaseYearMin && updated.releaseYearMax < updated.releaseYearMin) {
       updated.releaseYearMax = updated.releaseYearMin;
     }
@@ -181,7 +186,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       releaseYearMax: this.currentYear,
       imdbRatingMin: 0,
       rtRatingMin: 0,
-      provider: ''
+      provider: '',
+      userRatingMin: 0
     };
 
     if (JSON.stringify(this.filterService.getFilters()) === JSON.stringify(defaults)) {
@@ -203,6 +209,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       f.releaseYearMax !== this.currentYear ||
       f.imdbRatingMin > 0 ||
       f.rtRatingMin > 0 ||
+      (f.userRatingMin ?? 0) > 0 ||
       f.provider !== ''
     );
   }
@@ -220,6 +227,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       if (f.rtRatingMin > 0) {
         if (c.rtRating == null || c.rtRating < f.rtRatingMin) return false;
+      }
+      if (f.userRatingMin && f.userRatingMin > 0) {
+        if (h.score == null || h.score < f.userRatingMin) return false;
       }
       return true;
     });
