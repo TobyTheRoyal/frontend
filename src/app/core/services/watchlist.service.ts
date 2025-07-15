@@ -41,7 +41,15 @@ export class WatchlistService {
     });
     return this.http
       .post(`${this.apiUrl}/add`, { tmdbId: contentId }, { headers })
-      .pipe(catchError(this.handleError<any>('addToWatchlist')));
+      .pipe(
+        tap(() => {
+          const exists = this.watchlist.some(c => c.tmdbId === contentId);
+          if (!exists) {
+            this.watchlist.push({ tmdbId: contentId } as Content);
+          }
+        }),
+        catchError(this.handleError<any>('addToWatchlist'))
+      );
   }
 
   removeFromWatchlist(contentId: string): Observable<any> {
@@ -54,7 +62,12 @@ export class WatchlistService {
     });
     return this.http
       .delete(`${this.apiUrl}/user/${contentId}`, { headers })
-      .pipe(catchError(this.handleError<any>('removeFromWatchlist')));
+      .pipe(
+        tap(() => {
+          this.watchlist = this.watchlist.filter(c => c.tmdbId !== contentId);
+        }),
+        catchError(this.handleError<any>('removeFromWatchlist'))
+      );
   }
 
   setRating(contentId: string, rating: number): Observable<any> {

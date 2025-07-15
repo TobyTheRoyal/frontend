@@ -60,12 +60,25 @@ export class SeriesDetailComponent implements OnInit {
     });
   }
   toggleWatchlist() {
-    if (!this.series) return;
-    const id = this.series.tmdbId;
-    const op = this.isInWL
-      ? this.watchlist.removeFromWatchlist(id)
-      : this.watchlist.addToWatchlist(id);
-    op.subscribe(() => this.isInWL = !this.isInWL);
+    this.auth.isLoggedIn().subscribe(loggedIn => {
+      if (!loggedIn) {
+        this.router.navigate(['/auth/login']);
+        return;
+      }
+      if (!this.series) return;
+      const id = this.series.tmdbId;
+      const op = this.isInWL
+        ? this.watchlist.removeFromWatchlist(id)
+        : this.watchlist.addToWatchlist(id);
+      op.subscribe({
+        next: res => {
+          if (res !== null && res !== undefined) {
+            this.isInWL = !this.isInWL;
+          }
+        },
+        error: err => debugError('Failed to toggle watchlist', err),
+      });
+    });
   }
 
   onClickRateButton() {
