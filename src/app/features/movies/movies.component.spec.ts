@@ -70,7 +70,7 @@ describe('MoviesComponent', () => {
     comp.toggleWatchlist('1');
     expect(wl.addToWatchlist).toHaveBeenCalledWith('1');
 
-    wl.isInWatchlist.and.returnValue(true);
+    wl.isInWatchlist.mockReturnValue(true);
     comp.toggleWatchlist('1');
     expect(wl.removeFromWatchlist).toHaveBeenCalledWith('1');
   });
