@@ -61,8 +61,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.loginSub.unsubscribe();
-    this.searchSub.unsubscribe();
+    this.loginSub?.unsubscribe();
+    this.searchSub?.unsubscribe();
     window.removeEventListener('scroll', this.onWindowScroll);
   }
 

@@ -1,40 +1,71 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../../core/services/auth.service';
-
-class AuthServiceMock {
-  register = jasmine.createSpy('register').and.returnValue(of({}));
-}
-
-class RouterMock {
-  navigate = jasmine.createSpy('navigate');
-}
+import { Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RegisterComponent', () => {
+  let authServiceMock: jasmine.SpyObj<AuthService>;
+
   beforeEach(async () => {
+    authServiceMock = jasmine.createSpyObj<AuthService>('AuthService', ['register']);
+    authServiceMock.register.and.returnValue(of({ access_token: 'dummy-token' }));
+
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent],
+      imports: [RegisterComponent, ReactiveFormsModule, RouterTestingModule],
       providers: [
-        { provide: AuthService, useClass: AuthServiceMock },
-        { provide: Router, useClass: RouterMock }
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: ActivatedRoute, useValue: { queryParams: of({}) } },
+        { provide: FormBuilder, useValue: new FormBuilder() }
       ]
     }).compileComponents();
   });
 
   it('should create', () => {
     const fixture = TestBed.createComponent(RegisterComponent);
-    expect(fixture.componentInstance).toBeTruthy();
+    const component = fixture.componentInstance;
+    expect(component).toBeTruthy();
   });
 
-  it('should submit register form', () => {
+  it('should submit register form and call AuthService', () => {
     const fixture = TestBed.createComponent(RegisterComponent);
     const component = fixture.componentInstance;
-    const auth = TestBed.inject(AuthService) as any;
     fixture.detectChanges();
-    component.registerForm.setValue({ username: 'u', email: 'e@e.com', password: 'pw' });
+
+    component.registerForm.setValue({
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'secure123'
+    });
+
     component.onSubmit();
-    expect(auth.register).toHaveBeenCalled();
+
+    expect(authServiceMock.register).toHaveBeenCalledWith({
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'secure123'
+    });
+  });
+
+  it('should navigate to / after successful registration', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    const component = fixture.componentInstance;
+    const router = TestBed.inject(Router);
+    spyOn(router, 'navigate');
+
+    fixture.detectChanges();
+
+    component.registerForm.setValue({
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'secure123'
+    });
+
+    component.onSubmit();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 });

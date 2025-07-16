@@ -1,25 +1,29 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../../core/services/auth.service';
-
-class AuthServiceMock {
-  login = jasmine.createSpy('login').and.returnValue(of({}));
-}
-
-class RouterMock {
-  navigate = jasmine.createSpy('navigate');
-}
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
 
 describe('LoginComponent', () => {
+  let authServiceMock: jasmine.SpyObj<AuthService>;
+
   beforeEach(async () => {
+    authServiceMock = jasmine.createSpyObj<AuthService>('AuthService', ['login']);
+    authServiceMock.login.and.returnValue(of({ access_token: 'token123' }));
+
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [
+        LoginComponent,
+        ReactiveFormsModule,
+        RouterTestingModule // <-- wichtig für routerLink etc.
+      ],
       providers: [
-        { provide: AuthService, useClass: AuthServiceMock },
-        { provide: Router, useClass: RouterMock }
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: FormBuilder, useValue: new FormBuilder() },
+        { provide: ActivatedRoute, useValue: { queryParams: of({}) } } // ← nötig wegen Standalone-Komponente mit Router
       ]
     }).compileComponents();
   });
@@ -33,10 +37,18 @@ describe('LoginComponent', () => {
   it('should submit login form', () => {
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
-    const auth = TestBed.inject(AuthService) as any;
     fixture.detectChanges();
-    component.loginForm.setValue({ email: 't@t.com', password: 'pw' });
+
+    component.loginForm.setValue({
+      email: 't@t.com',
+      password: 'pw'
+    });
+
     component.onSubmit();
-    expect(auth.login).toHaveBeenCalled();
+
+    expect(authServiceMock.login).toHaveBeenCalledWith({
+      email: 't@t.com',
+      password: 'pw'
+    });
   });
 });
