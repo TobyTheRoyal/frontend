@@ -12,9 +12,12 @@ class ContentServiceMock {
 }
 class WatchlistServiceMock {
   getWatchlist = jasmine.createSpy('getWatchlist').and.returnValue(of([]));
+  addToWatchlist = jasmine.createSpy('add').and.returnValue(of(true));
+  removeFromWatchlist = jasmine.createSpy('remove').and.returnValue(of(true));
 }
 class RatingsServiceMock {
   fetchUserRatings = jasmine.createSpy('fetchUserRatings').and.returnValue(of([]));
+  rateContent = jasmine.createSpy('rateContent').and.returnValue(of(null));
   getRating() { return null; }
 }
 class AuthServiceMock { isLoggedIn = () => of(true); }
@@ -39,5 +42,36 @@ describe('SeriesDetailComponent', () => {
   it('should create', () => {
     const fixture = TestBed.createComponent(SeriesDetailComponent);
     expect(fixture.componentInstance).toBeTruthy();
+  });
+   it('should load series details on init', () => {
+    const fixture = TestBed.createComponent(SeriesDetailComponent);
+    const comp = fixture.componentInstance;
+    fixture.detectChanges();
+    const svc = TestBed.inject(ContentService) as any;
+    expect(svc.getSeriesDetails).toHaveBeenCalled();
+    expect(comp.series).toBeTruthy();
+    expect(comp.isLoading).toBeFalse();
+  });
+
+  it('should toggle watchlist', () => {
+    const fixture = TestBed.createComponent(SeriesDetailComponent);
+    const comp = fixture.componentInstance;
+    fixture.detectChanges();
+    const wl = TestBed.inject(WatchlistService) as any;
+    comp.series = { tmdbId: '1' } as any;
+    comp.isInWL = false;
+    comp.toggleWatchlist();
+    expect(wl.addToWatchlist).toHaveBeenCalledWith('1');
+  });
+
+  it('should submit rating', () => {
+    const fixture = TestBed.createComponent(SeriesDetailComponent);
+    const comp = fixture.componentInstance;
+    fixture.detectChanges();
+    comp.series = { tmdbId: '1' } as any;
+    const rs = TestBed.inject(RatingsService) as any;
+    comp.ratingScore = '8';
+    comp.submitRating();
+    expect(rs.rateContent).toHaveBeenCalledWith('1', 8);
   });
 });

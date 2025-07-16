@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { HistoryComponent } from './history.component';
 import { AuthService } from '../../core/services/auth.service';
 import { FilterService } from '../../core/services/filter.service';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 class AuthServiceMock {
   getToken() { return 'token'; }
@@ -35,5 +37,44 @@ describe('HistoryComponent', () => {
     comp.showFilters = false;
     comp.toggleFilters();
     expect(comp.showFilters).toBeTrue();
+  });
+
+  it('should update filters', () => {
+    const fixture = TestBed.createComponent(HistoryComponent);
+    const comp = fixture.componentInstance;
+    const fs = TestBed.inject(FilterService);
+    spyOn(fs, 'updateFilters');
+    comp.updateFilters({ imdbRatingMin: 5 });
+    expect(fs.updateFilters).toHaveBeenCalled();
+  });
+
+  it('should reset filters', () => {
+  const fixture = TestBed.createComponent(HistoryComponent);
+  const comp = fixture.componentInstance;
+  const fs = TestBed.inject(FilterService);
+
+  spyOn(fs, 'getFilters').and.returnValue({ 
+    genres: ['Action'],
+    releaseYearMin: 2000,
+    releaseYearMax: 2020,
+    imdbRatingMin: 5,
+    rtRatingMin: 50,
+    providers: ['Netflix'],
+    userRatingMin: 6,
+  });
+
+  spyOn(fs, 'resetFilters'); 
+  comp.resetFilters();
+  expect(fs.resetFilters).toHaveBeenCalled();
+});
+
+  it('should submit rating', () => {
+    const fixture = TestBed.createComponent(HistoryComponent);
+    const comp = fixture.componentInstance;
+    const http = TestBed.inject(HttpClient);
+    spyOn(http, 'post').and.returnValue(of({}));
+    comp.ratingScore = '6';
+    comp.submitRating('1');
+    expect(http.post).toHaveBeenCalled();
   });
 });

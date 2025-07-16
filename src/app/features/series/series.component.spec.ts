@@ -44,4 +44,34 @@ describe('SeriesComponent', () => {
     const fixture = TestBed.createComponent(SeriesComponent);
     expect(fixture.componentInstance).toBeTruthy();
   });
+
+  it('should load a page of series', () => {
+    const fixture = TestBed.createComponent(SeriesComponent);
+    const comp = fixture.componentInstance;
+    comp.loadPage();
+    const service = TestBed.inject(ContentService) as any;
+    expect(service.getFilteredSeries).toHaveBeenCalled();
+  });
+
+  it('should submit rating', () => {
+    const fixture = TestBed.createComponent(SeriesComponent);
+    const comp = fixture.componentInstance;
+    comp.ratingScore = '7';
+    comp.submitRating('2');
+    const ratingSvc = TestBed.inject(RatingsService) as any;
+    expect(ratingSvc.rateContent).toHaveBeenCalledWith('2', 7);
+  });
+
+  it('should toggle watchlist', () => {
+    const fixture = TestBed.createComponent(SeriesComponent);
+    const comp = fixture.componentInstance;
+    const wl = TestBed.inject(WatchlistService) as any;
+    wl.isInWatchlist = jasmine.createSpy().and.returnValue(false);
+    comp.toggleWatchlist('1');
+    expect(wl.addToWatchlist).toHaveBeenCalledWith('1');
+
+    wl.isInWatchlist.and.returnValue(true);
+    comp.toggleWatchlist('1');
+    expect(wl.removeFromWatchlist).toHaveBeenCalledWith('1');
+  });
 });

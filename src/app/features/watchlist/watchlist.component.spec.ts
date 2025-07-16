@@ -14,6 +14,7 @@ class WatchlistServiceMock {
 }
 class RatingsServiceMock {
   fetchUserRatings = jasmine.createSpy('fetchUserRatings').and.returnValue(of([]));
+  rateContent = jasmine.createSpy('rateContent').and.returnValue(of(null));
   getRating() { return null; }
 }
 class AuthServiceMock { isLoggedIn = () => of(true); }
@@ -36,5 +37,32 @@ describe('WatchlistComponent', () => {
   it('should create', () => {
     const fixture = TestBed.createComponent(WatchlistComponent);
     expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should update filters', () => {
+    const fixture = TestBed.createComponent(WatchlistComponent);
+    const comp = fixture.componentInstance;
+    const fs = TestBed.inject(FilterService);
+    spyOn(fs, 'updateFilters');
+    comp.updateFilters({ imdbRatingMin: 5 });
+    expect(fs.updateFilters).toHaveBeenCalled();
+  });
+
+  it('should reset filters', () => {
+    const fixture = TestBed.createComponent(WatchlistComponent);
+    const comp = fixture.componentInstance;
+    const fs = TestBed.inject(FilterService);
+    spyOn(fs, 'resetFilters');
+    comp.resetFilters();
+    expect(fs.resetFilters).toHaveBeenCalled();
+  });
+
+  it('should submit rating', () => {
+    const fixture = TestBed.createComponent(WatchlistComponent);
+    const comp = fixture.componentInstance;
+    const rs = TestBed.inject(RatingsService) as any;
+    comp.ratingScore = '8';
+    comp.submitRating('1');
+    expect(rs.rateContent).toHaveBeenCalledWith('1', 8);
   });
 });

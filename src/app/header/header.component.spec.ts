@@ -1,8 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { of } from 'rxjs';
+import { AuthService } from '../core/services/auth.service';
+import { ContentService } from '../core/services/content.service';
+
+class AuthServiceMock {
+  logout = jasmine.createSpy('logout');
+  isLoggedIn() { return of(true); }
+}
+
+class ContentServiceMock {
+  searchTmdb = jasmine.createSpy('searchTmdb').and.returnValue(of([{ tmdbId: '1' }]));
+}
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -12,12 +24,13 @@ describe('HeaderComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         HeaderComponent,
-        HttpClientTestingModule,  // ✅ stellt HttpClient für Services bereit
-        RouterTestingModule,      // ✅ für router.navigate und routerLink
-        ReactiveFormsModule       // falls nötig
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]), // ✅ ersetzt Router-Mock
+        ReactiveFormsModule
       ],
       providers: [
-        FormBuilder               // nur falls nicht automatisch injiziert wird
+        { provide: AuthService, useClass: AuthServiceMock },
+        { provide: ContentService, useClass: ContentServiceMock }
       ]
     }).compileComponents();
 
@@ -28,5 +41,45 @@ describe('HeaderComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should toggle dropdown', () => {
+    component.isDropdownOpen = false;
+    component.toggleDropdown();
+    expect(component.isDropdownOpen).toBeTrue();
+    component.toggleDropdown();
+    expect(component.isDropdownOpen).toBeFalse();
+  });
+
+  it('should close dropdown and clear suggestions on document click', () => {
+    component.isDropdownOpen = true;
+    component.suggestions = [{ tmdbId: '1' } as any];
+    const event = { target: document.createElement('div') } as unknown as MouseEvent;
+    component.onDocumentClick(event);
+    expect(component.isDropdownOpen).toBeFalse();
+    expect(component.suggestions.length).toBe(0);
+  });
+
+  it('should keep dropdown open when clicking inside profile dropdown', () => {
+    component.isDropdownOpen = true;
+    const el = document.createElement('div');
+    el.classList.add('profile-dropdown');
+    component.onDocumentClick({ target: el } as unknown as MouseEvent);
+    expect(component.isDropdownOpen).toBeTrue();
+  });
+
+  it('should load suggestions when searching', fakeAsync(() => {
+    component.searchControl.setValue('test');
+    tick(300);
+    expect((component as any).contentService.searchTmdb).toHaveBeenCalledWith('test');
+    expect(component.suggestions.length).toBe(1);
+  }));
+
+  it('should logout and navigate to login', () => {
+    component.isDropdownOpen = true;
+    component.logout();
+    const auth = TestBed.inject(AuthService) as any;
+    expect(auth.logout).toHaveBeenCalled();
+    expect(component.isDropdownOpen).toBeFalse();
   });
 });
