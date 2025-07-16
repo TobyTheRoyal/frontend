@@ -12,11 +12,13 @@ import { RatingsService } from '../core/services/ratings.service';
 import { AuthService } from '../core/services/auth.service';
 import { Content } from '../interfaces/content.interface';
 import { debugError } from '../core/utils/logger';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -27,6 +29,27 @@ export class HomeComponent implements OnInit, OnDestroy {
     { id: 'new-releases', title: 'New Releases', items: [] as Content[] },
     { id: 'watchlist',  title: 'My Watchlist',  items: [] as Content[] },
   ];
+//recommendedItem only used as placeholder for now
+  recommendedItems = [
+  {
+    title: 'The Batman',
+    backdrop: 'https://image.tmdb.org/t/p/original/74xTEgt7R36Fpooo50r9T25onhq.jpg',
+    tmdbId: '414906',
+    type: 'movie'
+  },
+  {
+    title: 'Breaking Bad',
+    backdrop: 'https://image.tmdb.org/t/p/original/eSzpy96DwBujGFj0xMbXBcGcfxX.jpg',
+    tmdbId: '1396',
+    type: 'tv'
+  },
+  {
+    title: 'Oppenheimer',
+    backdrop: 'https://image.tmdb.org/t/p/original/hUqG9YF1LOXyG5jHhzS0iFQk2XU.jpg',
+    tmdbId: '872585',
+    type: 'movie'
+  }
+];
 
   isLoggedIn$: Observable<boolean>;
   selectedContentId: string | null = null;
@@ -200,8 +223,13 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
     }
     this.goToDetail(tmdbId);
   }
-  
+
   ngOnDestroy(): void {
     this.loginSub?.unsubscribe();
   }
+
+  navigateTo(item: any) {
+  const route = item.type === 'movie' ? '/movies' : '/series';
+  this.router.navigate([route, item.tmdbId]);
+}
 }

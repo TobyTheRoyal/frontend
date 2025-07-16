@@ -1,4 +1,3 @@
-/* src/app/home/home.component.scss */
 @use 'variables';
 @use 'content-card';
 
@@ -13,66 +12,59 @@
   gap: variables.$spacing-xl;
 }
 
-/* Hero Section */
+/* ===================== Hero Section ===================== */
 .hero-section {
-  position: relative;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  border-radius: 12px;
+  height: 60vh;
+  max-height: 600px;
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.6);
-  background: url('https://via.placeholder.com/1400x400') center/cover no-repeat;
+  position: relative;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(26,26,26,0.8));
+  swiper-container {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
-  .hero-content {
+  .hero-slide {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position: relative;
-    padding: 80px 40px;
-    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
 
-    h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 1rem;
-      line-height: 1.2;
+  .overlay {
+    width: 100%;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    color: white;
+
+    h2 {
+      font-size: 2.2rem;
+      margin: 0;
     }
 
     p {
-      font-size: 1.25rem;
-      color: #ddd;
-      margin-bottom: 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
-
-    .hero-button {
-      background: variables.$accent-color;
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,196,180,0.4);
-
-      &:hover {
-        background: #00a899;
-        transform: translateY(-2px);
-      }
+      font-size: 1.1rem;
+      color: #ccc;
+      margin-top: 0.5rem;
     }
   }
 }
 
+
+/* ===================== Swiper Component Global Styles ===================== */
+swiper-container {
+  display: block;
+  max-height: 40vh;
+  aspect-ratio: 16 / 9;
+}
 /* Category Section */
 .category-section {
   width: 100%;
@@ -159,3 +151,44 @@
   .content-card { width: 160px; aspect-ratio: 5 / 9; }
   .slider-arrow { display: none; }
 }
+
+.hero-recommendation {
+  background-size: cover;
+  background-position: center;
+  height: 80vh;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+  color: white;
+  font-family: sans-serif;
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    max-width: 500px;
+
+    .recommendation-reason {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      background-color: #ff3d00;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  }
+}
+

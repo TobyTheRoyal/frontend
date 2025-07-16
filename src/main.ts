@@ -6,6 +6,10 @@ import { routes } from './app/app-routing.module';
 import { provideAnimations } from '@angular/platform-browser/animations'; // Falls Animationen genutzt werden
 import { importProvidersFrom } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+// src/main.ts
+// @ts-expect-error: Typen nicht auflösbar bei swiper v9
+import { register } from 'swiper/element/bundle';
+register();
 
 bootstrapApplication(AppComponent, {
   providers: [

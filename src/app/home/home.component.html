@@ -2,12 +2,28 @@
 
   <!-- Hero Section -->
   <section class="hero-section">
-    <div class="hero-content">
-      <h1>Find Your Next Favorite</h1>
-      <p>Stream the best movies and shows across all your services.</p>
-      <button class="hero-button" routerLink="/auth/register">Sign Up</button>
-    </div>
-  </section>
+  <swiper-container
+    autoplay="true"
+    loop="true"
+    navigation="true"
+    pagination="true"
+    style="width: 100%; height: 60vh;"
+  >
+    <swiper-slide *ngFor="let item of recommendedItems">
+      <div
+        class="hero-slide"
+        [style.background-image]="'url(' + item.backdrop + ')'"
+        (click)="navigateTo(item)"
+      >
+        <div class="overlay">
+          <h2>{{ item.title }}</h2>
+          <p>Recommended for you</p>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</section>
+
 
   <!-- Category Sections -->
   <section class="category-section" *ngFor="let category of categories">
