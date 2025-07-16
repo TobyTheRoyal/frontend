@@ -14,56 +14,62 @@
 
 /* ===================== Hero Section ===================== */
 .hero-section {
-  width: 100%;
-  height: 60vh;
-  max-height: 600px;
-  overflow: hidden;
   position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+  background: url('https://via.placeholder.com/1400x400') center/cover no-repeat;
 
-  swiper-container {
-    width: 100%;
-    height: 100%;
-    display: block;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(26,26,26,0.8));
   }
 
-  .hero-slide {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  .hero-content {
     position: relative;
-    cursor: pointer;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
-  }
+    padding: 80px 40px;
+    text-align: center;
 
-  .overlay {
-    width: 100%;
-    padding: 2rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
-    color: white;
-
-    h2 {
-      font-size: 2.2rem;
-      margin: 0;
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 1rem;
+      line-height: 1.2;
     }
 
     p {
-      font-size: 1.1rem;
-      color: #ccc;
-      margin-top: 0.5rem;
+      font-size: 1.25rem;
+      color: #ddd;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .hero-button {
+      background: variables.$accent-color;
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,196,180,0.4);
+
+      &:hover {
+        background: #00a899;
+        transform: translateY(-2px);
+      }
     }
   }
-}
-
-
-/* ===================== Swiper Component Global Styles ===================== */
-swiper-container {
-  display: block;
-  max-height: 40vh;
-  aspect-ratio: 16 / 9;
 }
 /* Category Section */
 .category-section {

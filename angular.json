@@ -28,7 +28,7 @@
     "stylePreprocessorOptions": {
         "includePaths": ["src/styles"]
       },
-      "styles": ["node_modules/swiper/swiper-bundle.min.css", "src/styles.scss"],
+      "styles": ["src/styles.scss"],
       "scripts": [],
     "baseHref": "/"
   },
