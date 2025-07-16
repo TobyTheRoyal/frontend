@@ -6,7 +6,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid variables.$secondary-color;
+  border-bottom: 1px solid lighten(variables.$primary-color, 10%);
   transition: variables.$transition-base;
 
   &.scrolled {

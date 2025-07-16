@@ -6,6 +6,7 @@
   color: variables.$secondary-text-color;
   font-family: variables.$font-family;
   box-shadow: variables.$shadow-sm;
+  border-top: 1px solid lighten(variables.$primary-color, 10%);
 
   .footer-content {
     max-width: 1200px;
