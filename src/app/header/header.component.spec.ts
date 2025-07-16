@@ -8,12 +8,12 @@ import { AuthService } from '../core/services/auth.service';
 import { ContentService } from '../core/services/content.service';
 
 class AuthServiceMock {
-  logout = jasmine.createSpy('logout');
+  logout = jest.fn();
   isLoggedIn() { return of(true); }
 }
 
 class ContentServiceMock {
-  searchTmdb = jasmine.createSpy('searchTmdb').and.returnValue(of([{ tmdbId: '1' }]));
+  searchTmdb = jest.fn().mockReturnValue(of([{ tmdbId: '1' }]));
 }
 
 describe('HeaderComponent', () => {
@@ -46,9 +46,9 @@ describe('HeaderComponent', () => {
   it('should toggle dropdown', () => {
     component.isDropdownOpen = false;
     component.toggleDropdown();
-    expect(component.isDropdownOpen).toBeTrue();
+    expect(component.isDropdownOpen).toBe(true);
     component.toggleDropdown();
-    expect(component.isDropdownOpen).toBeFalse();
+    expect(component.isDropdownOpen).toBe(false);
   });
 
   it('should close dropdown and clear suggestions on document click', () => {
@@ -56,7 +56,7 @@ describe('HeaderComponent', () => {
     component.suggestions = [{ tmdbId: '1' } as any];
     const event = { target: document.createElement('div') } as unknown as MouseEvent;
     component.onDocumentClick(event);
-    expect(component.isDropdownOpen).toBeFalse();
+    expect(component.isDropdownOpen).toBe(false);
     expect(component.suggestions.length).toBe(0);
   });
 
@@ -65,7 +65,7 @@ describe('HeaderComponent', () => {
     const el = document.createElement('div');
     el.classList.add('profile-dropdown');
     component.onDocumentClick({ target: el } as unknown as MouseEvent);
-    expect(component.isDropdownOpen).toBeTrue();
+    expect(component.isDropdownOpen).toBe(true);
   });
 
   it('should load suggestions when searching', fakeAsync(() => {
@@ -80,6 +80,6 @@ describe('HeaderComponent', () => {
     component.logout();
     const auth = TestBed.inject(AuthService) as any;
     expect(auth.logout).toHaveBeenCalled();
-    expect(component.isDropdownOpen).toBeFalse();
+    expect(component.isDropdownOpen).toBe(false);
   });
 });

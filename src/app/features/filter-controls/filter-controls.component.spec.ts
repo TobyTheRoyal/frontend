@@ -4,7 +4,7 @@ import { FilterControlsComponent } from './filter-controls.component';
 import { ContentService } from '../../core/services/content.service';
 
 class ContentServiceMock {
-  getGenres = jasmine.createSpy('getGenres').and.returnValue(of(['Action']));
+  getGenres = jest.fn().mockReturnValue(of(['Action']));
 }
 
 describe('FilterControlsComponent', () => {

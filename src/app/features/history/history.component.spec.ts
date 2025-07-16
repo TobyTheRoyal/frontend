@@ -11,8 +11,9 @@ class AuthServiceMock {
   getToken() { return 'token'; }
 }
 class RouterMock {
-  navigate = jasmine.createSpy('navigate');
+  navigate = jest.fn();
 }
+
 
 describe('HistoryComponent', () => {
   beforeEach(async () => {
@@ -36,14 +37,14 @@ describe('HistoryComponent', () => {
     const comp = fixture.componentInstance;
     comp.showFilters = false;
     comp.toggleFilters();
-    expect(comp.showFilters).toBeTrue();
+    expect(comp.showFilters).toBe(true);
   });
 
   it('should update filters', () => {
     const fixture = TestBed.createComponent(HistoryComponent);
     const comp = fixture.componentInstance;
     const fs = TestBed.inject(FilterService);
-    spyOn(fs, 'updateFilters');
+    jest.spyOn(fs, 'updateFilters');
     comp.updateFilters({ imdbRatingMin: 5 });
     expect(fs.updateFilters).toHaveBeenCalled();
   });
@@ -53,7 +54,7 @@ describe('HistoryComponent', () => {
   const comp = fixture.componentInstance;
   const fs = TestBed.inject(FilterService);
 
-  spyOn(fs, 'getFilters').and.returnValue({ 
+  jest.spyOn(fs, 'getFilters').mockReturnValue({
     genres: ['Action'],
     releaseYearMin: 2000,
     releaseYearMax: 2020,
@@ -63,7 +64,7 @@ describe('HistoryComponent', () => {
     userRatingMin: 6,
   });
 
-  spyOn(fs, 'resetFilters'); 
+  jest.spyOn(fs, 'resetFilters');
   comp.resetFilters();
   expect(fs.resetFilters).toHaveBeenCalled();
 });
@@ -72,7 +73,7 @@ describe('HistoryComponent', () => {
     const fixture = TestBed.createComponent(HistoryComponent);
     const comp = fixture.componentInstance;
     const http = TestBed.inject(HttpClient);
-    spyOn(http, 'post').and.returnValue(of({}));
+    jest.spyOn(http, 'post').mockReturnValue(of({}) as any);
     comp.ratingScore = '6';
     comp.submitRating('1');
     expect(http.post).toHaveBeenCalled();

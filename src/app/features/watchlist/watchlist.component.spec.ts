@@ -9,16 +9,16 @@ import { AuthService } from '../../core/services/auth.service';
 import { FilterService } from '../../core/services/filter.service';
 
 class WatchlistServiceMock {
-  getWatchlist = jasmine.createSpy('getWatchlist').and.returnValue(of([]));
-  removeFromWatchlist = jasmine.createSpy('remove').and.returnValue(of(null));
+  getWatchlist = jest.fn().mockReturnValue(of([]));
+  removeFromWatchlist = jest.fn().mockReturnValue(of(null));
 }
 class RatingsServiceMock {
-  fetchUserRatings = jasmine.createSpy('fetchUserRatings').and.returnValue(of([]));
-  rateContent = jasmine.createSpy('rateContent').and.returnValue(of(null));
+  fetchUserRatings = jest.fn().mockReturnValue(of([]));
+  rateContent = jest.fn().mockReturnValue(of(null));
   getRating() { return null; }
 }
 class AuthServiceMock { isLoggedIn = () => of(true); }
-class RouterMock { navigate = jasmine.createSpy('navigate'); }
+class RouterMock { navigate = jest.fn(); }
 
 describe('WatchlistComponent', () => {
   beforeEach(async () => {
@@ -43,7 +43,7 @@ describe('WatchlistComponent', () => {
     const fixture = TestBed.createComponent(WatchlistComponent);
     const comp = fixture.componentInstance;
     const fs = TestBed.inject(FilterService);
-    spyOn(fs, 'updateFilters');
+    jest.spyOn(fs, 'updateFilters');
     comp.updateFilters({ imdbRatingMin: 5 });
     expect(fs.updateFilters).toHaveBeenCalled();
   });
@@ -52,7 +52,7 @@ describe('WatchlistComponent', () => {
     const fixture = TestBed.createComponent(WatchlistComponent);
     const comp = fixture.componentInstance;
     const fs = TestBed.inject(FilterService);
-    spyOn(fs, 'resetFilters');
+    jest.spyOn(fs, 'resetFilters');
     comp.resetFilters();
     expect(fs.resetFilters).toHaveBeenCalled();
   });

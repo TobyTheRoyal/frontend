@@ -39,9 +39,9 @@ describe('AuthService', () => {
   it('should return token with getToken and hasToken', () => {
     localStorage.setItem('auth_token', 'tok');
     expect(service.getToken()).toBe('tok');
-    expect(service.hasToken()).toBeTrue();
+    expect(service.hasToken()).toBe(true);
     localStorage.removeItem('auth_token');
-    expect(service.hasToken()).toBeFalse();
+    expect(service.hasToken()).toBe(false);
   });
 
   it('should handle login error', (done) => {

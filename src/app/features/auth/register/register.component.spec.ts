@@ -8,12 +8,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RegisterComponent', () => {
-  let authServiceMock: jasmine.SpyObj<AuthService>;
+  let authServiceMock: jest.Mocked<AuthService>;
 
   beforeEach(async () => {
-    authServiceMock = jasmine.createSpyObj<AuthService>('AuthService', ['register']);
-    authServiceMock.register.and.returnValue(of({ access_token: 'dummy-token' }));
-
+    authServiceMock = {
+        register: jest.fn().mockReturnValue(of({ access_token: 'dummy-token' }))
+    } as unknown as jest.Mocked<AuthService>;
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, ReactiveFormsModule, RouterTestingModule],
       providers: [
@@ -54,7 +54,8 @@ describe('RegisterComponent', () => {
     const fixture = TestBed.createComponent(RegisterComponent);
     const component = fixture.componentInstance;
     const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    jest.spyOn(router, 'navigate');
+
 
     fixture.detectChanges();
 

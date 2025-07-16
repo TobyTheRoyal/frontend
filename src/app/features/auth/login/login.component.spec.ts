@@ -8,12 +8,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
 describe('LoginComponent', () => {
-  let authServiceMock: jasmine.SpyObj<AuthService>;
+  let authServiceMock: jest.Mocked<AuthService>;
 
   beforeEach(async () => {
-    authServiceMock = jasmine.createSpyObj<AuthService>('AuthService', ['login']);
-    authServiceMock.login.and.returnValue(of({ access_token: 'token123' }));
-
+    authServiceMock = {
+        login: jest.fn().mockReturnValue(of({ access_token: 'token123' }))
+    } as unknown as jest.Mocked<AuthService>;
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,

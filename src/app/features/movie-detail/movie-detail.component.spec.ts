@@ -8,21 +8,21 @@ import { RatingsService } from '../../core/services/ratings.service';
 import { AuthService } from '../../core/services/auth.service';
 
 class ContentServiceMock {
-  getMovieDetails = jasmine.createSpy('getMovieDetails').and.returnValue(of({ tmdbId: '1' }));
+  getMovieDetails = jest.fn().mockReturnValue(of({ tmdbId: '1' }));
 }
 class WatchlistServiceMock {
-  getWatchlist = jasmine.createSpy('getWatchlist').and.returnValue(of([]));
-  addToWatchlist = jasmine.createSpy('add').and.returnValue(of(true));
-  removeFromWatchlist = jasmine.createSpy('remove').and.returnValue(of(true));
+  getWatchlist = jest.fn().mockReturnValue(of([]));
+  addToWatchlist = jest.fn().mockReturnValue(of(true));
+  removeFromWatchlist = jest.fn().mockReturnValue(of(true));
 }
 class RatingsServiceMock {
-  fetchUserRatings = jasmine.createSpy('fetchUserRatings').and.returnValue(of([]));
-  rateContent = jasmine.createSpy('rateContent').and.returnValue(of(null));
+  fetchUserRatings = jest.fn().mockReturnValue(of([]));
+  rateContent = jest.fn().mockReturnValue(of(null));
   getRating() { return null; }
 }
 class AuthServiceMock { isLoggedIn = () => of(true); }
 class ActivatedRouteMock { snapshot = { paramMap: new Map([['id','1']]) }; }
-class RouterMock { navigate = jasmine.createSpy('navigate'); }
+class RouterMock { navigate = jest.fn(); }
 
 describe('MovieDetailComponent', () => {
   beforeEach(async () => {
@@ -51,7 +51,7 @@ describe('MovieDetailComponent', () => {
     const svc = TestBed.inject(ContentService) as any;
     expect(svc.getMovieDetails).toHaveBeenCalled();
     expect(comp.movie).toBeTruthy();
-    expect(comp.isLoading).toBeFalse();
+    expect(comp.isLoading).toBe(false);
   });
 
   it('should toggle watchlist', () => {

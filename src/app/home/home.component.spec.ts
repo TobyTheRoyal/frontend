@@ -9,23 +9,23 @@ import { AuthService } from '../core/services/auth.service';
 import { ContentService } from '../core/services/content.service';
 
 class WatchlistServiceMock {
-  addToWatchlist = jasmine.createSpy('add').and.returnValue(of(null));
-  removeFromWatchlist = jasmine.createSpy('remove').and.returnValue(of(null));
-  getWatchlist = jasmine.createSpy('list').and.returnValue(of([]));
+  addToWatchlist = jest.fn().mockReturnValue(of(null));
+  removeFromWatchlist = jest.fn().mockReturnValue(of(null));
+  getWatchlist = jest.fn().mockReturnValue(of([]));
   isInWatchlist() { return false; }
 }
 
 class RatingsServiceMock {
-  rateContent = jasmine.createSpy('rate').and.returnValue(of(null));
-  fetchUserRatings = jasmine.createSpy('fetch').and.returnValue(of([]));
+  rateContent = jest.fn().mockReturnValue(of(null));
+  fetchUserRatings = jest.fn().mockReturnValue(of([]));
   getRating() { return null; }
 }
 
 class AuthServiceMock { isLoggedIn = () => of(true); }
 class ContentServiceMock {
-  getTrending = jasmine.createSpy('trending').and.returnValue(of([]));
-  getTopRated = jasmine.createSpy('top').and.returnValue(of([]));
-  getNewReleases = jasmine.createSpy('new').and.returnValue(of([]));
+  getTrending = jest.fn().mockReturnValue(of([]));
+  getTopRated = jest.fn().mockReturnValue(of([]));
+  getNewReleases = jest.fn().mockReturnValue(of([]));
 }
 
 describe('HomeComponent', () => {
@@ -58,7 +58,7 @@ describe('HomeComponent', () => {
 
   it('should toggle watchlist', () => {
     const wl = TestBed.inject(WatchlistService) as any;
-    wl.isInWatchlist = jasmine.createSpy().and.returnValue(false);
+    wl.isInWatchlist = jest.fn().mockReturnValue(false);
     component.toggleWatchlist('1');
     expect(wl.addToWatchlist).toHaveBeenCalledWith('1');
 

@@ -39,7 +39,7 @@ describe('WatchlistService', () => {
     const req = http.expectOne(`${environment.apiUrl}/watchlist/user/2`);
     expect(req.request.method).toBe('DELETE');
     req.flush({});
-    expect(service.isInWatchlist('2')).toBeFalse();
+    expect(service.isInWatchlist('2')).toBe(false);
   });
 
   it('should set rating', () => {
@@ -55,6 +55,6 @@ describe('WatchlistService', () => {
   it('should check watchlist membership', () => {
     service.addToWatchlist('5').subscribe();
     http.expectOne(`${environment.apiUrl}/watchlist/add`).flush({});
-    expect(service.isInWatchlist('5')).toBeTrue();
+    expect(service.isInWatchlist('5')).toBe(true);
   });
 });

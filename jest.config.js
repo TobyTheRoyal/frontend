@@ -1,5 +1,5 @@
 module.exports = {
   preset: 'jest-preset-angular',
-  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  setupFilesAfterEnv: ['/Users/tobyparker/dev/BingeVerse/frontend/setup-jest.ts'],
   testEnvironment: 'jsdom',
 };
