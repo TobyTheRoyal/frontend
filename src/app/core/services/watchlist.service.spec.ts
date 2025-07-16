@@ -32,4 +32,29 @@ describe('WatchlistService', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
   });
+  it('should remove from watchlist', () => {
+    service.addToWatchlist('2').subscribe();
+    http.expectOne(`${environment.apiUrl}/watchlist/add`).flush({});
+    service.removeFromWatchlist('2').subscribe();
+    const req = http.expectOne(`${environment.apiUrl}/watchlist/user/2`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({});
+    expect(service.isInWatchlist('2')).toBeFalse();
+  });
+
+  it('should set rating', () => {
+    service.addToWatchlist('3').subscribe();
+    http.expectOne(`${environment.apiUrl}/watchlist/add`).flush({});
+    service.setRating('3', 4).subscribe();
+    const req = http.expectOne(`${environment.apiUrl}/watchlist/rate`);
+    expect(req.request.method).toBe('POST');
+    req.flush({});
+    expect(service.getRating('3')).toBe(4);
+  });
+
+  it('should check watchlist membership', () => {
+    service.addToWatchlist('5').subscribe();
+    http.expectOne(`${environment.apiUrl}/watchlist/add`).flush({});
+    expect(service.isInWatchlist('5')).toBeTrue();
+  });
 });

@@ -22,4 +22,44 @@ describe('ContentService', () => {
     expect(req.request.method).toBe('GET');
     req.flush([]);
   });
+
+  it('should get top rated', () => {
+    service.getTopRated().subscribe();
+    const req = http.expectOne(`${environment.apiUrl}/content/top-rated`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
+
+  it('should get new releases', () => {
+    service.getNewReleases().subscribe();
+    const req = http.expectOne(`${environment.apiUrl}/content/new-releases`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
+
+  it('should get movies page', () => {
+    service.getMoviesPage(2).subscribe();
+    const req = http.expectOne(r =>
+      r.url === `${environment.tmdbApiUrl}/discover/movie` &&
+      r.params.get('page') === '2' &&
+      r.params.get('api_key') === environment.tmdbApiKey
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush({ results: [] });
+  });
+
+  it('should search tmdb', () => {
+    service.searchTmdb('test').subscribe();
+    const req = http.expectOne(`${environment.apiUrl}/content/search`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body.query).toBe('test');
+    req.flush([]);
+  });
+
+  it('should return empty array for blank search', () => {
+    service.searchTmdb(' ').subscribe(res => {
+      expect(res).toEqual([]);
+    });
+    http.expectNone(`${environment.apiUrl}/content/search`);
+  });
 });

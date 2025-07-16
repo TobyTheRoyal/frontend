@@ -34,4 +34,11 @@ describe('RatingsService', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
   });
+
+  it('should cache rating after posting', () => {
+    service.rateContent('2', 7).subscribe();
+    const req = http.expectOne(`${environment.apiUrl}/ratings`);
+    req.flush({});
+    expect(service.getRating('2')).toBe(7);
+  });
 });

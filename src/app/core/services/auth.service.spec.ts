@@ -29,4 +29,30 @@ describe('AuthService', () => {
     expect(req.request.method).toBe('POST');
     req.flush({ access_token: 'x' });
   });
+
+  it('should logout and remove token', () => {
+    localStorage.setItem('auth_token', 'tok');
+    service.logout();
+    expect(localStorage.getItem('auth_token')).toBeNull();
+  });
+
+  it('should return token with getToken and hasToken', () => {
+    localStorage.setItem('auth_token', 'tok');
+    expect(service.getToken()).toBe('tok');
+    expect(service.hasToken()).toBeTrue();
+    localStorage.removeItem('auth_token');
+    expect(service.hasToken()).toBeFalse();
+  });
+
+  it('should handle login error', (done) => {
+    service.login({ email: 'e', password: 'p' }).subscribe({
+      next: () => {},
+      error: (err) => {
+        expect(err.message).toContain('login failed');
+        done();
+      }
+    });
+    const req = http.expectOne(`${environment.apiUrl}/auth/login`);
+    req.flush('fail', { status: 500, statusText: 'Server Error' });
+  });
 });
