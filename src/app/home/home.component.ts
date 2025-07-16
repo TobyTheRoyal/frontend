@@ -1,9 +1,10 @@
 // src/app/home/home.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { ContentService } from '../core/services/content.service';
 import { WatchlistService } from '../core/services/watchlist.service';
@@ -19,7 +20,7 @@ import { debugError } from '../core/utils/logger';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   categories = [
     { id: 'trending',   title: 'Trending Now',  items: [] as Content[] },
     { id: 'top-rated',  title: 'Top Rated',     items: [] as Content[] },
@@ -31,6 +32,8 @@ export class HomeComponent implements OnInit {
   selectedContentId: string | null = null;
   ratingScore = '';
   isRatingSubmitted = false;
+
+  private loginSub?: Subscription;
 
   constructor(
     private contentService: ContentService,
@@ -49,7 +52,7 @@ export class HomeComponent implements OnInit {
     });
 
     // dann Kategorien laden
-    this.isLoggedIn$.subscribe(loggedIn => {
+    this.loginSub = this.isLoggedIn$.subscribe(loggedIn => {
       if (loggedIn) {
         this.loadCategories();
       } else {
@@ -120,7 +123,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
   }
 
   toggleWatchlist(contentId: string): void {
-    this.isLoggedIn$.subscribe(loggedIn => {
+    this.isLoggedIn$.pipe(take(1)).subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
@@ -137,7 +140,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
   }
 
   startRating(contentId: string): void {
-    this.isLoggedIn$.subscribe(loggedIn => {
+    this.isLoggedIn$.pipe(take(1)).subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
@@ -160,7 +163,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
       debugError('Invalid rating: must be between 0.0 and 10.0');
       return;
     }
-    this.isLoggedIn$.subscribe(loggedIn => {
+    this.isLoggedIn$.pipe(take(1)).subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
@@ -196,5 +199,9 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
       return;
     }
     this.goToDetail(tmdbId);
+  }
+  
+  ngOnDestroy(): void {
+    this.loginSub?.unsubscribe();
   }
 }
