@@ -6,9 +6,14 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jest",
-      "node"
+      "node",
+      "jest-preset-angular"
     ]
   },
+  "exclude": [
+    "**/*.cy.ts",
+    "cypress/**/*"
+  ],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
