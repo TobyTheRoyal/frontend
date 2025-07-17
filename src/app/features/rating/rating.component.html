@@ -12,15 +12,18 @@
       </div>
     </div>
   
-    <div class="modal-overlay" *ngIf="selectedContentId" (click)="closeRatingModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <h3>Rate {{ selectedContentTitle }}</h3> <!-- Titel aus der Komponente -->
-        <div class="rating-form">
-          <input type="range" [(ngModel)]="ratingScore" min="0" max="10" step="0.1" class="slider" />
-          <span class="score-display">{{ ratingScore }}</span>
-          <button (click)="submitRating()">Submit</button>
-        </div>
-        <button class="close-btn" (click)="closeRatingModal()">Close</button>
-      </div>
+    <div class="rating-overlay" *ngIf="selectedContentId"></div>
+    <div class="rating-input-container" *ngIf="selectedContentId">
+      <div class="rating-card">
+        <button class="close-btn" (click)="closeRatingModal()">✕</button>
+        <h3>Rate {{ selectedContentTitle }}</h3>
+        <input
+          type="text"
+          [(ngModel)]="ratingScore"
+          placeholder="0.0 – 10.0"
+          class="rating-input-field"
+          (keydown.enter)="submitRating()"
+        />
+        <button class="submit-rating-btn" (click)="submitRating()">Submit</button>
     </div>
   </div>

@@ -17,7 +17,7 @@ import { debugError } from '../../core/utils/logger';
 export class RatingComponent implements OnInit {
   ratings: any[] = [];
   selectedContentId: number | null = null;
-  ratingScore: number = 0;
+  ratingScore: string = '';
   selectedContentTitle: string = ''; // Neues Feld für den Titel
   apiUrl = `${environment.apiUrl}/ratings`;
   tmdbApiKey = environment.tmdbApiKey;
@@ -57,7 +57,7 @@ export class RatingComponent implements OnInit {
     this.selectedContentId = contentId;
     const selectedRating = this.ratings.find(r => r.content.id === contentId);
     this.selectedContentTitle = selectedRating ? selectedRating.title : 'Unknown';
-    this.ratingScore = selectedRating ? selectedRating.score : 0; // Bestehende Bewertung laden
+    this.ratingScore = selectedRating ? String(selectedRating.score) : '';
   }
 
   closeRatingModal() {
@@ -66,14 +66,15 @@ export class RatingComponent implements OnInit {
   }
 
   submitRating() {
-    if (this.ratingScore < 0 || this.ratingScore > 10) {
+    const score = parseFloat(this.ratingScore);
+    if (isNaN(score) || score < 0 || score > 10) {
       alert('Score must be between 0.0 and 10.0');
       return;
     }
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     this.http
-      .post(this.apiUrl, { contentId: this.selectedContentId, score: this.ratingScore }, { headers })
+      .post(this.apiUrl, { contentId: this.selectedContentId, score }, { headers })
       .subscribe({
         next: () => {
           this.closeRatingModal();

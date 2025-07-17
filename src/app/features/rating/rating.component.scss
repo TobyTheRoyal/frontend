@@ -1,4 +1,5 @@
 @use 'variables';
+@use 'content-card';
 
 .rating-container {
     padding: 40px 30px;
@@ -13,47 +14,14 @@
     color: #ffffff;
   }
   
-  .rating-form {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
+  
   
   label {
     color: #ffffff;
     font-size: 16px;
   }
   
-  .slider {
-    -webkit-appearance: none;
-    width: 200px;
-    height: 8px;
-    background: #3a3a3a;
-    border-radius: 4px;
-    outline: none;
-    opacity: 0.7;
-    transition: opacity 0.2s;
   
-    &:hover {
-      opacity: 1;
-    }
-  
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      background: variables.$accent-color;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-  }
-  
-  .score-display {
-    color: variables.$accent-color;
-    font-size: 16px;
-    font-weight: 500;
-  }
   
   button {
     background: variables.$accent-color;

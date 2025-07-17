@@ -92,7 +92,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.ratingScore = '';
     this.isRatingSubmitted = false;
     setTimeout(() => {
-      const input = document.querySelector('.rating-input') as HTMLElement;
+      const input = document.querySelector('.rating-input-field') as HTMLElement;
       if (input) input.focus();
     }, 0);
   }
