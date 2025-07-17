@@ -32,7 +32,7 @@
                   <path *ngIf="isInWatchlist(item.tmdbId)" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor" stroke="none"/>
                 </svg>
               </button>
-              <button class="rating-btn" (click)="startRating(item.tmdbId); $event.stopPropagation()">
+              <button class="rating-btn" (click)="startRating(category.id, item.tmdbId); $event.stopPropagation()">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2
                            9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
@@ -41,12 +41,12 @@
 
               <!-- Rating Overlay + Text-Eingabe wie in Watchlist -->
 <div
-class="rating-overlay"
-*ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted"
+  class="rating-overlay"
+  *ngIf="selectedCategoryId === category.id && selectedContentId === item.tmdbId && !isRatingSubmitted"
 ></div>
 <div
-class="rating-input-container"
-*ngIf="selectedContentId === item.tmdbId && !isRatingSubmitted"
+  class="rating-input-container"
+  *ngIf="selectedCategoryId === category.id && selectedContentId === item.tmdbId && !isRatingSubmitted"
 >
 <div class="rating-card">
   <button class="close-btn" (click)="stopRating()">✕</button>

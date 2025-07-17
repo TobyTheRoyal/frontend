@@ -29,6 +29,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     { id: 'new-releases', title: 'New Releases', items: [] as Content[] },
     { id: 'watchlist',  title: 'My Watchlist',  items: [] as Content[] },
   ];
+
+  
+  
 //recommendedItem only used as placeholder for now
   recommendedItems = [
   {
@@ -53,6 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   isLoggedIn$: Observable<boolean>;
   selectedContentId: string | null = null;
+  selectedCategoryId: string | null = null;
   ratingScore = '';
   isRatingSubmitted = false;
 
@@ -162,12 +166,13 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
     });
   }
 
-  startRating(contentId: string): void {
+  startRating(categoryId: string, contentId: string): void {
     this.isLoggedIn$.pipe(take(1)).subscribe(loggedIn => {
       if (!loggedIn) {
         this.router.navigate(['/auth/login']);
         return;
       }
+      this.selectedCategoryId = categoryId;
       this.selectedContentId = contentId;
       this.ratingScore = '';
       this.isRatingSubmitted = false;
@@ -175,6 +180,7 @@ getExternalRating(item: Content, source: 'imdb' | 'rt'): number | null {
   }
 
   stopRating(): void {
+    this.selectedCategoryId = null;
     this.selectedContentId = null;
     this.ratingScore = '';
     this.isRatingSubmitted = false;
