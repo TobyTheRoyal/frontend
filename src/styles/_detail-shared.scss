@@ -2,7 +2,8 @@
 
 @mixin layout($prefix) {
   .#{$prefix}-detail-container {
-    max-width: 1200px;
+    width: 100%;
+    //max-width: 1200px;
     margin: 0 auto;
     padding: variables.$spacing-xl;
     background: variables.$primary-color;
